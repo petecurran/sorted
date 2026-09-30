@@ -6,6 +6,10 @@ Writes seed/streets.geojson (named OSM streets, merged by name, simplified),
 seed/land_railway.geojson (OSM landuse=railway ways) and
 seed/land_national_highways.geojson (National Highways RedLine polygons that
 touch Liverpool). Needs seed/wards.geojson for the city outline.
+
+The outputs are in the repository; the raw inputs aren't. To rebuild, put these in data/raw/land/ (sources in NOTICE.md):
+osm_named_highways_liverpool.json and osm_landuse_railway_liverpool.json (Overpass API JSON), and
+nh_redline_liverpool_bbox.geojson (National Highways Highway Boundary, clipped to a box around Liverpool).
 """
 
 import json
@@ -14,9 +18,9 @@ from pathlib import Path
 from shapely.geometry import LineString, Polygon, mapping, shape
 from shapely.ops import linemerge, unary_union
 
-ROOT = Path(__file__).resolve().parents[2]
-SEED = ROOT / "app/seed"
-LAND = ROOT / "data/raw/land"
+APP = Path(__file__).resolve().parents[1]
+SEED = APP / "seed"
+LAND = APP / "data" / "raw" / "land"
 
 
 def rnd(c, dp=5):
