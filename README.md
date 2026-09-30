@@ -2,7 +2,7 @@
 
 Sorted is a fly-tipping reporting and triage tool for councils, built in a one-day hackathon at the Labour Conference 2026. A resident photographs a pile of rubbish, an AI model running on the council's own hardware reads the photo, and the council's rules decide what happens next: send a crew, hold it for an officer to look for evidence, call in a specialist, or pass it to whoever owns the land.
 
-The tool was built across about 8 hours by Multiverse Apprentices Sagal Qodah and Joe Williams with Pete Curran and a lot of Claude and a bit of Codex. 'Mersey Vale' council is fictional but its streets and boundaries are Liverpool's. Every report is simulated and every photo is AI-generated.
+The tool was built across about 8 hours by Multiverse Apprentices Sagal Qodah and Joe Williams with Pete Curran, a lot of Claude and a bit of Codex. 'Mersey Vale' council is fictional but its streets and boundaries are Liverpool's. Every report is simulated and every photo is AI-generated.
 
 ![The council's triage queue](docs/screenshots/council-queue.jpg)
 
