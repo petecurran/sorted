@@ -67,7 +67,7 @@ The start scripts run it on `FT_RESET=1` or when those files don't exist yet. Th
 
 ## Phones and the room
 
-The machine running Sorted is trusted: any password opens the council console there. Everyone else is remote, whether that's a phone through a tunnel or a visitor to a hosted copy. Remote users get the public site, and the console asks for a password, which is made the first time someone signs in and stored in `data/council_password.txt`. `scripts/room.sh` has the switches used at the demo. `seed/live_demo/LIVE_DEMO.md` explains them and gives a running order.
+The machine running Sorted is trusted: any password opens the council console there. Everyone else is remote, whether that's a phone through a tunnel, a visitor to a hosted copy, or a page from another website open in the laptop's browser. `trust.py` holds the rule, and [decision 4](decisions/0004-laptop-trust-rule.md) explains it. Remote users get the public site, and the console asks for a password, which is made the first time someone signs in and stored in `data/council_password.txt`. `scripts/room.sh` has the switches used at the demo. `seed/live_demo/LIVE_DEMO.md` explains them and gives a running order.
 
 ## Tests
 

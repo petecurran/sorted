@@ -169,6 +169,35 @@ def no_cost_checks():
         check(f"no cost fields in {path}", not keys, keys[:4])
 
 
+def trust_checks():
+    """Only this laptop reaches the council console without a password (trust.py). A phone, another site's page open
+    in this browser, or a DNS-rebound name is asked to sign in, and still gets the public site."""
+    council = "/api/incidents?view=council"
+    phone = {"cf-connecting-ip": "203.0.113.9"}
+    check("trust: this laptop reads the council list", get(council).status_code == 200)
+    for who, headers in (
+        ("a phone through the tunnel", phone),
+        ("another site's page", {"Origin": "https://evil.example"}),
+        ("a DNS-rebound name", {"Host": "rebind.evil.example"}),
+    ):
+        r = get(council, headers=headers)
+        check(f"trust: {who} is asked to sign in", r.status_code == 401 and r.json().get("error") == "sign_in", r.text)
+    target = get(council).json()[0]
+    r = requests.post(
+        BASE + f"/api/incidents/{target['id']}/actions",
+        json={"action": "schedule"},
+        headers={"Origin": "https://evil.example"},
+        timeout=30,
+    )
+    after = get(f"/api/incidents/{target['id']}?view=council").json()
+    check(
+        "trust: another site's page cannot act on a report",
+        r.status_code == 401 and after["status"] == target["status"],
+        f"{r.status_code} {target['status']} -> {after['status']}",
+    )
+    check("trust: a phone still gets the public list", get("/api/incidents?view=public", headers=phone).ok)
+
+
 def v2_checks(iid):
     council = get("/api/incidents?view=council").json()
     public = get("/api/incidents?view=public").json()
@@ -677,6 +706,7 @@ def run(proc, t0):
 
     csv_checks()
     no_cost_checks()
+    trust_checks()
     ret = get("/api/return").json()
     check(
         "return checks all pass",

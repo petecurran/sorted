@@ -58,7 +58,6 @@ UPLOADS.mkdir(parents=True, exist_ok=True)
 from fastapi import FastAPI, File, Form, Request, UploadFile  # noqa: E402
 from fastapi.concurrency import run_in_threadpool  # noqa: E402
 from fastapi.exceptions import RequestValidationError  # noqa: E402
-from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 from fastapi.middleware.gzip import GZipMiddleware  # noqa: E402
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response  # noqa: E402
 from fastapi.staticfiles import StaticFiles  # noqa: E402
@@ -71,6 +70,7 @@ import photos  # noqa: E402
 import routes  # noqa: E402
 import wdf_return  # noqa: E402
 from classifier import classifier  # noqa: E402
+from trust import is_remote  # noqa: E402
 
 
 @asynccontextmanager
@@ -88,19 +88,12 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Sorted", lifespan=lifespan)
 app.add_middleware(GZipMiddleware, minimum_size=2000)
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-
-
-LOOPBACK = {"127.0.0.1", "::1", "localhost"}
-PROXY_HEADERS = ("cf-ray", "cf-connecting-ip", "x-forwarded-for", "x-real-ip", "forwarded")
 
 
 def _remote(request: Request) -> bool:
-    """False only for a request made on this machine with no proxy in between (the presenter's laptop). Phones
-    through the tunnel, and anyone reaching a hosted copy, are remote: they get the public site, and the council
-    console needs its password."""
-    host = request.client.host if request.client else ""
-    return host not in LOOPBACK or any(h in request.headers for h in PROXY_HEADERS)
+    """False only for the presenter's laptop (trust.py). Everyone else gets the public site, and the council console
+    needs its password."""
+    return is_remote(request.client.host if request.client else "", request.headers)
 
 
 # Through the tunnel, phones get the public site. The council console needs its password there (the sign-in on this

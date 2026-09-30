@@ -6,10 +6,46 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from starlette.datastructures import Headers  # noqa: E402
+
 import triage  # noqa: E402
 from classifier import normalise, parse_json  # noqa: E402
 from common import APP, COUNCIL_NAME, LAND, SIZES, WASTE, case_ref  # noqa: E402
 from triage import _hazard_hit, public_summary  # noqa: E402
+from trust import is_remote  # noqa: E402
+
+# (who is calling, client address, headers, remote?): the presenter's laptop is the only caller trusted without a password.
+TRUST = [
+    ("this laptop, by name", "127.0.0.1", {"host": "localhost:8800"}, False),
+    ("this laptop, IPv6", "::1", {"host": "[::1]:8800"}, False),
+    ("this laptop's own page", "127.0.0.1", {"host": "127.0.0.1:8800", "origin": "http://localhost:8800"}, False),
+    ("a phone on the same wifi", "192.168.1.20", {"host": "192.168.1.5:8800"}, True),
+    (
+        "a phone through the tunnel",
+        "127.0.0.1",
+        {"host": "x.trycloudflare.com", "cf-connecting-ip": "203.0.113.9"},
+        True,
+    ),
+    ("any proxy", "127.0.0.1", {"host": "localhost:8800", "x-forwarded-for": "203.0.113.9"}, True),
+    (
+        "another site's page in this browser",
+        "127.0.0.1",
+        {"host": "localhost:8800", "origin": "https://evil.example"},
+        True,
+    ),
+    ("a DNS-rebound name", "127.0.0.1", {"host": "rebind.evil.example:8800"}, True),
+    ("a sandboxed or file page", "127.0.0.1", {"host": "localhost:8800", "origin": "null"}, True),
+    ("no Host header", "127.0.0.1", {}, True),
+    ("a malformed Host header", "127.0.0.1", {"host": "[::1"}, True),
+    ("no client address", "", {"host": "localhost:8800"}, True),
+]
+
+
+def trust_checks() -> list[tuple[bool, str]]:
+    return [
+        (is_remote(client, Headers(headers)) is remote, f"trust: {who} is {'remote' if remote else 'trusted'}")
+        for who, client, headers, remote in TRUST
+    ]
 
 
 def content_name_checks() -> list[tuple[bool, str]]:
@@ -115,7 +151,7 @@ def main():
         (t_asb["headline_alert"] == "Possible asbestos: specialist removal", "headline_alert for asbestos"),
         (run()["headline_alert"] is None, "no alert for a plain sofa"),
     ]
-    checks += content_name_checks()
+    checks += trust_checks() + content_name_checks()
     for ok, name in checks:
         fails += not ok
         print("PASS" if ok else "FAIL", name)
