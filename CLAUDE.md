@@ -33,7 +33,7 @@ Skills in `.claude/skills/`: `/check` runs all of the above, `/reset` restarts t
 | 8 | Generated and third-party files aren't edited by hand: the seed data, eval runs, past prompts, `data/`, `static/vendor/` and `uv.lock`. | `.claude/hooks/protect_paths.py` |
 | 9 | Python is formatted and linted with ruff, and every edited JSON file parses. | `.claude/hooks/check_edit.py`, `/check` |
 
-The hooks cover Claude's file tools only. They're a guardrail for the agent, not a security boundary: a shell command can still change those files.
+The hooks only see Claude's Edit and Write tools. A shell command can still change those files, so they stop mistakes rather than anyone determined.
 
 ## Traps
 

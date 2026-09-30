@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """PreToolUse hook: stop Claude's file tools changing files that belong to a person, a script or a past measurement.
 
-A guardrail for the agent, not a security boundary: it covers the Edit and Write tools, and a shell command can still
-change these files. Exit code 2 blocks the edit and shows Claude the reason.
+It only sees Claude's Edit and Write tools, so it stops mistakes: a shell command can still change these files.
+Exit code 2 blocks the edit and shows Claude the reason.
 """
 
 from __future__ import annotations
