@@ -1,10 +1,8 @@
 # Sorted
 
-Sorted is a fly-tipping reporting and triage tool for councils, built in a one-day hackathon at the Labour Conference 2026. A resident photographs a pile of rubbish, an AI model running on the council's own laptop reads the photo, and the council's rules decide what happens next: send a crew, hold it for an officer to look for evidence, call in a specialist, or pass it to whoever owns the land.
+Sorted is a fly-tipping reporting and triage tool for councils, built in a one-day hackathon at the Labour Conference 2026. A resident photographs a pile of rubbish, an AI model running on the council's own hardware reads the photo, and the council's rules decide what happens next: send a crew, hold it for an officer to look for evidence, call in a specialist, or pass it to whoever owns the land.
 
-The tool was built across about 8 hours by Multiverse Apprentices Sagal Qodah and Joe Williams with Pete Curran and a lot of Claude.. It works end to end, but it's a demonstration. 'Mersey Vale' council is fictional but its streets and boundaries are Liverpool's. Every report is simulated and every photo is AI-generated.
-
-You don't need to install anything to see what it does. The walkthrough below covers it.
+The tool was built across about 8 hours by Multiverse Apprentices Sagal Qodah and Joe Williams with Pete Curran and a lot of Claude and a bit of Codex. 'Mersey Vale' council is fictional but its streets and boundaries are Liverpool's. Every report is simulated and every photo is AI-generated.
 
 ![The council's triage queue](docs/screenshots/council-queue.jpg)
 
@@ -43,7 +41,7 @@ Plenty of fly-tipping isn't the council's to clear. Sorted checks the map. Withi
 
 ![A pile beside the railway: refer to Network Rail](docs/screenshots/council-network-rail.jpg)
 
-## The same pile, reported twice
+## Repeated reports are grouped
 
 When a second person reports something within a few metres of an open report, the app shows both photos and asks if it's the same. If it is, their report counts as a "still there" confirmation instead of a duplicate, and repeated confirmations push the job up the queue.
 
@@ -79,21 +77,6 @@ Fly-tipping repeats. Sorted finds the spots with the most reports in the last 90
 
 ![Repeat hotspots](docs/screenshots/council-reduce.jpg)
 
-## Rebranding it for another council
-
-The council's name, colours and crest are one file. At the demo we rebranded it live as Humpington Council, in pink with a pirate ship for a crest: a voice note to an AI coding assistant and about three minutes, including drawing the crest. Both sites change as soon as the file is saved, and a script then checks every page on desktop and phone and lays them out on one sheet.
-
-<table><tr>
-<td><img src="docs/screenshots/rebrand-council.jpg" width="560" alt="The council console as Humpington Council"></td>
-<td><img src="docs/screenshots/rebrand-phone.jpg" width="200" alt="The public site as Humpington Council"></td>
-</tr></table>
-
-![The check of every page after the rebrand](docs/screenshots/rebrand-check.jpg)
-
-## A room full of phones
-
-At the demo, people in the room scanned a QR code and reported from their own phones while we presented. The laptop's own photos jump the AI's queue, so the presenter never waits behind the audience, and a few switches handle a room: pause the audience's photos, close reporting, or send every phone a thank-you so they stop checking for updates and the wifi recovers. Phones get the public site only. The council side needs a password on a phone.
-
 ## How good is the AI?
 
 It's Gemma 4 12B, running in 4-bit on an Apple M2 Pro laptop with 16 GB of memory, at about 14 seconds a photo. Nothing leaves the machine.
@@ -118,6 +101,6 @@ Then open http://localhost:8800. The council side is at http://localhost:8800/co
 
 ## Credits
 
-Built by two Multiverse Apprentices and Pete Curran.
+Built by Sagal Qoda, Joe Williams and Pete Curran.
 
 The code is under the MIT licence (`LICENSE`). The AI-generated photos and the simulated data are under CC BY 4.0. The map data, boundaries, DEFRA categories, the Leaflet map library, the fonts and the AI model belong to others and keep their own licences; `NOTICE.md` lists each one.
