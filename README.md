@@ -101,6 +101,6 @@ Then open http://localhost:8800. The council side is at http://localhost:8800/co
 
 ## Credits
 
-Built by Sagal Qoda, Joe Williams and Pete Curran.
+Built by Sagal Qodah, Joe Williams and Pete Curran.
 
 The code is under the MIT licence (`LICENSE`). The AI-generated photos and the simulated data are under CC BY 4.0. The map data, boundaries, DEFRA categories, the Leaflet map library, the fonts and the AI model belong to others and keep their own licences; `NOTICE.md` lists each one.
