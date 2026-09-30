@@ -1,6 +1,6 @@
 """WasteDataFlow quarterly fly-tipping return (Defra categories), with totals checks and a CSV in form order.
 
-No cost figures: WasteDataFlow fills in costs for the smaller sizes itself (content/costs.json is not used here).
+No cost figures: WasteDataFlow fills in costs for the smaller sizes itself.
 """
 
 from __future__ import annotations

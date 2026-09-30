@@ -1,5 +1,6 @@
 """Fast checks for the model-reply parser and rule helpers. Run from the repo root: uv run python tests/test_units.py"""
 
+import json
 import sys
 from pathlib import Path
 
@@ -7,8 +8,46 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import triage  # noqa: E402
 from classifier import normalise, parse_json  # noqa: E402
-from common import COUNCIL_NAME, case_ref  # noqa: E402
+from common import APP, COUNCIL_NAME, LAND, SIZES, WASTE, case_ref  # noqa: E402
 from triage import _hazard_hit, public_summary  # noqa: E402
+
+
+def content_name_checks() -> list[tuple[bool, str]]:
+    """The rules match DEFRA categories and ward names exactly, and silently skip a misspelt one, so check every one."""
+
+    def load(name):
+        return json.loads((APP / "content" / name).read_text())
+
+    rules, whose, reduce, config = (
+        load(f) for f in ("triage_rules.json", "whose_job.json", "reduce.json", "config.json")
+    )
+    actions = reduce.get("actions", [])
+    wards = {f["properties"]["ward"] for f in json.loads((APP / "seed" / "wards.geojson").read_text())["features"]}
+    named = {
+        "waste types": (
+            WASTE,
+            rules["specialist_waste_types"]
+            + rules["hold_waste_types"]
+            + rules["collection_day"].get("applies_to_waste", [])
+            + [w for a in actions for w in a.get("waste_types", [])],
+        ),
+        "land types": (
+            LAND,
+            [lt for r in whose["rules"] for lt in _as_list(r.get("match", {}).get("land_type"))]
+            + [lt for a in actions for lt in a.get("land_types", [])],
+        ),
+        "sizes": (SIZES, [sz for a in actions for sz in a.get("sizes", [])]),
+        "wards": (wards, config.get("collection_day_wards", [])),
+    }
+    return [
+        (not (bad := sorted(set(used) - set(valid))), f"content names: {what} {bad or 'all valid'}")
+        for what, (valid, used) in named.items()
+    ]
+
+
+def _as_list(v) -> list:
+    return [] if v is None else v if isinstance(v, list) else [v]
+
 
 CASES = [
     ('{"fly_tip": "yes", "confidence": 90, "size": "Car boot or less", "waste_type": "Tyres"}', "yes"),
@@ -76,6 +115,7 @@ def main():
         (t_asb["headline_alert"] == "Possible asbestos: specialist removal", "headline_alert for asbestos"),
         (run()["headline_alert"] is None, "no alert for a plain sofa"),
     ]
+    checks += content_name_checks()
     for ok, name in checks:
         fails += not ok
         print("PASS" if ok else "FAIL", name)
