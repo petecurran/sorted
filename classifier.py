@@ -22,10 +22,9 @@ MODE = os.environ.get("FT_CLASSIFIER", "gemma").strip().lower()
 CACHE_DELAY = float(os.environ.get("FT_CACHE_DELAY", "0") or 0)
 WARMUP = os.environ.get("FT_WARMUP", "1") != "0"
 
-# Tuned with scripts/gemma_eval.py and gemma_score.py against labels set by eye (seed/cases/labels.json).
-# Size: 11/15 on the 20 real blind photos (the earlier prompt: 9/15) and 83% on unseen generated case photos
-# (earlier: 61%); about 14 s a photo. It lists the items before sizing them. The decision comes from the rules in
-# triage.py, so the model is not asked for one.
+# Version 9 of evals/prompts/, measured against photos labelled by eye: docs/EVALS.md has the results, and
+# tests/test_units.py fails if this text changes without a new run. It lists the items before sizing them. The decision
+# comes from the rules in triage.py, so the model isn't asked for one.
 PROMPT = """You are triaging a photo sent to an English council's fly-tipping team. Look at the whole photo carefully, then return ONE JSON object on a single line and nothing else, with these fields in this order:
 {"what_you_see": "<one plain sentence>", "items": "<each dumped item with a count, e.g. 7 black bags, 1 armchair, 3 boxes; or none>", "fly_tip": "yes"|"no"|"unsure", "confidence": 0-100, "size": "Single black bag"|"Single item"|"Car boot or less"|"Small van load"|"Transit van load"|"Tipper lorry load"|"Significant/multiple loads"|"n/a", "waste_type": "Animal carcasses"|"Green"|"Vehicle parts"|"White goods"|"Other electrical"|"Tyres"|"Asbestos"|"Clinical"|"Construction/demolition/excavation"|"Black bags - commercial"|"Black bags - household"|"Chemical drums, oil or fuel"|"Other household waste"|"Other commercial waste"|"Other (unidentified)"|"n/a", "land_type": "Highway"|"Footpath/bridleway"|"Back alleyway"|"Railway"|"Council land"|"Agricultural"|"Private/residential"|"Commercial/industrial"|"Watercourse/bank"|"Other (unidentified)", "hazards": "<paint tins, fuel cans, gas bottles, batteries, possible asbestos, needles, chemicals; or none>"}
 

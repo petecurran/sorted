@@ -1,0 +1,203 @@
+{
+ "_about": "Labels for 20 real photos of dumped and put-out waste, set by eye, for checking the model on photos unlike the generated ones it was tuned on. The photos are not in this repository: they are under CC BY-SA 2.0 or similar, and each entry links to its source page, which credits the photographer.",
+ "01_flytip_sofa_armchairs_farm_track": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "hazards": "none",
+  "title": "Fly-tipped sofa and armchairs near Glinton",
+  "photographer": "Paul Bryan",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/5727847"
+ },
+ "02_flytip_mattress_layby": {
+  "fly_tip": "yes",
+  "size": "Single item",
+  "waste_type": "Other household waste",
+  "hazards": "none",
+  "title": "Dumped mattress in a layby, Northern Perimeter Road, Netherton",
+  "photographer": "Mike Pennington",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/4547176"
+ },
+ "03_flytip_mattress_urban_pavement": {
+  "fly_tip": "yes",
+  "size": "Single item",
+  "waste_type": "Other household waste",
+  "hazards": "none",
+  "title": "File:Mattress in Coventry July 29 2021.jpg",
+  "photographer": "Rubbish computer (Wikimedia Commons user)",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Mattress_in_Coventry_July_29_2021.jpg"
+ },
+ "04_flytip_black_bags_bin_enclosure": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "hazards": "none",
+  "title": "File:Wheelie bin enclosure dumped rubbish bags Lordship Lane Tottenham, London, England.jpg",
+  "photographer": "Acabashi",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wheelie_bin_enclosure_dumped_rubbish_bags_Lordship_Lane_Tottenham,_London,_England.jpg"
+ },
+ "05_flytip_black_bags_field_edge": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "hazards": "none",
+  "title": "What sort of people can dump black bags here",
+  "photographer": "John Duckfield",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/1317160"
+ },
+ "06_flytip_garden_waste_riverside": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Green",
+  "hazards": "none",
+  "title": "Flytip, Gunnerside New Bridge",
+  "photographer": "Maigheach-gheal",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/2196246"
+ },
+ "07_flytip_fridges_byway": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "White goods",
+  "hazards": "none",
+  "title": "3 fridges flytipped on a byway at Birdsgreen",
+  "photographer": "Mat Fascione",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/7835561"
+ },
+ "08_flytip_washing_machine_carpets_trail": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "White goods",
+  "hazards": "none",
+  "title": "Lewknor: The Ridgeway and fly tipping",
+  "photographer": "Nigel Cox",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/3779119"
+ },
+ "09_flytip_tyres_tv_woodland_gate": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Tyres",
+  "hazards": "none",
+  "title": "Fly Tipping in Fox Pound",
+  "photographer": "Nigel Mykura",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/3320752"
+ },
+ "10_flytip_single_tyre_pavement": {
+  "fly_tip": "yes",
+  "size": "Single item",
+  "waste_type": "Tyres",
+  "hazards": "none",
+  "title": "Dumped tyre on the Malpas Road pavement, Newport",
+  "photographer": "Jaggery",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/8272262"
+ },
+ "11_flytip_asbestos_bedbase_field_gate": {
+  "fly_tip": "yes",
+  "size": "Transit van load",
+  "waste_type": "Asbestos",
+  "hazards": "possible asbestos",
+  "title": "A horrible sight",
+  "photographer": "Marika Reinholds",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/8205191"
+ },
+ "12_flytip_carpets_lane_field_gate": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "hazards": "none",
+  "title": "Fly tipping",
+  "photographer": "Bob Harvey",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/8019909"
+ },
+ "13_flytip_building_materials_roadside": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Construction/demolition/excavation",
+  "hazards": "none",
+  "title": "This week's fly-tipping",
+  "photographer": "Neil Owen",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/6441658"
+ },
+ "14_flytip_mixed_van_load_forest_track": {
+  "fly_tip": "yes",
+  "size": "Transit van load",
+  "waste_type": "Other household waste",
+  "hazards": "none",
+  "title": "Fly tipping",
+  "photographer": "William Starkey",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/4247299"
+ },
+ "15_flytip_back_alley_urban": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "hazards": "none",
+  "title": "Alleyway behind Angela Street, Blackburn",
+  "photographer": "Chris Heaton",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/6365206"
+ },
+ "16_notflytip_bin_bags_awaiting_collection": {
+  "fly_tip": "no",
+  "size": null,
+  "waste_type": null,
+  "hazards": "none",
+  "title": "Bin bags awaiting collection on an icy Pebble Mill Road",
+  "photographer": "Phil Champion",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/2580859"
+ },
+ "17_notflytip_recycling_box_kerb": {
+  "fly_tip": "no",
+  "size": null,
+  "waste_type": null,
+  "hazards": "none",
+  "title": "Recycling containers, Laurel Crescent, Malpas, Newport",
+  "photographer": "Jaggery",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/8057964"
+ },
+ "18_notflytip_skip_outside_house": {
+  "fly_tip": "no",
+  "size": null,
+  "waste_type": null,
+  "hazards": "none",
+  "title": "Yellow skip, Malpas, Newport",
+  "photographer": "Jaggery",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/7154554"
+ },
+ "19_notflytip_building_site_debris": {
+  "fly_tip": "no",
+  "size": null,
+  "waste_type": null,
+  "hazards": "none",
+  "title": "Typical Building Site Debris",
+  "photographer": "Mr Ignavy",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/816944"
+ },
+ "20_notflytip_bulky_items_awaiting_collection": {
+  "fly_tip": "no",
+  "size": null,
+  "waste_type": null,
+  "hazards": "none",
+  "title": "Items awaiting collection outside Almond Court, Newport",
+  "photographer": "Jaggery",
+  "licence": "CC BY-SA 2.0",
+  "source": "https://www.geograph.org.uk/photo/7136020"
+ }
+}

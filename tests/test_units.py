@@ -1,5 +1,9 @@
-"""Fast checks for the model-reply parser and rule helpers. Run from the repo root: uv run python tests/test_units.py"""
+"""Fast checks for the model-reply parser, the rules, the trust rule, the content files and the evals.
 
+Run from the repo root: uv run python tests/test_units.py
+"""
+
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -9,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from starlette.datastructures import Headers  # noqa: E402
 
 import triage  # noqa: E402
-from classifier import normalise, parse_json  # noqa: E402
+from classifier import PROMPT, normalise, parse_json  # noqa: E402
 from common import APP, COUNCIL_NAME, LAND, SIZES, WASTE, case_ref  # noqa: E402
 from triage import _hazard_hit, public_summary  # noqa: E402
 from trust import is_remote  # noqa: E402
@@ -78,6 +82,32 @@ def content_name_checks() -> list[tuple[bool, str]]:
     return [
         (not (bad := sorted(set(used) - set(valid))), f"content names: {what} {bad or 'all valid'}")
         for what, (valid, used) in named.items()
+    ]
+
+
+def eval_checks() -> list[tuple[bool, str]]:
+    """A prompt change needs a new measurement: the prompt that ships must have a run on the photos that ship."""
+
+    def sha(b: bytes) -> str:
+        return hashlib.sha256(b).hexdigest()
+
+    evals = APP / "evals"
+    shipped = sha(PROMPT.encode())
+    newest = max((evals / "prompts").glob("v*.txt"), key=lambda f: int(f.stem[1:]))
+    photos = {
+        k: sha((APP / "seed" / "photos" / f"{k}_before.jpg").read_bytes())
+        for s in ("dev", "holdout")
+        for k in (evals / "splits" / f"{s}.txt").read_text().split()
+    }
+    measured = []
+    for f in sorted((evals / "runs").glob("*/*.json")):
+        run = json.loads(f.read_text())
+        seen = {Path(r["photo"]).name.removesuffix("_before.jpg"): r.get("photo_sha256") for r in run["results"]}
+        if run.get("prompt_sha256") == shipped and all(seen.get(k) == v for k, v in photos.items()):
+            measured.append(f.relative_to(evals).as_posix())
+    return [
+        (sha(newest.read_bytes()) == shipped, f"evals: the newest prompt, {newest.name}, is the one in classifier.py"),
+        (bool(measured), f"evals: the shipped prompt is measured on today's photos {measured or ''}"),
     ]
 
 
@@ -151,7 +181,7 @@ def main():
         (t_asb["headline_alert"] == "Possible asbestos: specialist removal", "headline_alert for asbestos"),
         (run()["headline_alert"] is None, "no alert for a plain sofa"),
     ]
-    checks += trust_checks() + content_name_checks()
+    checks += trust_checks() + content_name_checks() + eval_checks()
     for ok, name in checks:
         fails += not ok
         print("PASS" if ok else "FAIL", name)

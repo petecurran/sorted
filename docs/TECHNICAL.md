@@ -50,7 +50,7 @@ The start scripts run it on `FT_RESET=1` or when those files don't exist yet. Th
 
 - **Rules, words and numbers** live in `content/*.json`. Edits show on the next page load, with no restart. `content/README.md` explains each file.
 - **Rebranding** is `content/brand.json`: the council's name, colours, case prefix and an optional crest drawn in `static/shared/marks/`. `scripts/brand_check.py` then checks every page at desktop and phone sizes, and writes a contact sheet to http://localhost:8800/dev/brand-check/.
-- **The model's prompt** is in `classifier.py`. `scripts/gemma_eval.py` runs a model over photos, and `scripts/gemma_score.py` scores its answers against the labels.
+- **The model's prompt** is in `classifier.py`, and every version of it is in `evals/prompts/`. `evals/run.py` runs the model over the photos and `evals/score.py` scores its replies against the labels, through the app's own parser and rules. [EVALS.md](EVALS.md) has the results and how to reproduce them.
 - **Screenshots** for the README come from `scripts/screenshots.py`, run against a copy with fresh data.
 
 ## Settings
@@ -76,7 +76,7 @@ uv run python tests/test_units.py
 FT_CLASSIFIER=cache uv run python tests/smoke.py
 ```
 
-The smoke test rebuilds the demo data, starts its own server on port 8810 with a throwaway database, and checks every endpoint.
+The unit tests take seconds and need no server: the model-reply parser, the rules, the trust rule, every category and ward name in `content/`, and whether the shipped prompt has been measured on the published photos. The smoke test rebuilds the demo data, starts its own server on port 8810 with a throwaway database, and checks every endpoint, including that phones and other websites can't reach the council side.
 
 ## Before real use
 
