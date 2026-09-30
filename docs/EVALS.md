@@ -1,6 +1,6 @@
 # How good is the model?
 
-With the prompt that ships, Gemma 4 12B gets the size band right on 83% of the generated photos it wasn't tuned on (40 of 48), and the app reaches the right decision on 90% of them. On 20 real photos it's weaker: 10 of 15 on size. Its wrong decisions are nearly all one mistake. It reads bags of household rubbish as general household waste, so the rules send a crew when an officer should first look for evidence.
+With the prompt that ships, Gemma 4 12B gets the size band right on 83% of the generated photos it wasn't tuned on (40 of 48), up from 62% with the first prompt, and the app reaches the right decision on 90% of them, up from 78%. On 20 real photos it's weaker, and the tuning barely moved it: 10 of 15 on size against 9, and 16 right decisions out of 20 against 17, which is within noise. Its wrong decisions are nearly all one mistake. It reads bags of household rubbish as general household waste, so the rules send a crew when an officer should first look for evidence.
 
 This was a hackathon evaluation. It was good enough to choose a prompt in an evening and to find where the model is weak. It isn't enough to sign off anything a council would rely on, and the last section says what would be.
 
@@ -18,29 +18,28 @@ We labelled every photo by eye. `evals/score.py` reads each of the model's repli
 
 ## Results
 
-The shipped prompt is v9; v1 is the first one. From `uv run python evals/score.py evals/runs/2026-09-30/*.json`:
+The shipped prompt is v9, and v1 is the first one, both run on the published photos on 30 September 2026. From `uv run python evals/score.py evals/runs/2026-09-30/*.json`:
 
 **Tuning photos (generated)**, 30 in the set
 
 | Prompt | Fly-tip or not | Size | Size, within a band | Waste type | Decision | Hazards caught | Sent to a person | Unreadable | Median s |
 |---|---|---|---|---|---|---|---|---|---|
 | v9 | 100% (30/30) | 87% (26/30) | 97% (29/30) | 80% (24/30) | 87% (26/30) | 50% (2/4) | 0% (0/30) | 0% (0/30) | 14.2 |
-| v1 * | 100% (30/30) | 63% (19/30) | 97% (29/30) | 73% (22/30) | 77% (23/30) | 25% (1/4) | 0% (0/30) | 0% (0/30) | 11.7 |
+| v1 | 100% (30/30) | 60% (18/30) | 97% (29/30) | 77% (23/30) | 83% (25/30) | 25% (1/4) | 0% (0/30) | 0% (0/30) | 11.1 |
 
 **Held-out photos (generated)**, 49 in the set
 
 | Prompt | Fly-tip or not | Size | Size, within a band | Waste type | Decision | Hazards caught | Sent to a person | Unreadable | Median s |
 |---|---|---|---|---|---|---|---|---|---|
 | v9 | 100% (49/49) | 83% (40/48) | 96% (46/48) | 90% (43/48) | 90% (44/49) | 100% (2/2) | 2% (1/49) | 0% (0/49) | 13.8 |
-| v1 * | 100% (16/16) | 53% (8/15) | 100% (15/15) | 80% (12/15) | 81% (13/16) | 0% (0/1) | 6% (1/16) | 0% (0/16) | 11.8 |
+| v1 | 100% (49/49) | 62% (30/48) | 96% (46/48) | 77% (37/48) | 78% (38/49) | 0% (0/2) | 2% (1/49) | 0% (0/49) | 11.0 |
 
 **Real photos**, 20 in the set
 
 | Prompt | Fly-tip or not | Size | Size, within a band | Waste type | Decision | Hazards caught | Sent to a person | Unreadable | Median s |
 |---|---|---|---|---|---|---|---|---|---|
 | v9 | 85% (17/20) | 67% (10/15) | 87% (13/15) | 73% (11/15) | 80% (16/20) | 100% (1/1) | 20% (4/20) | 0% (0/20) | 13.9 |
-
-\* Measured on earlier copies of the generated photos, before they were re-saved for this repository.
+| v1 | 85% (17/20) | 60% (9/15) | 80% (12/15) | 87% (13/15) | 85% (17/20) | 100% (1/1) | 10% (2/20) | 0% (0/20) | 10.8 |
 
 ## Where it goes wrong
 
