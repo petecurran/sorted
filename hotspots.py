@@ -4,6 +4,7 @@ Each hotspot has weekly_counts (12 weeks, oldest first), growing, primary_action
 Actions carry no cost: the "cost" text in reduce.json is not served.
 Calendar and York cards are dropped (calendar_flags / calendar stay as empty lists for older UI code).
 """
+
 from __future__ import annotations
 
 from collections import defaultdict
@@ -46,8 +47,9 @@ def calendar_cards(ward: str | None) -> list[dict]:
         months = c.get("months") or []
         wards = c.get("wards") or []
         in_ward = not wards or ward is None or ward in wards
-        is_move_out = bool({6, 7} & set(months)) or any(w in (str(c.get("id", "")) + str(c.get("title", ""))).lower()
-                                                        for w in ("student", "move-out", "move out"))
+        is_move_out = bool({6, 7} & set(months)) or any(
+            w in (str(c.get("id", "")) + str(c.get("title", ""))).lower() for w in ("student", "move-out", "move out")
+        )
         if month in months and in_ward:
             when = "now"
         elif is_move_out:
@@ -57,8 +59,14 @@ def calendar_cards(ward: str | None) -> list[dict]:
         if c.get("id") in seen:
             continue
         seen.add(c.get("id"))
-        out.append({**{k: v for k, v in c.items() if not k.startswith("_")}, "when": when,
-                    "upcoming": when == "upcoming", "in_ward": in_ward})
+        out.append(
+            {
+                **{k: v for k, v in c.items() if not k.startswith("_")},
+                "when": when,
+                "upcoming": when == "upcoming",
+                "in_ward": in_ward,
+            }
+        )
     return out
 
 
@@ -82,12 +90,14 @@ def _title(a: dict) -> str:
     if a.get("id") in TITLES:
         return TITLES[a["id"]]
     import re
+
     first = re.split(r"[,:;(]| and ", str(a.get("action") or "Recommended action"))[0].strip()
     return " ".join(first.split()[:8])
 
 
 def _one_line(text) -> str:
     import re
+
     t = str(text or "").strip()
     return re.split(r"(?<=[.!?])\s", t)[0] if t else ""
 
@@ -96,8 +106,14 @@ def action_cards(recs: list[dict]) -> tuple[dict | None, list[dict]]:
     if not recs:
         return None, []
     a = recs[0]
-    primary = {"id": a.get("id"), "title": _title(a), "why": _one_line(a.get("why")), "strength": a.get("strength"),
-               "evidence": a.get("evidence"), "detail": a.get("action")}
+    primary = {
+        "id": a.get("id"),
+        "title": _title(a),
+        "why": _one_line(a.get("why")),
+        "strength": a.get("strength"),
+        "evidence": a.get("evidence"),
+        "detail": a.get("action"),
+    }
     return primary, [{"id": o.get("id"), "title": _title(o), "strength": o.get("strength")} for o in recs[1:]]
 
 
@@ -146,8 +162,11 @@ def build(incidents: list[dict], reports: list[dict] | None = None) -> list[dict
             lat, lon = (r["lat"], r["lon"]) if r.get("lat") is not None else loc[r["incident_id"]]
             rep_pts.append((lat, lon, parse_dt(r["created_at"])))
     else:
-        rep_pts = [(i["lat"], i["lon"], parse_dt(i["created_at"])) for i in live
-                   for _ in range(int(i.get("report_count") or 1))]
+        rep_pts = [
+            (i["lat"], i["lon"], parse_dt(i["created_at"]))
+            for i in live
+            for _ in range(int(i.get("report_count") or 1))
+        ]
     wk_pts = [p for p in hist if p[2] >= w0] + [p for p in rep_pts if p[2] and w0 <= p[2] < t_end]
     wg = _Grid(wk_pts)
 
@@ -179,10 +198,23 @@ def build(incidents: list[dict], reports: list[dict] | None = None) -> list[dict
             continue
         r90, r12 = counts(i["lat"], i["lon"])
         t = i.get("triage") or {}
-        cands.append({"id": i["id"], "incident_id": i["id"], "lat": i["lat"], "lon": i["lon"],
-                      "street": i.get("street"), "ward": i.get("ward"), "reports_90d": r90, "reports_12m": r12,
-                      "state": st, "waste_type": t.get("waste_type"), "land_type": t.get("land_type"),
-                      "status": i["status"], "photo_url": i.get("photo_url")})
+        cands.append(
+            {
+                "id": i["id"],
+                "incident_id": i["id"],
+                "lat": i["lat"],
+                "lon": i["lon"],
+                "street": i.get("street"),
+                "ward": i.get("ward"),
+                "reports_90d": r90,
+                "reports_12m": r12,
+                "state": st,
+                "waste_type": t.get("waste_type"),
+                "land_type": t.get("land_type"),
+                "status": i["status"],
+                "photo_url": i.get("photo_url"),
+            }
+        )
 
     # history-only repeat sites (no live incident there): >= 3 other reports within 100 m in 90 days
     recent = [p for p in hist if p[2] >= d90]
@@ -192,19 +224,33 @@ def build(incidents: list[dict], reports: list[dict] | None = None) -> list[dict
         if others < 3:
             continue
         r90, r12 = counts(p[0], p[1])
-        cands.append({"id": 100000 + n, "incident_id": None, "lat": p[0], "lon": p[1],
-                      "street": p[3].get("street"), "ward": p[3].get("ward"), "reports_90d": r90,
-                      "reports_12m": r12, "state": "repeat", "waste_type": None, "land_type": None,
-                      "status": None, "photo_url": None})
+        cands.append(
+            {
+                "id": 100000 + n,
+                "incident_id": None,
+                "lat": p[0],
+                "lon": p[1],
+                "street": p[3].get("street"),
+                "ward": p[3].get("ward"),
+                "reports_90d": r90,
+                "reports_12m": r12,
+                "state": "repeat",
+                "waste_type": None,
+                "land_type": None,
+                "status": None,
+                "photo_url": None,
+            }
+        )
 
     cands.sort(key=lambda c: (c["incident_id"] is None, STATE_RANK[c["state"]], -c["reports_90d"], -c["reports_12m"]))
     picked: list[dict] = []
     for c in cands:
         if any(haversine_m(c["lat"], c["lon"], p["lat"], p["lon"]) <= R for p in picked):
             continue
-        if c["incident_id"] is None and any((c["street"] and c["street"] == p["street"]) or
-                                            haversine_m(c["lat"], c["lon"], p["lat"], p["lon"]) <= 250
-                                            for p in picked):
+        if c["incident_id"] is None and any(
+            (c["street"] and c["street"] == p["street"]) or haversine_m(c["lat"], c["lon"], p["lat"], p["lon"]) <= 250
+            for p in picked
+        ):
             continue
         picked.append(c)
         if len(picked) >= MAX_HOTSPOTS:

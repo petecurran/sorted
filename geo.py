@@ -3,6 +3,7 @@
 Geometry is projected to local planar metres (equirectangular about Liverpool), which is accurate to well under
 1% across the city: plenty for 20 m railway buffers and 80 m street snaps.
 """
+
 from __future__ import annotations
 
 import json

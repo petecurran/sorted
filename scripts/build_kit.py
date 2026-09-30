@@ -4,6 +4,7 @@ The places are in scripts/demo_places.py (KIT). The photos come from seed/photos
 Run once from the repo root after changing a place:  uv run python scripts/build_kit.py
 then rebuild the seed (uv run python scripts/build_seed.py) so the kit's readings are cached.
 """
+
 from __future__ import annotations
 
 import sys

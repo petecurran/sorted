@@ -9,6 +9,7 @@ contact sheet go to data/brand_check/, which the app serves at http://localhost:
 A view fails if it still shows the old name, the logo does not load, white text on the brand colour is below 4.5:1,
 the page logs an error, or the page is wider than the screen. Exits 1 if any view fails.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -30,7 +31,12 @@ STAFF = {"email": "john.smith@mersey-vale.example", "name": "John Smith", "at": 
 
 SIZES = {
     "desktop": {"viewport": {"width": 1280, "height": 800}},
-    "phone": {"viewport": {"width": 390, "height": 844}, "device_scale_factor": 2, "is_mobile": True, "has_touch": True},
+    "phone": {
+        "viewport": {"width": 390, "height": 844},
+        "device_scale_factor": 2,
+        "is_mobile": True,
+        "has_touch": True,
+    },
 }
 # (site, view, path, what to open first, signed in, sizes)
 VIEWS = [
@@ -85,7 +91,9 @@ async def run_size(browser, size: str, base: str, payload: str | None, problems:
     await ctx_in.add_init_script(f"localStorage.setItem('mvcc_ft_staff', {json.dumps(json.dumps(STAFF))});")
     if payload is not None:
         for ctx in (ctx_out, ctx_in):
-            await ctx.route("**/api/brand.js", lambda r: r.fulfill(status=200, content_type="text/javascript", body=payload))
+            await ctx.route(
+                "**/api/brand.js", lambda r: r.fulfill(status=200, content_type="text/javascript", body=payload)
+            )
     for site, view, path, opener, signed_in, sizes in VIEWS:
         if size not in sizes:
             continue
@@ -140,7 +148,10 @@ async def run_size(browser, size: str, base: str, payload: str | None, problems:
         issues += errors
         rows.append({"size": size, "site": site, "view": view, "file": f"{name}.png", "issues": issues})
         problems += [f"{size} · {site} · {view}: {i}" for i in issues]
-        print(f"  {'FAIL' if issues else 'ok  '}  {size:<7} {site:<8} {view:<15} {time.time() - t_view:4.1f} s" + (f"  ({issues[0]})" if issues else ""))
+        print(
+            f"  {'FAIL' if issues else 'ok  '}  {size:<7} {site:<8} {view:<15} {time.time() - t_view:4.1f} s"
+            + (f"  ({issues[0]})" if issues else "")
+        )
         await page.close()
     await ctx_out.close()
     await ctx_in.close()
@@ -148,20 +159,24 @@ async def run_size(browser, size: str, base: str, payload: str | None, problems:
 
 def contact_sheet(b: dict, rows: list, problems: list, seconds: float, csv_note: str) -> str:
     colour = html.escape(b["colour"])
-    head = (f"{len(rows)} views checked in {seconds:.0f} s. " +
-            ("No problems found." if not problems else f"{len(problems)} problem(s) found."))
+    head = f"{len(rows)} views checked in {seconds:.0f} s. " + (
+        "No problems found." if not problems else f"{len(problems)} problem(s) found."
+    )
 
     def card(r):
         bad = "".join(f"<li>{html.escape(i)}</li>" for i in r["issues"])
-        return (f'<figure class="{"bad" if r["issues"] else "ok"} {r["size"]}"><a href="{r["file"]}"><img src="{r["file"]}" alt="" loading="lazy"></a>'
-                f'<figcaption><b>{html.escape(r["site"])} · {html.escape(r["view"])}</b>'
-                f'<span class="tag">{"Check" if r["issues"] else "Pass"}</span>{f"<ul>{bad}</ul>" if bad else ""}</figcaption></figure>')
+        return (
+            f'<figure class="{"bad" if r["issues"] else "ok"} {r["size"]}"><a href="{r["file"]}"><img src="{r["file"]}" alt="" loading="lazy"></a>'
+            f"<figcaption><b>{html.escape(r['site'])} · {html.escape(r['view'])}</b>"
+            f'<span class="tag">{"Check" if r["issues"] else "Pass"}</span>{f"<ul>{bad}</ul>" if bad else ""}</figcaption></figure>'
+        )
 
     sections = "".join(
         f"<h2>{label}</h2><div class='grid {size}'>{''.join(card(r) for r in rows if r['size'] == size)}</div>"
-        for size, label in (("desktop", "Desktop, 1280 × 800"), ("phone", "Phone, 390 × 844")))
+        for size, label in (("desktop", "Desktop, 1280 × 800"), ("phone", "Phone, 390 × 844"))
+    )
     return f"""<!doctype html><html lang="en-GB"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Brand check · {html.escape(b['council_name'])}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Brand check · {html.escape(b["council_name"])}</title>
 <style>
   :root {{ --brand: {colour}; --ink: #202427; --ink-3: #6C757D; --paper: #F4F4F5; --line: #E1E2E3; --bad: #9E2131; --ok: #0B4F17; }}
   body {{ margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.45 "IBM Plex Sans", system-ui, sans-serif; }}
@@ -183,8 +198,8 @@ def contact_sheet(b: dict, rows: list, problems: list, seconds: float, csv_note:
   .bad .tag {{ background: var(--bad); }}
   @media (max-width: 600px) {{ main {{ padding: 8px 16px 32px; }} header {{ padding: 16px; }} }}
 </style></head><body>
-<header><h1>Brand check: {html.escape(b['council_name'])}</h1>
-<p>{html.escape(head)} Case references {html.escape(b['case_prefix'])}-FT-2026. Colour {colour}, accent {html.escape(b['accent'])}. {html.escape(csv_note)}</p></header>
+<header><h1>Brand check: {html.escape(b["council_name"])}</h1>
+<p>{html.escape(head)} Case references {html.escape(b["case_prefix"])}-FT-2026. Colour {colour}, accent {html.escape(b["accent"])}. {html.escape(csv_note)}</p></header>
 <main>{"<div class='problems'><b>Problems</b><ul>" + "".join(f"<li>{html.escape(p)}</li>" for p in problems) + "</ul></div>" if problems else ""}
 {sections}</main></body></html>"""
 
@@ -192,7 +207,9 @@ def contact_sheet(b: dict, rows: list, problems: list, seconds: float, csv_note:
 async def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--show", action="store_true", help="show the browsers while checking")
-    ap.add_argument("--try", dest="try_file", help="a JSON file of brand fields to preview instead of content/brand.json")
+    ap.add_argument(
+        "--try", dest="try_file", help="a JSON file of brand fields to preview instead of content/brand.json"
+    )
     ap.add_argument("--base", default="http://localhost:8800")
     a = ap.parse_args()
 
@@ -232,9 +249,15 @@ async def main():
     rows.sort(key=lambda r: order[(r["size"], r["site"], r["view"])])
     seconds = time.time() - t0
     (OUT / "index.html").write_text(contact_sheet(b, rows, problems, seconds, csv_note))
-    (OUT / "summary.json").write_text(json.dumps({"brand": {k: v for k, v in b.items() if k != "mark_svg"},
-                                                  "views": rows, "problems": problems}, indent=1))
-    print(f"\n{len(rows)} views in {seconds:.0f} s: " + ("no problems." if not problems else f"{len(problems)} problem(s):"))
+    (OUT / "summary.json").write_text(
+        json.dumps(
+            {"brand": {k: v for k, v in b.items() if k != "mark_svg"}, "views": rows, "problems": problems}, indent=1
+        )
+    )
+    print(
+        f"\n{len(rows)} views in {seconds:.0f} s: "
+        + ("no problems." if not problems else f"{len(problems)} problem(s):")
+    )
     for pr in problems:
         print(f"  - {pr}")
     print(f"Contact sheet: {a.base}/dev/brand-check/")

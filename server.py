@@ -11,10 +11,10 @@ Env vars:
   FT_TODAY=YYYY-MM-DD             fix the demo date, if content/config.json has no "today" (default: the real date).
   FT_OSRM_URL=<url>               OSRM server for the Routes tab (default: the public demo server, light use only).
 """
+
 from __future__ import annotations
 
 import hashlib
-import json
 import logging
 import os
 import re
@@ -25,7 +25,22 @@ from contextlib import asynccontextmanager
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
-from common import APP, COUNCIL_NAME, DB_PATH, SEED, STATIC, UPLOADS, brand, brand_script, config, content, log, parse_dt, rebrand, seed  # noqa: E402
+from common import (  # noqa: E402
+    APP,
+    COUNCIL_NAME,
+    DB_PATH,
+    SEED,
+    STATIC,
+    UPLOADS,
+    brand,
+    brand_script,
+    config,
+    content,
+    log,
+    parse_dt,
+    rebrand,
+    seed,
+)
 
 
 def _reset():
@@ -107,6 +122,7 @@ def council_password() -> str:
     """The council console's password for phones, made on first use. data/ is not in git."""
     if not PASSWORD_FILE.exists():
         import secrets
+
         words = ["ferry", "dock", "pier", "liver", "mersey", "albert", "sefton", "wirral", "anfield", "canal"]
         PASSWORD_FILE.parent.mkdir(parents=True, exist_ok=True)
         PASSWORD_FILE.write_text(f"{secrets.choice(words)}-{secrets.choice(words)}-{secrets.randbelow(90) + 10}\n")
@@ -122,14 +138,18 @@ def _council_ok(request: Request) -> bool:
     if not _remote(request):
         return True
     import hmac
+
     return hmac.compare_digest(request.cookies.get(COUNCIL_COOKIE, ""), _council_token())
 
 
 def _council_sign_in_path(request: Request) -> bool:
     """What a phone needs to reach the sign-in screen and sign in."""
     path = request.url.path
-    return (path in ("/council", "/council/") or path.startswith("/static/council/")
-            or path in ("/api/council/login", "/api/council/session"))
+    return (
+        path in ("/council", "/council/")
+        or path.startswith("/static/council/")
+        or path in ("/api/council/login", "/api/council/session")
+    )
 
 
 def _tunnel_allowed(request: Request) -> bool:
@@ -189,8 +209,7 @@ def err(code: str, status: int = 400, **extra) -> JSONResponse:
 @app.exception_handler(StarletteHTTPException)
 async def http_err(request: Request, exc: StarletteHTTPException):
     if request.url.path.startswith("/api"):
-        return err({404: "not_found", 405: "method_not_allowed"}.get(exc.status_code, str(exc.detail)),
-                   exc.status_code)
+        return err({404: "not_found", 405: "method_not_allowed"}.get(exc.status_code, str(exc.detail)), exc.status_code)
     return HTMLResponse(f"<h1>{exc.status_code}</h1>", status_code=exc.status_code)
 
 
@@ -215,18 +234,29 @@ def _view(view: str | None) -> str:
 
 # ---- API ----------------------------------------------------------------------------------------
 
+
 @app.get("/api/config")
 def api_config():
     c = config()
     q = c["quarter"]
     return {
-        "city": c["city"], "authority": COUNCIL_NAME, "today": c["today"],
-        "quarter": {"id": q["id"], "label": q.get("label"), "deadline": q.get("deadline"), "name": q.get("name"),
-                    "start": q.get("start"), "end": q.get("end")},
+        "city": c["city"],
+        "authority": COUNCIL_NAME,
+        "today": c["today"],
+        "quarter": {
+            "id": q["id"],
+            "label": q.get("label"),
+            "deadline": q.get("deadline"),
+            "name": q.get("name"),
+            "start": q.get("start"),
+            "end": q.get("end"),
+        },
         "depot": c["depot"],
         "model": classifier.info(),
-        "context": {"collection_day_wards": c.get("collection_day_wards", []),
-                    "bulky_bookings": c.get("bulky_bookings", [])},
+        "context": {
+            "collection_day_wards": c.get("collection_day_wards", []),
+            "bulky_bookings": c.get("bulky_bookings", []),
+        },
     }
 
 
@@ -244,11 +274,13 @@ async def api_council_login(request: Request):
         body = {}
     if _remote(request):
         import hmac
+
         if not hmac.compare_digest(str(body.get("password") or "").strip(), council_password()):
             return err("wrong_password", 401)
     resp = JSONResponse({"ok": True})
-    resp.set_cookie(COUNCIL_COOKIE, _council_token(), max_age=12 * 3600, httponly=True, samesite="lax",
-                    secure=_remote(request))
+    resp.set_cookie(
+        COUNCIL_COOKIE, _council_token(), max_age=12 * 3600, httponly=True, samesite="lax", secure=_remote(request)
+    )
     return resp
 
 
@@ -266,8 +298,10 @@ def api_room():
         "phones_last_minute": sum(1 for t in _room["seen"].values() if now - t < 60),
         "phones_last_10_minutes": sum(1 for t in _room["seen"].values() if now - t < 600),
         "requests_last_minute": sum(1 for t in _room["hits"] if now - t < 60),
-        "audience_access": c.get("audience_access", "on"), "audience_uploads": c.get("audience_uploads", "on"),
-        "audience_ai": c.get("audience_ai", "on"), "model": classifier.info(),
+        "audience_access": c.get("audience_access", "on"),
+        "audience_uploads": c.get("audience_uploads", "on"),
+        "audience_ai": c.get("audience_ai", "on"),
+        "model": classifier.info(),
     }
 
 
@@ -289,8 +323,10 @@ def api_incidents(view: str = "public", since: str | None = None):
     now = time.monotonic()
     if _public_list["body"] is None or now - _public_list["at"] > PUBLIC_LIST_TTL:
         # The map needs only the decision from the AI's reading (public.js); the rest stays on the council side.
-        slim = [{**i, "triage": {"decision": i["triage"].get("decision")}} if isinstance(i.get("triage"), dict) else i
-                for i in incidents.list_all("public")]
+        slim = [
+            {**i, "triage": {"decision": i["triage"].get("decision")}} if isinstance(i.get("triage"), dict) else i
+            for i in incidents.list_all("public")
+        ]
         items = JSONResponse(slim).body
         version = hashlib.sha1(items).hexdigest()[:12]
         body = b'{"version":"' + version.encode() + b'","incidents":' + items + b"}"
@@ -308,17 +344,30 @@ def api_incident(iid: int, view: str = "public"):
 
 
 @app.post("/api/reports")
-def api_report(request: Request, photo: UploadFile = File(...), lat: str | None = Form(None),
-               lon: str | None = Form(None), loc_source: str | None = Form(None),
-               description: str | None = Form(None), reporter: str | None = Form(None),
-               stage: str | None = Form(None)):
+def api_report(
+    request: Request,
+    photo: UploadFile = File(...),
+    lat: str | None = Form(None),
+    lon: str | None = Form(None),
+    loc_source: str | None = Form(None),
+    description: str | None = Form(None),
+    reporter: str | None = Form(None),
+    stage: str | None = Form(None),
+):
     remote = _remote(request)
     if remote and str(config().get("audience_uploads", "on")).strip().lower() == "off":
         return err("reporting_closed", 403)  # content/config.json "audience_uploads": "off" closes remote reporting
     data = photo.file.read()
     # The presenter's photos jump the model's queue: anything from this machine, or from a page opened with ?stage=1.
-    return incidents.submit_report(data, lat=lat, lon=lon, loc_source=loc_source, description=description,
-                                   reporter=reporter, stage=stage == "1" or not remote)
+    return incidents.submit_report(
+        data,
+        lat=lat,
+        lon=lon,
+        loc_source=loc_source,
+        description=description,
+        reporter=reporter,
+        stage=stage == "1" or not remote,
+    )
 
 
 @app.post("/api/incidents/{iid}/actions")
@@ -339,8 +388,15 @@ async def api_action(iid: int, request: Request):
         if not isinstance(body, dict):
             return err("bad_json")
     fields = {k: body.get(k) for k in incidents.OVERRIDE_FIELDS if body.get(k) not in (None, "")}
-    return await run_in_threadpool(incidents.apply_action, iid, str(body.get("action") or ""),
-                                   body.get("note"), body.get("decision"), photo_bytes, fields=fields)
+    return await run_in_threadpool(
+        incidents.apply_action,
+        iid,
+        str(body.get("action") or ""),
+        body.get("note"),
+        body.get("decision"),
+        photo_bytes,
+        fields=fields,
+    )
 
 
 @app.post("/api/incidents/{iid}/confirm")
@@ -350,15 +406,24 @@ async def api_confirm(iid: int, request: Request):
     except Exception:
         return err("bad_json")
     if not isinstance(body, dict) or not isinstance(body.get("still_there"), bool):
-        return err("bad_request", detail="send {\"still_there\": true|false}")
+        return err("bad_request", detail='send {"still_there": true|false}')
     return await run_in_threadpool(incidents.confirm, iid, body["still_there"])
 
 
 @app.get("/api/history")
 def api_history():
     pts = seed("history.json", []) or []
-    return [{"lat": p.get("lat"), "lon": p.get("lon"), "date": p.get("date"), "ward": p.get("ward"),
-             "street": p.get("street")} for p in pts if isinstance(p, dict) and p.get("lat") is not None]
+    return [
+        {
+            "lat": p.get("lat"),
+            "lon": p.get("lon"),
+            "date": p.get("date"),
+            "ward": p.get("ward"),
+            "street": p.get("street"),
+        }
+        for p in pts
+        if isinstance(p, dict) and p.get("lat") is not None
+    ]
 
 
 @app.get("/api/routes")
@@ -370,6 +435,7 @@ def _qr_png(text: str) -> Response:
     import io
 
     import qrcode
+
     qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_M, box_size=8, border=2)
     qr.add_data(text)
     qr.make(fit=True)
@@ -402,8 +468,11 @@ def api_return(quarter: str | None = None):
 def api_return_csv(quarter: str | None = None):
     r = wdf_return.build(db.list_incidents(), db.all_actions(), quarter)
     # UTF-8 with a BOM so Excel shows the £ sign correctly
-    return Response(("\ufeff" + rebrand(wdf_return.to_csv(r))).encode("utf-8"), media_type="text/csv; charset=utf-8",
-                    headers={"Content-Disposition": f'attachment; filename="{rebrand(wdf_return.csv_filename(r))}"'})
+    return Response(
+        ("\ufeff" + rebrand(wdf_return.to_csv(r))).encode("utf-8"),
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{rebrand(wdf_return.csv_filename(r))}"'},
+    )
 
 
 @app.get("/api/hotspots")
@@ -429,8 +498,19 @@ def api_stats():
                 hours.append((b - a).total_seconds() / 3600)
     wards: dict[str, dict] = {}
     for i in incs:
-        w = wards.setdefault(ward_of[i["id"]], {"ward": ward_of[i["id"]], "reports": 0, "incidents": 0, "cleared": 0,
-                                                 "open": 0, "fines": 0, "warnings": 0, "prosecutions": 0})
+        w = wards.setdefault(
+            ward_of[i["id"]],
+            {
+                "ward": ward_of[i["id"]],
+                "reports": 0,
+                "incidents": 0,
+                "cleared": 0,
+                "open": 0,
+                "fines": 0,
+                "warnings": 0,
+                "prosecutions": 0,
+            },
+        )
         w["reports"] += int(i["report_count"] or 1)
         w["incidents"] += 1
         w["cleared"] += i["status"] == "cleared"
@@ -441,12 +521,16 @@ def api_stats():
             wards[ward_of[a["incident_id"]]][key[a["action"]]] += 1
     rows = sorted(wards.values(), key=lambda w: (-w["reports"], w["ward"]))
     return {
-        "city": {"reports": sum(int(i["report_count"] or 1) for i in incs), "incidents": len(incs),
-                 "cleared": sum(i["status"] == "cleared" for i in incs),
-                 "median_hours_to_clear": round(statistics.median(hours), 1) if hours else None,
-                 "open": sum(i["status"] not in ("cleared", "not_fly_tip") for i in incs),
-                 "fines": sum(w["fines"] for w in rows), "warnings": sum(w["warnings"] for w in rows),
-                 "prosecutions": sum(w["prosecutions"] for w in rows)},
+        "city": {
+            "reports": sum(int(i["report_count"] or 1) for i in incs),
+            "incidents": len(incs),
+            "cleared": sum(i["status"] == "cleared" for i in incs),
+            "median_hours_to_clear": round(statistics.median(hours), 1) if hours else None,
+            "open": sum(i["status"] not in ("cleared", "not_fly_tip") for i in incs),
+            "fines": sum(w["fines"] for w in rows),
+            "warnings": sum(w["warnings"] for w in rows),
+            "prosecutions": sum(w["prosecutions"] for w in rows),
+        },
         "wards": rows,
     }
 
@@ -469,18 +553,25 @@ def api_dev_version():
 
 @app.get("/api/health")
 def api_health():
-    return {"ok": True, "incidents": db.count_incidents(), "model": classifier.info(),
-            "load_error": classifier.load_error}
+    return {
+        "ok": True,
+        "incidents": db.count_incidents(),
+        "model": classifier.info(),
+        "load_error": classifier.load_error,
+    }
 
 
 # ---- pages and files ----------------------------------------------------------------------------
+
 
 def _page(rel: str, title: str):
     p = STATIC / rel
     if p.exists():
         return FileResponse(p, headers={"Cache-Control": "no-cache"})
-    return HTMLResponse(f"<!doctype html><title>{title}</title><p>{title} page not built yet "
-                        f"(expected static/{rel}). API is up at <a href='/api/config'>/api/config</a>.</p>")
+    return HTMLResponse(
+        f"<!doctype html><title>{title}</title><p>{title} page not built yet "
+        f"(expected static/{rel}). API is up at <a href='/api/config'>/api/config</a>.</p>"
+    )
 
 
 @app.get("/", include_in_schema=False)
@@ -495,6 +586,8 @@ def page_council():
 
 
 (SEED / "photos").mkdir(parents=True, exist_ok=True)
+
+
 @app.get("/media/seed/{name}", include_in_schema=False)
 def seed_photo(name: str, request: Request):
     """Seed photos: phones (through the tunnel) get the smaller copy in seed/photos_web, the stage screens full size."""

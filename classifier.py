@@ -4,6 +4,7 @@ FT_CLASSIFIER=gemma (default) loads the model at startup; =cache or =off never l
 seed/model_cache.json gets decision "review" with "Model offline. Check the photo."
 The model is loaded and run on the same thread (MLX streams are per-thread), fed by a single queue.
 """
+
 from __future__ import annotations
 
 import itertools
@@ -50,6 +51,7 @@ UNREADABLE_REASON = "Model reply unreadable. Check the photo."
 
 # ---- parsing ------------------------------------------------------------------------------------
 
+
 def _balanced_objects(text: str):
     """Yield every top-level {...} substring, respecting quoted strings."""
     i = 0
@@ -74,7 +76,7 @@ def _balanced_objects(text: str):
             elif ch == "}":
                 depth -= 1
                 if depth == 0:
-                    yield text[start:j + 1]
+                    yield text[start : j + 1]
                     i = j + 1
                     break
         else:
@@ -160,9 +162,20 @@ def normalise(raw: dict) -> dict:
 
 
 def offline_result(reason: str = OFFLINE_REASON) -> dict:
-    return {"fly_tip": "unsure", "confidence": 0, "what_you_see": "", "size": None, "waste_type": None,
-            "land_type": "Other (unidentified)", "hazards": "unknown", "decision": "review", "reason": reason,
-            "seconds": 0, "model": MODEL_NAME, "offline": True}
+    return {
+        "fly_tip": "unsure",
+        "confidence": 0,
+        "what_you_see": "",
+        "size": None,
+        "waste_type": None,
+        "land_type": "Other (unidentified)",
+        "hazards": "unknown",
+        "decision": "review",
+        "reason": reason,
+        "seconds": 0,
+        "model": MODEL_NAME,
+        "offline": True,
+    }
 
 
 # ---- cache --------------------------------------------------------------------------------------
@@ -192,6 +205,7 @@ def cache_lookup(sha: str) -> dict | None:
 
 # ---- worker -------------------------------------------------------------------------------------
 
+
 class Classifier:
     def __init__(self):
         self.mode = MODE if MODE in ("gemma", "cache", "off") else "gemma"
@@ -215,9 +229,17 @@ class Classifier:
         with self.q.mutex:
             audience = sum(1 for item in self.q.queue if item[0])
         on, gap = self._audience_settings()
-        return {"name": MODEL_NAME, "id": MODEL_ID, "local": True, "status": self.status,
-                "queue": self.q.qsize() + (1 if self.status == "busy" else 0), "queue_audience": audience,
-                "audience_ai": "on" if on else "paused", "audience_gap_seconds": gap, "mode": self.mode}
+        return {
+            "name": MODEL_NAME,
+            "id": MODEL_ID,
+            "local": True,
+            "status": self.status,
+            "queue": self.q.qsize() + (1 if self.status == "busy" else 0),
+            "queue_audience": audience,
+            "audience_ai": "on" if on else "paused",
+            "audience_gap_seconds": gap,
+            "mode": self.mode,
+        }
 
     @staticmethod
     def _audience_settings() -> tuple[bool, float]:
@@ -255,8 +277,12 @@ class Classifier:
         with self._lock:
             self.pending.add(incident_id)
         self.q.put((0 if stage else 1, next(self._seq), incident_id, image_path, callback))
-        log.info("incident %s queued for the model (%s); %s waiting", incident_id, "stage" if stage else "audience",
-                 self.q.qsize())
+        log.info(
+            "incident %s queued for the model (%s); %s waiting",
+            incident_id,
+            "stage" if stage else "audience",
+            self.q.qsize(),
+        )
         return "queued"
 
     def _finish(self, incident_id, callback, result):
@@ -274,6 +300,7 @@ class Classifier:
             from mlx_vlm import generate, load  # noqa: F401
             from mlx_vlm.prompt_utils import apply_chat_template
             from mlx_vlm.utils import load_config
+
             self.model, self.processor = load(MODEL_ID)
             config = load_config(MODEL_ID)
             self.formatted = apply_chat_template(self.processor, config, PROMPT, num_images=1)
@@ -290,7 +317,9 @@ class Classifier:
         """One short generation so the first resident's photo doesn't pay the Metal kernel compile cost."""
         from mlx_vlm import generate
         from PIL import Image
+
         from common import APP, DATA
+
         t = time.time()
         try:
             # A full reply on a real photo: a 4-token warm-up still left the first resident's photo about 6 s slower.
@@ -299,17 +328,20 @@ class Classifier:
                 p = DATA / "warmup.jpg"
                 if not p.exists():
                     Image.new("RGB", (512, 384), (128, 128, 120)).save(p, "JPEG")
-            generate(self.model, self.processor, self.formatted, [str(p)], max_tokens=400, temperature=0.0,
-                     verbose=False)
+            generate(
+                self.model, self.processor, self.formatted, [str(p)], max_tokens=400, temperature=0.0, verbose=False
+            )
             log.info("model warm-up took %.1fs", time.time() - t)
         except Exception:
             log.exception("warm-up failed (not fatal)")
 
     def _generate(self, image_path: str) -> dict:
         from mlx_vlm import generate
+
         t = time.time()
-        out = generate(self.model, self.processor, self.formatted, [image_path], max_tokens=400,
-                       temperature=0.0, verbose=False)
+        out = generate(
+            self.model, self.processor, self.formatted, [image_path], max_tokens=400, temperature=0.0, verbose=False
+        )
         text = getattr(out, "text", out)
         secs = round(time.time() - t, 1)
         parsed = parse_json(text)
@@ -342,7 +374,7 @@ class Classifier:
                     self.status = "busy"
                     try:
                         result = self._generate(image_path)
-                    except Exception as e:
+                    except Exception:
                         log.exception("generate failed for incident %s", incident_id)
                         result = offline_result("Model error. Check the photo.")
                     finally:

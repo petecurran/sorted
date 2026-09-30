@@ -1,11 +1,12 @@
 """SQLite storage. One connection, one lock: the app runs a single uvicorn worker plus one classifier thread."""
+
 from __future__ import annotations
 
 import json
 import sqlite3
 import threading
 
-from common import DB_PATH, DATA, now_iso
+from common import DATA, DB_PATH, now_iso
 
 _lock = threading.RLock()
 _conn: sqlite3.Connection | None = None
@@ -47,9 +48,26 @@ CREATE INDEX IF NOT EXISTS ix_reports_inc ON reports(incident_id);
 CREATE INDEX IF NOT EXISTS ix_actions_inc ON actions(incident_id);
 """
 
-INCIDENT_COLS = ("lat", "lon", "street", "ward", "created_at", "updated_at", "status", "report_count",
-                 "photo_url", "photo_path", "photo_sha", "cleared_photo_url", "cleared_at", "public_summary",
-                 "description", "triage", "model_raw", "seed_key")
+INCIDENT_COLS = (
+    "lat",
+    "lon",
+    "street",
+    "ward",
+    "created_at",
+    "updated_at",
+    "status",
+    "report_count",
+    "photo_url",
+    "photo_path",
+    "photo_sha",
+    "cleared_photo_url",
+    "cleared_at",
+    "public_summary",
+    "description",
+    "triage",
+    "model_raw",
+    "seed_key",
+)
 
 
 def conn() -> sqlite3.Connection:
@@ -104,8 +122,9 @@ def insert_incident(**fields) -> int:
     fields.setdefault("updated_at", fields["created_at"])
     f = _enc(fields)
     with _lock:
-        cur = conn().execute(f"INSERT INTO incidents ({','.join(f)}) VALUES ({','.join('?' * len(f))})",
-                             tuple(f.values()))
+        cur = conn().execute(
+            f"INSERT INTO incidents ({','.join(f)}) VALUES ({','.join('?' * len(f))})", tuple(f.values())
+        )
         return cur.lastrowid
 
 
@@ -131,22 +150,28 @@ def add_report(incident_id: int, **fields) -> int:
     keys = ("created_at", "lat", "lon", "loc_source", "description", "reporter", "photo_url", "photo_sha")
     vals = [fields.get(k) for k in keys]
     with _lock:
-        cur = conn().execute(f"INSERT INTO reports (incident_id,{','.join(keys)}) VALUES (?{',?' * len(keys)})",
-                             (incident_id, *vals))
+        cur = conn().execute(
+            f"INSERT INTO reports (incident_id,{','.join(keys)}) VALUES (?{',?' * len(keys)})", (incident_id, *vals)
+        )
         return cur.lastrowid
 
 
 def add_timeline(incident_id: int, kind: str, text: str, at: str | None = None, note: str | None = None):
     with _lock:
-        conn().execute("INSERT INTO timeline (incident_id, at, kind, text, note) VALUES (?,?,?,?,?)",
-                       (incident_id, at or now_iso(), kind, text, note))
+        conn().execute(
+            "INSERT INTO timeline (incident_id, at, kind, text, note) VALUES (?,?,?,?,?)",
+            (incident_id, at or now_iso(), kind, text, note),
+        )
 
 
-def add_action(incident_id: int, action: str, at: str | None = None, note: str | None = None,
-               decision: str | None = None):
+def add_action(
+    incident_id: int, action: str, at: str | None = None, note: str | None = None, decision: str | None = None
+):
     with _lock:
-        conn().execute("INSERT INTO actions (incident_id, at, action, note, decision) VALUES (?,?,?,?,?)",
-                       (incident_id, at or now_iso(), action, note, decision))
+        conn().execute(
+            "INSERT INTO actions (incident_id, at, action, note, decision) VALUES (?,?,?,?,?)",
+            (incident_id, at or now_iso(), action, note, decision),
+        )
 
 
 def timelines(ids: list[int] | None = None) -> dict[int, list[dict]]:
@@ -157,8 +182,11 @@ def timelines(ids: list[int] | None = None) -> dict[int, list[dict]]:
             if not ids:
                 return {}
             q = ",".join("?" * len(ids))
-            rows = conn().execute(f"SELECT * FROM timeline WHERE incident_id IN ({q}) ORDER BY at, id",
-                                  tuple(ids)).fetchall()
+            rows = (
+                conn()
+                .execute(f"SELECT * FROM timeline WHERE incident_id IN ({q}) ORDER BY at, id", tuple(ids))
+                .fetchall()
+            )
     out: dict[int, list[dict]] = {}
     for r in rows:
         out.setdefault(r["incident_id"], []).append(dict(r))
@@ -177,8 +205,10 @@ def all_reports() -> list[dict]:
 
 def add_confirmation(incident_id: int, still_there: bool, at: str | None = None):
     with _lock:
-        conn().execute("INSERT INTO confirmations (incident_id, at, still_there) VALUES (?,?,?)",
-                       (incident_id, at or now_iso(), 1 if still_there else 0))
+        conn().execute(
+            "INSERT INTO confirmations (incident_id, at, still_there) VALUES (?,?,?)",
+            (incident_id, at or now_iso(), 1 if still_there else 0),
+        )
 
 
 def all_confirmations() -> list[dict]:

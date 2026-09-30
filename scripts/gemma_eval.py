@@ -6,6 +6,7 @@ Two copies of the 12B model do not fit in 16 GB, so restart the app without its 
 (FT_CLASSIFIER=cache scripts/start_server.sh) and restart it normally afterwards.
 Writes one result per photo as it goes, so a long run can be read while it is still going.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -44,7 +45,12 @@ for i, p in enumerate(a.photos, 1):
     r = classifier.normalise(parsed) if parsed else {"unreadable": True}
     r.update(photo=Path(p).name, seconds=round(time.time() - t, 1), raw_text=text[:1500])
     results.append(r)
-    Path(a.out).write_text(json.dumps({"model": a.model, "prompt": a.prompt or "classifier.PROMPT", "results": results}, indent=1))
-    print(f"{i:3}/{len(a.photos)} {r['photo']:<28} {r['seconds']:5.1f} s  {r.get('fly_tip')}  {r.get('size')}  |  "
-          f"{r.get('waste_type')}  |  {r.get('decision')}", flush=True)
+    Path(a.out).write_text(
+        json.dumps({"model": a.model, "prompt": a.prompt or "classifier.PROMPT", "results": results}, indent=1)
+    )
+    print(
+        f"{i:3}/{len(a.photos)} {r['photo']:<28} {r['seconds']:5.1f} s  {r.get('fly_tip')}  {r.get('size')}  |  "
+        f"{r.get('waste_type')}  |  {r.get('decision')}",
+        flush=True,
+    )
 print(f"done in {time.time() - t0:.0f} s")

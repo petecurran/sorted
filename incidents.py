@@ -1,8 +1,9 @@
 """Incident lifecycle: report intake and merging, classification results, officer actions, and demo seeding."""
+
 from __future__ import annotations
 
 import threading
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import db
@@ -10,20 +11,48 @@ import geo
 import photos
 import priority
 import triage
-from classifier import classifier, cache_lookup, normalise, offline_result
-from common import (APP, LAND, OPEN_EXCLUDED, SEED, SIZES, WASTE, case_ref, config, haversine_m, iso, log, now_iso,
-                    parse_dt, plus, seed)
+from classifier import cache_lookup, classifier, normalise, offline_result
+from common import (
+    APP,
+    LAND,
+    OPEN_EXCLUDED,
+    SEED,
+    SIZES,
+    WASTE,
+    case_ref,
+    config,
+    haversine_m,
+    log,
+    now_iso,
+    parse_dt,
+    plus,
+    seed,
+)
 
 MERGE_RADIUS_M = 40
 MERGE_DAYS = 21
 PHOTO_GPS_MAX_KM = 30  # EXIF GPS further than this from the city is ignored in favour of the device/map location
 
-ACTIONS = ("schedule", "hold", "inspect", "clear", "not_fly_tip", "forward", "override", "warning_letter", "fpn",
-           "prosecution", "reopen")
+ACTIONS = (
+    "schedule",
+    "hold",
+    "inspect",
+    "clear",
+    "not_fly_tip",
+    "forward",
+    "override",
+    "warning_letter",
+    "fpn",
+    "prosecution",
+    "reopen",
+)
 # While an incident is closed every action except "reopen" is refused (error "closed", 409): an officer reopens first.
 CLOSED_STATUSES = ("cleared", "not_fly_tip", "forwarded")
-ENFORCEMENT = {"warning_letter": "Warning letter sent", "fpn": "Fixed penalty notice issued",
-               "prosecution": "Referred for prosecution"}
+ENFORCEMENT = {
+    "warning_letter": "Warning letter sent",
+    "fpn": "Fixed penalty notice issued",
+    "prosecution": "Referred for prosecution",
+}
 DECISIONS = ("clear_now", "hold_for_officer", "specialist", "not_a_fly_tip", "review")
 TRIAGED_TEXT = {
     "clear_now": "Checked. Crew to clear today.",
@@ -32,17 +61,35 @@ TRIAGED_TEXT = {
     "review": "Checked. Officer review needed.",
     "not_a_fly_tip": "Checked. Not fly-tipping.",
 }
-DECISION_LABEL = {"clear_now": "Crew today", "hold_for_officer": "Officer to inspect",
-                  "specialist": "Specialist removal", "review": "Needs review", "not_a_fly_tip": "Not fly-tipping"}
+DECISION_LABEL = {
+    "clear_now": "Crew today",
+    "hold_for_officer": "Officer to inspect",
+    "specialist": "Specialist removal",
+    "review": "Needs review",
+    "not_a_fly_tip": "Not fly-tipping",
+}
 DECISION_LABEL_V2 = DECISION_LABEL
-PUBLIC_TRIAGE_DROP = ("cost", "decision_why", "context_flags", "raw_text", "overridden", "ai_original", "forward_to",
-                      "headline_alert")
+PUBLIC_TRIAGE_DROP = (
+    "cost",
+    "decision_why",
+    "context_flags",
+    "raw_text",
+    "overridden",
+    "ai_original",
+    "forward_to",
+    "headline_alert",
+)
 OVERRIDE_FIELDS = {"size": SIZES, "waste_type": WASTE, "land_type": LAND, "hazards": None}
 FIELD_LABEL = {"size": "size", "waste_type": "waste type", "land_type": "land type", "hazards": "hazards"}
 
 # Public status never reveals officer visits.
-PUBLIC_STATUS_BY_DECISION = {"clear_now": "crew_booked", "hold_for_officer": "further_inspection",
-                             "specialist": "further_inspection", "review": "new_report", "not_a_fly_tip": "new_report"}
+PUBLIC_STATUS_BY_DECISION = {
+    "clear_now": "crew_booked",
+    "hold_for_officer": "further_inspection",
+    "specialist": "further_inspection",
+    "review": "new_report",
+    "not_a_fly_tip": "new_report",
+}
 PUBLIC_TEXT = {
     TRIAGED_TEXT["hold_for_officer"]: "Checked. Further inspection needed before clearance.",
     TRIAGED_TEXT["review"]: "Checked. The council is reviewing this report.",
@@ -52,8 +99,14 @@ PUBLIC_TEXT = {
 
 
 CLOSED_PUBLIC_HOURS = 24  # a report the council closes as not fly-tipping stays on the public map this long
-PUBLIC_LABEL = {"new_report": "New report", "crew_booked": "Crew booked", "further_inspection": "Further inspection",
-                "passed_on": "Passed on", "cleared": "Cleared", "closed": "Closed: not fly-tipping"}
+PUBLIC_LABEL = {
+    "new_report": "New report",
+    "crew_booked": "Crew booked",
+    "further_inspection": "Further inspection",
+    "passed_on": "Passed on",
+    "cleared": "Cleared",
+    "closed": "Closed: not fly-tipping",
+}
 
 
 def public_status(inc: dict) -> str:
@@ -98,7 +151,7 @@ def closed_at(inc: dict, tl: list[dict]) -> str | None:
     if inc["status"] != "not_fly_tip":
         return None
     at = [e["at"] for e in tl or [] if e["kind"] in ("note", "triaged")]
-    return max(at, key=lambda x: parse_dt(x) or datetime.min.replace(tzinfo=timezone.utc)) if at else inc["updated_at"]
+    return max(at, key=lambda x: parse_dt(x) or datetime.min.replace(tzinfo=UTC)) if at else inc["updated_at"]
 
 
 def _public_text(kind: str, text: str) -> str:
@@ -109,6 +162,7 @@ def _public_text(kind: str, text: str) -> str:
     if kind == "note" and text.startswith("Officer"):
         return "Assessment updated by the council."
     return text
+
 
 _write = threading.RLock()  # serialises read-modify-write on incidents across request and classifier threads
 
@@ -121,8 +175,14 @@ class ActionError(ValueError):
 
 # ---- serialisation ------------------------------------------------------------------------------
 
-def serialize(inc: dict, view: str, tl: list[dict] | None = None, reports: list[dict] | None = None,
-              ctx: "priority.Context | None" = None) -> dict:
+
+def serialize(
+    inc: dict,
+    view: str,
+    tl: list[dict] | None = None,
+    reports: list[dict] | None = None,
+    ctx: priority.Context | None = None,
+) -> dict:
     council = view == "council"
     t = inc.get("triage")
     if t and ("how_we_know" not in (t.get("whose_job") or {}) or "forward_to" not in t):  # rows triaged earlier
@@ -135,8 +195,16 @@ def serialize(inc: dict, view: str, tl: list[dict] | None = None, reports: list[
     full = {**inc, "triage": t}
     if t and council:
         try:
-            t = {**t, "hotspot": triage.nearby(inc["lat"], inc["lon"], now_iso(), exclude_id=inc["id"],
-                                               incidents=ctx.incidents if ctx is not None and hasattr(ctx, "incidents") else None)}
+            t = {
+                **t,
+                "hotspot": triage.nearby(
+                    inc["lat"],
+                    inc["lon"],
+                    now_iso(),
+                    exclude_id=inc["id"],
+                    incidents=ctx.incidents if ctx is not None and hasattr(ctx, "incidents") else None,
+                ),
+            }
         except Exception as e:  # never break the card over a hotspot recount
             log.warning("hotspot recount failed for %s: %s", inc["id"], e)
     if t and not council:
@@ -154,22 +222,38 @@ def serialize(inc: dict, view: str, tl: list[dict] | None = None, reports: list[
     if ctx is None:
         ctx = _context()
     pr = priority.compute(inc, ctx)
-    seen = [r["created_at"] for r in ctx.reports_by_inc.get(inc["id"], [])] + \
-        [c["at"] for c in ctx.conf_by_inc.get(inc["id"], []) if c["still_there"]]
+    seen = [r["created_at"] for r in ctx.reports_by_inc.get(inc["id"], [])] + [
+        c["at"] for c in ctx.conf_by_inc.get(inc["id"], []) if c["still_there"]
+    ]
     ps = public_status(full)
     out = {
-        "id": inc["id"], "case_ref": case_ref(inc["id"]), "public_status": ps, "public_label": public_label(full, ps),
+        "id": inc["id"],
+        "case_ref": case_ref(inc["id"]),
+        "public_status": ps,
+        "public_label": public_label(full, ps),
         "authority": geo.authority_for(inc["lat"], inc["lon"]),
-        "lat": inc["lat"], "lon": inc["lon"], "street": inc.get("street"), "ward": inc.get("ward"),
-        "created_at": inc["created_at"], "updated_at": inc["updated_at"], "status": inc["status"],
-        "report_count": inc["report_count"], "photo_url": inc.get("photo_url"),
-        "cleared_photo_url": inc.get("cleared_photo_url"), "cleared_at": inc.get("cleared_at"),
-        "public_summary": inc.get("public_summary") or ("Photo being checked" if inc["status"] == "triaging"
-                                                         else "Reported fly-tipping"),
-        "triage": t, "timeline": timeline,
-        "still_there_count": pr["still_there_count"], "gone_count": pr["gone_count"],
-        "last_seen_at": max(seen, key=lambda x: parse_dt(x) or datetime.min.replace(tzinfo=timezone.utc)) if seen else inc["created_at"],
-        "priority": pr["priority"], "growing": pr["growing"],
+        "lat": inc["lat"],
+        "lon": inc["lon"],
+        "street": inc.get("street"),
+        "ward": inc.get("ward"),
+        "created_at": inc["created_at"],
+        "updated_at": inc["updated_at"],
+        "status": inc["status"],
+        "report_count": inc["report_count"],
+        "photo_url": inc.get("photo_url"),
+        "cleared_photo_url": inc.get("cleared_photo_url"),
+        "cleared_at": inc.get("cleared_at"),
+        "public_summary": inc.get("public_summary")
+        or ("Photo being checked" if inc["status"] == "triaging" else "Reported fly-tipping"),
+        "triage": t,
+        "timeline": timeline,
+        "still_there_count": pr["still_there_count"],
+        "gone_count": pr["gone_count"],
+        "last_seen_at": max(seen, key=lambda x: parse_dt(x) or datetime.min.replace(tzinfo=UTC))
+        if seen
+        else inc["created_at"],
+        "priority": pr["priority"],
+        "growing": pr["growing"],
     }
     out["closed_at"] = closed_at(inc, tl)  # None unless closed as not fly-tipping (so None again after a reopen)
     if council:
@@ -179,15 +263,26 @@ def serialize(inc: dict, view: str, tl: list[dict] | None = None, reports: list[
         if reports is None:
             reports = ctx.reports_by_inc.get(inc["id"], [])
         # every merged report, oldest first, for the photo carousel (seeded extra reports have no photo)
-        out["reports"] = [{"id": r["id"], "created_at": r["created_at"], "photo_url": r.get("photo_url"),
-                           "description": r.get("description"), "loc_source": r.get("loc_source"),
-                           "reporter": r.get("reporter")} for r in reports]
+        out["reports"] = [
+            {
+                "id": r["id"],
+                "created_at": r["created_at"],
+                "photo_url": r.get("photo_url"),
+                "description": r.get("description"),
+                "loc_source": r.get("loc_source"),
+                "reporter": r.get("reporter"),
+            }
+            for r in reports
+        ]
     return out
 
 
-def _context(incs: list[dict] | None = None, reports: list[dict] | None = None) -> "priority.Context":
-    return priority.Context(incs if incs is not None else db.list_incidents(),
-                            reports if reports is not None else db.all_reports(), db.all_confirmations())
+def _context(incs: list[dict] | None = None, reports: list[dict] | None = None) -> priority.Context:
+    return priority.Context(
+        incs if incs is not None else db.list_incidents(),
+        reports if reports is not None else db.all_reports(),
+        db.all_confirmations(),
+    )
 
 
 def get(iid: int, view: str) -> dict | None:
@@ -204,9 +299,12 @@ def list_all(view: str) -> list[dict]:
     tls = db.timelines()
     ctx = _context(incs)
     if view != "council":
-        cutoff = datetime.now(timezone.utc) - timedelta(hours=CLOSED_PUBLIC_HOURS)
-        incs = [i for i in incs if i["status"] != "not_fly_tip" or
-                (parse_dt(closed_at(i, tls.get(i["id"], []))) or cutoff) > cutoff]
+        cutoff = datetime.now(UTC) - timedelta(hours=CLOSED_PUBLIC_HOURS)
+        incs = [
+            i
+            for i in incs
+            if i["status"] != "not_fly_tip" or (parse_dt(closed_at(i, tls.get(i["id"], []))) or cutoff) > cutoff
+        ]
     out = [serialize(i, view, tls.get(i["id"], []), ctx=ctx) for i in incs]
     if view == "council":  # priority first, then newest (the DB order is newest first, and sort is stable)
         out.sort(key=lambda i: -i["priority"]["score"])
@@ -221,13 +319,18 @@ def confirm(iid: int, still_there: bool) -> dict:
             raise ActionError("not_found", 404)
         when = now_iso()
         db.add_confirmation(iid, still_there, at=when)
-        db.add_timeline(iid, "confirmed", "Resident confirmed it is still there." if still_there
-                        else "Resident reported it has gone.", at=when)
+        db.add_timeline(
+            iid,
+            "confirmed",
+            "Resident confirmed it is still there." if still_there else "Resident reported it has gone.",
+            at=when,
+        )
         db.update_incident(iid, touch=when)
     return get(iid, "public")
 
 
 # ---- classification -----------------------------------------------------------------------------
+
 
 def apply_classification(iid: int, result: dict, at: str | None = None):
     with _write:
@@ -238,21 +341,41 @@ def apply_classification(iid: int, result: dict, at: str | None = None):
             log.info("incident %s already overridden by an officer; model result kept as raw only", iid)
             db.update_incident(iid, model_raw={k: v for k, v in result.items() if k != "raw_text"})
             return
-        t = triage.run(result, lat=inc["lat"], lon=inc["lon"], ward=inc.get("ward"), incident_id=iid,
-                       created_at=inc["created_at"], incidents=db.list_incidents())
-        summary = triage.public_summary(t.get("what_you_see"), fallback=inc.get("public_summary") or
-                                        _desc_summary(inc.get("description")))
+        t = triage.run(
+            result,
+            lat=inc["lat"],
+            lon=inc["lon"],
+            ward=inc.get("ward"),
+            incident_id=iid,
+            created_at=inc["created_at"],
+            incidents=db.list_incidents(),
+        )
+        summary = triage.public_summary(
+            t.get("what_you_see"), fallback=inc.get("public_summary") or _desc_summary(inc.get("description"))
+        )
         status = "triaged" if inc["status"] == "triaging" else inc["status"]
         # Only a rule-level "not fly-tipping" (a booked bulky collection) closes the incident automatically. When
         # the model alone says no, the decision is "review" and a person checks it (it stays in the queue).
-        if inc["status"] == "triaging" and t["decision"] == "not_a_fly_tip" and \
-                any(f.get("kind") == "bulky_booking" for f in t.get("context_flags") or []):
+        if (
+            inc["status"] == "triaging"
+            and t["decision"] == "not_a_fly_tip"
+            and any(f.get("kind") == "bulky_booking" for f in t.get("context_flags") or [])
+        ):
             status = "not_fly_tip"
         when = at or now_iso()
-        db.update_incident(iid, touch=when, triage=t, model_raw={k: v for k, v in result.items() if k != "raw_text"},
-                           public_summary=summary, status=status)
-        text = (f"Checked. {t['forward_to']} must clear it."
-                if t.get("forward_to") else TRIAGED_TEXT.get(t["decision"], "Checked."))
+        db.update_incident(
+            iid,
+            touch=when,
+            triage=t,
+            model_raw={k: v for k, v in result.items() if k != "raw_text"},
+            public_summary=summary,
+            status=status,
+        )
+        text = (
+            f"Checked. {t['forward_to']} must clear it."
+            if t.get("forward_to")
+            else TRIAGED_TEXT.get(t["decision"], "Checked.")
+        )
         db.add_timeline(iid, "triaged", text, at=when)
     log.info("incident %s triaged: %s (%s)", iid, t["decision"], t.get("source"))
 
@@ -268,6 +391,7 @@ def classify(iid: int, sha: str, path: str, stage: bool = False) -> str:
 
 # ---- reports ------------------------------------------------------------------------------------
 
+
 def _num(v) -> float | None:
     try:
         f = float(v)
@@ -277,7 +401,7 @@ def _num(v) -> float | None:
 
 
 def find_merge_target(lat, lon, now: datetime | None = None) -> dict | None:
-    now = now or datetime.now(timezone.utc)
+    now = now or datetime.now(UTC)
     best, best_d = None, None
     for inc in db.list_incidents():
         if inc["status"] in OPEN_EXCLUDED:
@@ -291,8 +415,9 @@ def find_merge_target(lat, lon, now: datetime | None = None) -> dict | None:
     return best
 
 
-def submit_report(data: bytes, lat=None, lon=None, loc_source=None, description=None, reporter=None,
-                  stage: bool = False) -> dict:
+def submit_report(
+    data: bytes, lat=None, lon=None, loc_source=None, description=None, reporter=None, stage: bool = False
+) -> dict:
     ph = photos.process(data)
     lat, lon = _num(lat), _num(lon)
     source = loc_source if loc_source in ("device", "map") else ("device" if lat is not None else None)
@@ -311,50 +436,103 @@ def submit_report(data: bytes, lat=None, lon=None, loc_source=None, description=
         target = find_merge_target(lat, lon)
         if target:
             iid = target["id"]
-            rid = db.add_report(iid, lat=lat, lon=lon, loc_source=source, description=description,
-                                reporter=reporter, photo_url=ph["url"], photo_sha=ph["sha"])
-            db.update_incident(iid, report_count=target["report_count"] + 1,
-                               **({} if target.get("photo_url") else {"photo_url": ph["url"], "photo_path": ph["path"]}))
+            rid = db.add_report(
+                iid,
+                lat=lat,
+                lon=lon,
+                loc_source=source,
+                description=description,
+                reporter=reporter,
+                photo_url=ph["url"],
+                photo_sha=ph["sha"],
+            )
+            db.update_incident(
+                iid,
+                report_count=target["report_count"] + 1,
+                **({} if target.get("photo_url") else {"photo_url": ph["url"], "photo_path": ph["path"]}),
+            )
             db.add_timeline(iid, "merged", "Reported by another resident.", note=description)
             merged = True
             needs_triage = not target.get("triage") and not classifier.is_pending(iid)
         else:
-            iid = db.insert_incident(lat=lat, lon=lon, street=geo.street_for(lat, lon), ward=geo.ward_for(lat, lon),
-                                     status="triaging", report_count=1, photo_url=ph["url"], photo_path=ph["path"],
-                                     photo_sha=ph["sha"], description=description,
-                                     public_summary=_desc_summary(description) if description else None)
-            rid = db.add_report(iid, lat=lat, lon=lon, loc_source=source, description=description,
-                                reporter=reporter, photo_url=ph["url"], photo_sha=ph["sha"])
+            iid = db.insert_incident(
+                lat=lat,
+                lon=lon,
+                street=geo.street_for(lat, lon),
+                ward=geo.ward_for(lat, lon),
+                status="triaging",
+                report_count=1,
+                photo_url=ph["url"],
+                photo_path=ph["path"],
+                photo_sha=ph["sha"],
+                description=description,
+                public_summary=_desc_summary(description) if description else None,
+            )
+            rid = db.add_report(
+                iid,
+                lat=lat,
+                lon=lon,
+                loc_source=source,
+                description=description,
+                reporter=reporter,
+                photo_url=ph["url"],
+                photo_sha=ph["sha"],
+            )
             db.add_timeline(iid, "reported", "Reported by a resident", note=description)
             merged = False
             needs_triage = True
     if needs_triage:
         classify(iid, ph["sha"], ph["path"], stage=stage)
     inc = db.get_incident(iid)
-    return {"report_id": rid, "incident_id": iid, "merged": merged, "others_count": inc["report_count"] - 1,
-            "location": {"lat": lat, "lon": lon, "source": source}, "status": inc["status"],
-            "photo_url": ph["url"]}
+    return {
+        "report_id": rid,
+        "incident_id": iid,
+        "merged": merged,
+        "others_count": inc["report_count"] - 1,
+        "location": {"lat": lat, "lon": lon, "source": source},
+        "status": inc["status"],
+        "photo_url": ph["url"],
+    }
 
 
 # ---- actions ------------------------------------------------------------------------------------
 
+
 def _override_triage(inc: dict, decision: str | None, fields: dict, when: str, note: str | None) -> tuple[dict, list]:
     """Re-run the rules with officer-corrected Defra fields (and optionally a forced decision)."""
     old = dict(inc.get("triage") or {})
-    ai_original = old.get("ai_original") or {k: old.get(k) for k in ("size", "waste_type", "land_type", "hazards",
-                                                                      "decision")}
+    ai_original = old.get("ai_original") or {
+        k: old.get(k) for k in ("size", "waste_type", "land_type", "hazards", "decision")
+    }
     prev_over = old.get("overridden") if isinstance(old.get("overridden"), list) else []
     base = dict(inc.get("model_raw") or {})
-    for k in ("fly_tip", "confidence", "what_you_see", "reason", "size", "waste_type", "land_type", "hazards",
-              "model", "seconds"):
+    for k in (
+        "fly_tip",
+        "confidence",
+        "what_you_see",
+        "reason",
+        "size",
+        "waste_type",
+        "land_type",
+        "hazards",
+        "model",
+        "seconds",
+    ):
         if k in old and k not in fields:
             base[k] = old[k]
     base.update(fields)
     base.pop("offline", None)
     if base.get("fly_tip") != "yes" and fields:
         base["fly_tip"] = "yes"  # an officer who sets the Defra fields has confirmed it is fly-tipping
-    t = triage.run(base, lat=inc["lat"], lon=inc["lon"], ward=inc.get("ward"), incident_id=inc["id"],
-                   created_at=inc["created_at"], incidents=db.list_incidents())
+    t = triage.run(
+        base,
+        lat=inc["lat"],
+        lon=inc["lon"],
+        ward=inc.get("ward"),
+        incident_id=inc["id"],
+        created_at=inc["created_at"],
+        incidents=db.list_incidents(),
+    )
     changed = [k for k in OVERRIDE_FIELDS if k in fields and fields[k] != old.get(k)]
     if decision:
         t["decision"] = decision
@@ -363,8 +541,10 @@ def _override_triage(inc: dict, decision: str | None, fields: dict, when: str, n
             changed.append("decision")
     elif fields:
         t["decision_why"] = f"Officer corrections applied. {t['decision_why']}"
-    t["overridden"] = sorted(set(prev_over) | set(changed) | (set(fields) if fields else set()) |
-                             ({"decision"} if decision else set()), key=list(OVERRIDE_FIELDS).__add__(["decision"]).index)
+    t["overridden"] = sorted(
+        set(prev_over) | set(changed) | (set(fields) if fields else set()) | ({"decision"} if decision else set()),
+        key=list(OVERRIDE_FIELDS).__add__(["decision"]).index,
+    )
     t["ai_original"] = ai_original
     t["overridden_at"] = when
     t["overridden_note"] = note
@@ -372,13 +552,25 @@ def _override_triage(inc: dict, decision: str | None, fields: dict, when: str, n
     if decision:  # a forced decision: forward only if it is still someone else's job to clear
         t["forward_to"] = triage.forward_to(t.get("whose_job"), decision)
     t["headline_alert"] = triage.headline_alert(t)
-    t["seconds"], t["model"], t["source"] = old.get("seconds"), old.get("model", t.get("model")), old.get("source", t.get("source"))
+    t["seconds"], t["model"], t["source"] = (
+        old.get("seconds"),
+        old.get("model", t.get("model")),
+        old.get("source", t.get("source")),
+    )
     return t, changed
 
 
-def apply_action(iid: int, action: str, note: str | None = None, decision: str | None = None,
-                 photo_bytes: bytes | None = None, photo_url: str | None = None, at: str | None = None,
-                 fields: dict | None = None, allow_closed: bool = False) -> dict:
+def apply_action(
+    iid: int,
+    action: str,
+    note: str | None = None,
+    decision: str | None = None,
+    photo_bytes: bytes | None = None,
+    photo_url: str | None = None,
+    at: str | None = None,
+    fields: dict | None = None,
+    allow_closed: bool = False,
+) -> dict:
     """allow_closed is only for replaying seed history (e.g. a prosecution recorded after the clearance)."""
     if action not in ACTIONS:
         raise ActionError("unknown_action")
@@ -446,19 +638,25 @@ def apply_action(iid: int, action: str, note: str | None = None, decision: str |
             upd["triage"] = t
             if decision == "not_a_fly_tip":
                 upd["status"] = "not_fly_tip"
-            elif inc["status"] in ("triaging", "not_fly_tip", "forwarded") or \
-                    (decision == "clear_now" and inc["status"] == "held"):
+            elif inc["status"] in ("triaging", "not_fly_tip", "forwarded") or (
+                decision == "clear_now" and inc["status"] == "held"
+            ):
                 upd["status"] = "triaged"
             elif decision in ("hold_for_officer", "specialist", "review") and inc["status"] == "scheduled":
                 upd["status"] = "triaged"
             parts = []
             fchanged = [FIELD_LABEL[k] for k in changed if k in FIELD_LABEL]
             if fchanged:
-                parts.append("Officer corrected the " + (", ".join(fchanged[:-1]) + " and " + fchanged[-1]
-                                                         if len(fchanged) > 1 else fchanged[0]) + ".")
+                parts.append(
+                    "Officer corrected the "
+                    + (", ".join(fchanged[:-1]) + " and " + fchanged[-1] if len(fchanged) > 1 else fchanged[0])
+                    + "."
+                )
             if decision != prev:
-                parts.append(f"{'Decision' if parts else 'Officer changed the decision'} "
-                             f"{'changed ' if parts else ''}to {DECISION_LABEL_V2[decision]}.")
+                parts.append(
+                    f"{'Decision' if parts else 'Officer changed the decision'} "
+                    f"{'changed ' if parts else ''}to {DECISION_LABEL_V2[decision]}."
+                )
             text = " ".join(parts) if parts else "Officer confirmed the AI assessment."
             db.add_timeline(iid, "note", text, at=when, note=note)
         else:
@@ -469,6 +667,7 @@ def apply_action(iid: int, action: str, note: str | None = None, decision: str |
 
 
 # ---- seeding ------------------------------------------------------------------------------------
+
 
 def _seed_photo_url(rel: str | None) -> tuple[str | None, str | None, str | None]:
     """(url, local_path, sha) for a seed photo path like 'seed/photos/x.jpg'."""
@@ -487,6 +686,7 @@ def _seed_photo_url(rel: str | None) -> tuple[str | None, str | None, str | None
         root = (SEED / "photos").resolve()
         if p.resolve().is_relative_to(root):
             import hashlib
+
             rel_url = p.resolve().relative_to(root).as_posix()
             return f"/media/seed/{rel_url}", str(p), hashlib.sha256(p.read_bytes()).hexdigest()
         ph = photos.process(p.read_bytes())
@@ -525,12 +725,31 @@ def seed_demo() -> int:
         url, path, sha = _seed_photo_url(r.get("photo"))
         n = max(1, int(r.get("report_count") or 1))
         desc = r.get("description")
-        iid = db.insert_incident(lat=lat, lon=lon, street=r.get("street") or geo.street_for(lat, lon),
-                                 ward=r.get("ward") or geo.ward_for(lat, lon), status="triaging", report_count=n,
-                                 photo_url=url, photo_path=path, photo_sha=sha, description=desc,
-                                 created_at=created, updated_at=created, seed_key=r.get("key"))
-        db.add_report(iid, created_at=created, lat=lat, lon=lon, loc_source="device", description=desc,
-                      photo_url=url, photo_sha=sha)
+        iid = db.insert_incident(
+            lat=lat,
+            lon=lon,
+            street=r.get("street") or geo.street_for(lat, lon),
+            ward=r.get("ward") or geo.ward_for(lat, lon),
+            status="triaging",
+            report_count=n,
+            photo_url=url,
+            photo_path=path,
+            photo_sha=sha,
+            description=desc,
+            created_at=created,
+            updated_at=created,
+            seed_key=r.get("key"),
+        )
+        db.add_report(
+            iid,
+            created_at=created,
+            lat=lat,
+            lon=lon,
+            loc_source="device",
+            description=desc,
+            photo_url=url,
+            photo_sha=sha,
+        )
         db.add_timeline(iid, "reported", "Reported by a resident", at=created)
         first_action = min((a.get("at") for a in r.get("actions") or [] if a.get("at")), default=None)
         for k in range(1, n):
@@ -563,8 +782,15 @@ def seed_demo() -> int:
                 purl = _seed_photo_url(a.get("photo"))[0] if a.get("photo") else None
                 if a.get("action") == "clear" and after:
                     purl = _seed_photo_url(str(after))[0] or purl
-                apply_action(iid, a.get("action"), note=a.get("note"), decision=a.get("decision"),
-                             photo_url=purl, at=a.get("at"), allow_closed=True)
+                apply_action(
+                    iid,
+                    a.get("action"),
+                    note=a.get("note"),
+                    decision=a.get("decision"),
+                    photo_url=purl,
+                    at=a.get("at"),
+                    allow_closed=True,
+                )
             except ActionError as e:
                 log.warning("seed %s action %s failed: %s", r.get("key"), a.get("action"), e.code)
     log.info("seeded %d demo incidents", len(made))

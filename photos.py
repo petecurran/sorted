@@ -1,4 +1,5 @@
 """Photo intake: hash the original bytes, read EXIF GPS, then save an oriented, resized JPEG with all metadata gone."""
+
 from __future__ import annotations
 
 import hashlib
@@ -25,14 +26,19 @@ def _sips_convert(data: bytes) -> Image.Image | None:
     import shutil
     import subprocess
     import tempfile
+
     if not shutil.which("sips"):
         return None
     with tempfile.TemporaryDirectory() as d:
         src, dst = Path(d) / "in.heic", Path(d) / "out.jpg"
         src.write_bytes(data)
         try:
-            subprocess.run(["sips", "-s", "format", "jpeg", str(src), "--out", str(dst)], check=True,
-                           capture_output=True, timeout=20)
+            subprocess.run(
+                ["sips", "-s", "format", "jpeg", str(src), "--out", str(dst)],
+                check=True,
+                capture_output=True,
+                timeout=20,
+            )
             img = Image.open(io.BytesIO(dst.read_bytes()))
             img.load()
             return img

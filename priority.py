@@ -2,29 +2,41 @@
 
 score 0-100; level urgent >= 75, high >= 50, normal >= 25, else low. Reasons are short plain phrases.
 """
+
 from __future__ import annotations
 
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import triage
 from common import haversine_m, parse_dt
 
 GROWTH_RADIUS_M = 100
-HAZARD_WORDS = ["glass", "needle", "syringe", "sharps", "asbestos", "chemical", "clinical", "oil drum", "gas cylinder",
-                "playground", "school"]
+HAZARD_WORDS = [
+    "glass",
+    "needle",
+    "syringe",
+    "sharps",
+    "asbestos",
+    "chemical",
+    "clinical",
+    "oil drum",
+    "gas cylinder",
+    "playground",
+    "school",
+]
 PLACE_WORDS = {"playground": "Near a playground", "school": "Near a school"}
 
-W_HAZARD = 50       # specialist decision or a hazard keyword
-W_PER_DAY = 8       # per day since first report
+W_HAZARD = 50  # specialist decision or a hazard keyword
+W_PER_DAY = 8  # per day since first report
 MAX_AGE = 32
-W_GROWING = 15      # growing week on week, plus W_PER_NEW per extra sighting over last week
+W_GROWING = 15  # growing week on week, plus W_PER_NEW per extra sighting over last week
 W_PER_NEW = 4
 MAX_GROWTH = 27
-W_REPEAT = 10       # repeat hotspot (3+ reports within 100 m in 90 days)
+W_REPEAT = 10  # repeat hotspot (3+ reports within 100 m in 90 days)
 W_PER_REPORTER = 4  # per extra person reporting
 MAX_REPORTERS = 12
-W_GONE = -10        # more residents say it's gone than still there
+W_GONE = -10  # more residents say it's gone than still there
 
 
 def level_for(score: int) -> str:
@@ -47,9 +59,10 @@ def _hazard_word(texts: list[str]) -> str | None:
 class Context:
     """Precomputed sightings (reports + still-there confirmations) so a whole list scores in one pass."""
 
-    def __init__(self, incidents: list[dict], reports: list[dict], confirmations: list[dict],
-                 now: datetime | None = None):
-        self.now = now or datetime.now(timezone.utc)
+    def __init__(
+        self, incidents: list[dict], reports: list[dict], confirmations: list[dict], now: datetime | None = None
+    ):
+        self.now = now or datetime.now(UTC)
         self.incidents = incidents
         self.w1 = self.now - timedelta(days=7)
         self.w2 = self.now - timedelta(days=14)
@@ -63,7 +76,9 @@ class Context:
             d = parse_dt(r["created_at"])
             if d is None or d < self.w2:
                 continue
-            lat, lon = (r.get("lat"), r.get("lon")) if r.get("lat") is not None else loc.get(r["incident_id"], (None, None))
+            lat, lon = (
+                (r.get("lat"), r.get("lon")) if r.get("lat") is not None else loc.get(r["incident_id"], (None, None))
+            )
             if lat is not None:
                 self.sightings.append((lat, lon, d, r["incident_id"], "report"))
         self.conf_by_inc: dict[int, list[dict]] = {}
@@ -114,9 +129,11 @@ def compute(inc: dict, ctx: Context) -> dict:
     growing = this >= 2 and this > last
     out = {"still_there_count": still, "gone_count": gone}
     if status in ("cleared", "not_fly_tip", "forwarded"):
-        out["priority"] = {"score": 0, "level": "low",
-                           "reasons": [{"cleared": "Cleared", "not_fly_tip": "Not fly-tipping"}.get(
-                               status, "Passed on")]}
+        out["priority"] = {
+            "score": 0,
+            "level": "low",
+            "reasons": [{"cleared": "Cleared", "not_fly_tip": "Not fly-tipping"}.get(status, "Passed on")],
+        }
         out["growing"] = False
         return out
 

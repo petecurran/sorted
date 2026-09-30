@@ -7,9 +7,11 @@ seed/land_railway.geojson (OSM landuse=railway ways) and
 seed/land_national_highways.geojson (National Highways RedLine polygons that
 touch Liverpool). Needs seed/wards.geojson for the city outline.
 """
+
 import json
 from pathlib import Path
-from shapely.geometry import shape, mapping, LineString, Polygon
+
+from shapely.geometry import LineString, Polygon, mapping, shape
 from shapely.ops import linemerge, unary_union
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -25,8 +27,11 @@ def rnd(c, dp=5):
 
 def feature(geom, props):
     g = mapping(geom)
-    return {"type": "Feature", "properties": props,
-            "geometry": {"type": g["type"], "coordinates": rnd(g["coordinates"])}}
+    return {
+        "type": "Feature",
+        "properties": props,
+        "geometry": {"type": g["type"], "coordinates": rnd(g["coordinates"])},
+    }
 
 
 def save(name, feats, about):
@@ -50,7 +55,11 @@ streets = []
 for name, lines in sorted(by_name.items()):
     geom = linemerge(lines).simplify(0.00004, preserve_topology=False)
     streets.append(feature(geom, {"name": name}))
-save("streets.geojson", streets, "Named streets in Liverpool from OpenStreetMap (ODbL, © OpenStreetMap contributors), merged by name and simplified.")
+save(
+    "streets.geojson",
+    streets,
+    "Named streets in Liverpool from OpenStreetMap (ODbL, © OpenStreetMap contributors), merged by name and simplified.",
+)
 
 # Railway land: OSM landuse=railway ways (the two multipolygon relations carry no geometry in the export).
 rail = []
@@ -60,14 +69,31 @@ for e in json.load(open(LAND / "osm_landuse_railway_liverpool.json"))["elements"
     poly = Polygon([(p["lon"], p["lat"]) for p in e["geometry"]]).buffer(0)
     if poly.is_empty:
         continue
-    rail.append(feature(poly.simplify(0.00003), {"source": "OSM landuse=railway", "osm_id": e["id"],
-                                                  "operator": e.get("tags", {}).get("operator")}))
-save("land_railway.geojson", rail, "Railway land in Liverpool from OpenStreetMap landuse=railway (ODbL). A stand-in: Network Rail's own boundary is not open.")
+    rail.append(
+        feature(
+            poly.simplify(0.00003),
+            {"source": "OSM landuse=railway", "osm_id": e["id"], "operator": e.get("tags", {}).get("operator")},
+        )
+    )
+save(
+    "land_railway.geojson",
+    rail,
+    "Railway land in Liverpool from OpenStreetMap landuse=railway (ODbL). A stand-in: Network Rail's own boundary is not open.",
+)
 
 # National Highways RedLine: keep polygons within about 1 km of the city.
 nh = []
 for f in json.load(open(LAND / "nh_redline_liverpool_bbox.geojson"))["features"]:
     g = shape(f["geometry"]).buffer(0)
     if g.intersects(near_city):
-        nh.append(feature(g.simplify(0.00003), {"source": "National Highways Operational Highway Boundary (RedLine), indicative only"}))
-save("land_national_highways.geojson", nh, "National Highways RedLine boundary near Liverpool (© Crown copyright 2026, OS AC0000827444; indicative only, licence custom).")
+        nh.append(
+            feature(
+                g.simplify(0.00003),
+                {"source": "National Highways Operational Highway Boundary (RedLine), indicative only"},
+            )
+        )
+save(
+    "land_national_highways.geojson",
+    nh,
+    "National Highways RedLine boundary near Liverpool (© Crown copyright 2026, OS AC0000827444; indicative only, licence custom).",
+)

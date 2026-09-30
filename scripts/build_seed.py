@@ -14,6 +14,7 @@ else is simulated. The photos are AI-generated illustrations. scripts/start_serv
 
 Run from the repo root:  uv run python scripts/build_seed.py
 """
+
 from __future__ import annotations
 
 import bisect
@@ -23,7 +24,7 @@ import json
 import math
 import random
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from PIL import Image
@@ -32,23 +33,37 @@ from shapely.geometry import shape
 APP = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(APP))
 sys.path.insert(0, str(APP / "scripts"))
+from demo_places import GROWING, HOTSPOTS, KIT, KIT_SOURCES, MERGE_PLACE  # noqa: E402
+
 import geo  # noqa: E402
 from common import COUNCIL_NAME  # noqa: E402
-from demo_places import GROWING, HOTSPOTS, KIT, KIT_SOURCES, MERGE_PLACE  # noqa: E402
 
 SEED = APP / "seed"
 PHOTOS = SEED / "photos"
 rng = random.Random(2909)
-NOW = datetime.now(timezone.utc).replace(second=0, microsecond=0)
+NOW = datetime.now(UTC).replace(second=0, microsecond=0)
 RULES = json.loads((APP / "content/triage_rules.json").read_text())
 LABELS = {k: v for k, v in json.loads((SEED / "cases/labels.json").read_text()).items() if k.startswith("case_")}
 CENTRE = (53.4084, -2.9916)
 UNIVERSITIES = (53.4040, -2.9660)
 
 # Who is in which part of the queue: (photo, hours ago). The rest are closed, spread over the past five months.
-OPEN = [("case_144", 1.6), ("case_135", 5), ("case_131", 20), ("case_087", 26), ("case_139", 30), ("case_133", 44),
-        ("case_142", 52), ("case_130", 60), ("case_016", 70), ("case_138", 76), ("case_072", 84), ("case_141", 92),
-        ("case_104", 100), ("case_128", 108)]
+OPEN = [
+    ("case_144", 1.6),
+    ("case_135", 5),
+    ("case_131", 20),
+    ("case_087", 26),
+    ("case_139", 30),
+    ("case_133", 44),
+    ("case_142", 52),
+    ("case_130", 60),
+    ("case_016", 70),
+    ("case_138", 76),
+    ("case_072", 84),
+    ("case_141", 92),
+    ("case_104", 100),
+    ("case_128", 108),
+]
 BOOKED = [("case_129", 150), ("case_127", 170), ("case_134", 190), ("case_114", 210)]
 PLACE = {"case_144": "Lodge Lane", "case_139": "merge", "case_087": "railway"}  # special places for open cases
 PROSECUTE = {"case_089"}  # scrap metal trader: the return shows one prosecution
@@ -128,7 +143,9 @@ history = []
 
 
 def add_history(lat, lon, street, ward, dt):
-    history.append({"lat": round(lat, 6), "lon": round(lon, 6), "date": dt.date().isoformat(), "ward": ward, "street": street})
+    history.append(
+        {"lat": round(lat, 6), "lon": round(lon, 6), "date": dt.date().isoformat(), "ward": ward, "street": street}
+    )
 
 
 for name, lat, lon, recent, older in HOTSPOTS:
@@ -166,21 +183,47 @@ def decision(lab: dict) -> str:
 
 
 def model_for(lab: dict) -> dict:
-    return {"fly_tip": lab["fly_tip"], "confidence": rng.randint(84, 97), "what_you_see": lab["what_you_see"],
-            "size": lab["size"], "waste_type": lab["waste_type"], "land_type": lab["land_type"], "hazards": lab["hazards"],
-            "decision": decision(lab), "reason": "", "seconds": 0, "model": "Demo data"}
+    return {
+        "fly_tip": lab["fly_tip"],
+        "confidence": rng.randint(84, 97),
+        "what_you_see": lab["what_you_see"],
+        "size": lab["size"],
+        "waste_type": lab["waste_type"],
+        "land_type": lab["land_type"],
+        "hazards": lab["hazards"],
+        "decision": decision(lab),
+        "reason": "",
+        "seconds": 0,
+        "model": "Demo data",
+    }
 
 
-TITLES = [("fuel", "Fuel cans dumped"), ("scooter", "Broken e-scooter and rubbish dumped"),
-          ("paint", "Paint tins and building rubbish dumped"), ("plasterboard", "Building rubble dumped"),
-          ("rubble", "Building rubble dumped"), ("sand", "Sand and building waste dumped"), ("mattress", "Mattress dumped"),
-          ("sofa", "Sofa dumped"), ("armchair", "Armchair and bags dumped"), ("fridge", "Fridge freezer dumped"),
-          ("television", "Old TV and monitor dumped"), ("trolley", "Shopping trolley full of rubbish"),
-          ("pallets", "Pallets dumped"), ("wardrobe", "Broken wardrobe left out"), ("drawers", "Broken furniture left out"),
-          ("bed base", "Bed base left out"), ("gazebo", "Broken gazebo dumped"), ("footstool", "Footstool left out"),
-          ("scrap", "Scrap metal dumped"), ("trade bins", "Rubbish piled round the trade bins"),
-          ("cuttings", "Garden waste dumped"), ("garden", "Garden waste dumped"), ("carpet", "Carpet and bags dumped"),
-          ("bags", "Bags of rubbish dumped")]
+TITLES = [
+    ("fuel", "Fuel cans dumped"),
+    ("scooter", "Broken e-scooter and rubbish dumped"),
+    ("paint", "Paint tins and building rubbish dumped"),
+    ("plasterboard", "Building rubble dumped"),
+    ("rubble", "Building rubble dumped"),
+    ("sand", "Sand and building waste dumped"),
+    ("mattress", "Mattress dumped"),
+    ("sofa", "Sofa dumped"),
+    ("armchair", "Armchair and bags dumped"),
+    ("fridge", "Fridge freezer dumped"),
+    ("television", "Old TV and monitor dumped"),
+    ("trolley", "Shopping trolley full of rubbish"),
+    ("pallets", "Pallets dumped"),
+    ("wardrobe", "Broken wardrobe left out"),
+    ("drawers", "Broken furniture left out"),
+    ("bed base", "Bed base left out"),
+    ("gazebo", "Broken gazebo dumped"),
+    ("footstool", "Footstool left out"),
+    ("scrap", "Scrap metal dumped"),
+    ("trade bins", "Rubbish piled round the trade bins"),
+    ("cuttings", "Garden waste dumped"),
+    ("garden", "Garden waste dumped"),
+    ("carpet", "Carpet and bags dumped"),
+    ("bags", "Bags of rubbish dumped"),
+]
 
 
 def title_for(lab: dict) -> str:
@@ -188,8 +231,12 @@ def title_for(lab: dict) -> str:
         return "Bins left out in the back lane"
     s = lab["what_you_see"].lower()
     base = next((t for k, t in TITLES if k in s), "Rubbish dumped")
-    where = {"Back alleyway": "in the alley", "Council land": "by the garages", "Footpath/bridleway": "on the path",
-             "Commercial/industrial": "by the building"}.get(lab["land_type"]) or rng.choice(["on the pavement", "on the verge", "on the corner"])
+    where = {
+        "Back alleyway": "in the alley",
+        "Council land": "by the garages",
+        "Footpath/bridleway": "on the path",
+        "Commercial/industrial": "by the building",
+    }.get(lab["land_type"]) or rng.choice(["on the pavement", "on the verge", "on the corner"])
     return f"{base} {where}"
 
 
@@ -199,31 +246,49 @@ def actions_for(key: str, dec: str, created: datetime, role: str) -> list[dict]:
         return []
     if role == "booked":
         held = dec == "hold_for_officer"
-        return [{"at": iso(created + timedelta(hours=8)), "action": "hold" if held else "schedule",
-                 "note": "Held for inspection" if held else "Crew booked"}]
+        return [
+            {
+                "at": iso(created + timedelta(hours=8)),
+                "action": "hold" if held else "schedule",
+                "note": "Held for inspection" if held else "Crew booked",
+            }
+        ]
     if dec == "not_a_fly_tip":
         return [{"at": iso(created + timedelta(hours=5)), "action": "not_fly_tip", "note": "Not fly-tipping"}]
-    clear = lambda at: {"at": iso(at), "action": "clear", "note": "Cleared by crew", **({"photo": after} if after else {})}  # noqa: E731
+
+    def clear(at):
+        return {"at": iso(at), "action": "clear", "note": "Cleared by crew", **({"photo": after} if after else {})}
+
     if dec == "hold_for_officer":
-        acts = [{"at": iso(created + timedelta(hours=10)), "action": "hold", "note": "Held for inspection"},
-                {"at": iso(created + timedelta(days=2)), "action": "inspect", "note": "Site inspected"},
-                clear(created + timedelta(days=3))]
+        acts = [
+            {"at": iso(created + timedelta(hours=10)), "action": "hold", "note": "Held for inspection"},
+            {"at": iso(created + timedelta(days=2)), "action": "inspect", "note": "Site inspected"},
+            clear(created + timedelta(days=3)),
+        ]
         roll = rng.random()
         if roll < 0.35:
-            acts.append({"at": iso(created + timedelta(days=5)), "action": "warning_letter", "note": "Warning letter sent"})
+            acts.append(
+                {"at": iso(created + timedelta(days=5)), "action": "warning_letter", "note": "Warning letter sent"}
+            )
         elif roll < 0.45:
-            acts.append({"at": iso(created + timedelta(days=9)), "action": "fpn", "note": "Fixed penalty notice issued"})
+            acts.append(
+                {"at": iso(created + timedelta(days=9)), "action": "fpn", "note": "Fixed penalty notice issued"}
+            )
         if key in PROSECUTE and created + timedelta(days=30) < NOW:
             acts.append({"at": iso(created + timedelta(days=30)), "action": "prosecution", "note": "Prosecution"})
         return sorted(acts, key=lambda a: a["at"])
     gap = 2 if dec == "specialist" else 1
-    return [{"at": iso(created + timedelta(hours=6)), "action": "schedule", "note": "Crew booked"},
-            clear(created + timedelta(days=gap))]
+    return [
+        {"at": iso(created + timedelta(hours=6)), "action": "schedule", "note": "Crew booked"},
+        clear(created + timedelta(days=gap)),
+    ]
 
 
 hot_cycle = itertools.cycle(HOTSPOTS)
 roles = {k: ("open", h) for k, h in OPEN} | {k: ("booked", h) for k, h in BOOKED}
-closed = [k for k in sorted(LABELS) if k not in roles and k not in KIT_SOURCES and (PHOTOS / f"{k}_before.jpg").exists()]
+closed = [
+    k for k in sorted(LABELS) if k not in roles and k not in KIT_SOURCES and (PHOTOS / f"{k}_before.jpg").exists()
+]
 closed_age = {k: 10 + (140 * i / max(1, len(closed) - 1)) + rng.uniform(-1.5, 1.5) for i, k in enumerate(closed)}
 if "case_089" in closed_age:
     closed_age["case_089"] = max(closed_age["case_089"], 70)  # old enough for the prosecution to have happened
@@ -251,12 +316,23 @@ for key in [k for k, _ in OPEN] + [k for k, _ in BOOKED] + closed:
     else:
         lat, lon, street, ward = street_point()
     dec = decision(lab)
-    incidents.append({
-        "key": key, "photo": f"seed/photos/{key}_before.jpg", "lat": round(lat, 6), "lon": round(lon, 6),
-        "street": street or None, "ward": ward, "created_at": iso(created), "report_count": 2 if special == "merge" else 1,
-        "description": title_for(lab), "model": model_for(lab), "actions": actions_for(key, dec, created, role),
-        "demo_case": True, "source": "Simulated report. AI-generated illustrative photo.",
-    })
+    incidents.append(
+        {
+            "key": key,
+            "photo": f"seed/photos/{key}_before.jpg",
+            "lat": round(lat, 6),
+            "lon": round(lon, 6),
+            "street": street or None,
+            "ward": ward,
+            "created_at": iso(created),
+            "report_count": 2 if special == "merge" else 1,
+            "description": title_for(lab),
+            "model": model_for(lab),
+            "actions": actions_for(key, dec, created, role),
+            "demo_case": True,
+            "source": "Simulated report. AI-generated illustrative photo.",
+        }
+    )
 incidents.sort(key=lambda i: i["created_at"])
 (SEED / "demo_incidents.json").write_text(json.dumps(incidents, indent=1))
 print(f"cases: {len(incidents)} ({len(OPEN)} open, {len(BOOKED)} booked, {len(closed)} closed)")

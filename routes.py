@@ -5,26 +5,28 @@ from the last urgent stop through the rest and back to the depot. One OSRM route
 the legs and road geometry. If OSRM is down: nearest-neighbour + 2-opt on straight-line distance, same urgent rule.
 No clock ETAs and no on-site minutes.
 """
+
 from __future__ import annotations
 
+import itertools
 import os
 import threading
 import time
+from datetime import UTC, datetime
 
 import requests
 
 import db
 import priority
 from common import case_ref, config, haversine_m, log, parse_dt
-from datetime import datetime, timezone
 
 # The public OSRM demo server allows light, non-commercial use only (1 request a second). Run your own for real use.
 OSRM_BASE = os.environ.get("FT_OSRM_URL", "https://router.project-osrm.org").rstrip("/")
 TRIP = OSRM_BASE + "/trip/v1/driving/{coords}?{params}&overview=full&geometries=geojson&annotations=false"
 ROUTE = OSRM_BASE + "/route/v1/driving/{coords}?overview=full&geometries=geojson"
 OSRM_TIMEOUT_S = 6
-FALLBACK_KMH = 18.0          # city driving incl. junctions, for the straight-line fallback
-ROAD_FACTOR = 1.35           # straight line -> road distance, for the fallback
+FALLBACK_KMH = 18.0  # city driving incl. junctions, for the straight-line fallback
+ROAD_FACTOR = 1.35  # straight line -> road distance, for the fallback
 CACHE_S = 60
 GMAPS_MAX_WAYPOINTS = 9
 
@@ -33,11 +35,11 @@ METHOD_OSRM = "Optimised for road distance"
 METHOD_FALLBACK = "Optimised for straight-line distance (road data unavailable)"
 URGENT_FIRST = ", urgent jobs first"
 
-OSRM_BACKOFF_S = 120         # after a failure, use straight lines for a while instead of waiting each time
+OSRM_BACKOFF_S = 120  # after a failure, use straight lines for a while instead of waiting each time
 _osrm_down_until = 0.0
 _cache: dict[tuple, tuple[float, dict]] = {}
 _lock = threading.Lock()
-_STARTED = datetime.now(timezone.utc)  # routes show only work booked or held since this server started
+_STARTED = datetime.now(UTC)  # routes show only work booked or held since this server started
 
 
 def team_filter(team: str, inc: dict) -> bool:
@@ -54,12 +56,15 @@ def team_filter(team: str, inc: dict) -> bool:
 
 # ---- OSRM ---------------------------------------------------------------------------------------
 
+
 def _get(url: str) -> dict:
     global _osrm_down_until
     if time.time() < _osrm_down_until:
         raise RuntimeError("backing off after a recent OSRM failure")
     try:
-        r = requests.get(url, timeout=OSRM_TIMEOUT_S, headers={"User-Agent": "sorted (https://github.com/petecurran/sorted)"})
+        r = requests.get(
+            url, timeout=OSRM_TIMEOUT_S, headers={"User-Agent": "sorted (https://github.com/petecurran/sorted)"}
+        )
         r.raise_for_status()
         j = r.json()
         if j.get("code") != "Ok":
@@ -114,13 +119,14 @@ def _osrm_plan(depot, urgent, rest):
 
 # ---- straight-line fallback ---------------------------------------------------------------------
 
+
 def _dist(a, b) -> float:
     return haversine_m(a["lat"], a["lon"], b["lat"], b["lon"])
 
 
 def _path_len(start, seq, end) -> float:
     pts = [start] + seq + ([end] if end is not None else [])
-    return sum(_dist(a, b) for a, b in zip(pts, pts[1:]))
+    return sum(_dist(a, b) for a, b in itertools.pairwise(pts))
 
 
 def _nn(start, incs):
@@ -140,7 +146,7 @@ def _two_opt(start, seq, end):
         improved = False
         for i in range(len(best) - 1):
             for j in range(i + 1, len(best)):
-                cand = best[:i] + best[i:j + 1][::-1] + best[j + 1:]
+                cand = best[:i] + best[i : j + 1][::-1] + best[j + 1 :]
                 L = _path_len(start, cand, end)
                 if L < best_len - 0.5:
                     best, best_len, improved = cand, L, True
@@ -155,7 +161,7 @@ def _fallback_plan(depot, urgent, rest):
     ordered = u + r
     pts = [d] + ordered + [d]
     legs = []
-    for a, b in zip(pts, pts[1:]):
+    for a, b in itertools.pairwise(pts):
         m = _dist(a, b) * ROAD_FACTOR
         legs.append((m, m / (FALLBACK_KMH * 1000 / 3600)))
     return ordered, legs, [[p["lat"], p["lon"]] for p in pts]
@@ -163,24 +169,29 @@ def _fallback_plan(depot, urgent, rest):
 
 # ---- Google Maps --------------------------------------------------------------------------------
 
+
+def _ll(p) -> str:
+    return f"{p[0]:.6f},{p[1]:.6f}"
+
+
 def google_maps_urls(depot, stops) -> list[str]:
     """Driving directions depot -> stops -> depot, split so each link has at most 9 waypoints."""
     if not stops:
         return []
     pts = [(depot["lat"], depot["lon"])] + [(s["lat"], s["lon"]) for s in stops] + [(depot["lat"], depot["lon"])]
-    ll = lambda p: f"{p[0]:.6f},{p[1]:.6f}"
     urls, i = [], 0
     while i < len(pts) - 1:
-        seg = pts[i:i + GMAPS_MAX_WAYPOINTS + 2]
-        url = f"https://www.google.com/maps/dir/?api=1&origin={ll(seg[0])}&destination={ll(seg[-1])}"
+        seg = pts[i : i + GMAPS_MAX_WAYPOINTS + 2]
+        url = f"https://www.google.com/maps/dir/?api=1&origin={_ll(seg[0])}&destination={_ll(seg[-1])}"
         if len(seg) > 2:
-            url += "&waypoints=" + "|".join(ll(p) for p in seg[1:-1])
+            url += "&waypoints=" + "|".join(_ll(p) for p in seg[1:-1])
         urls.append(url + "&travelmode=driving")
         i += len(seg) - 1
     return urls
 
 
 # ---- main ---------------------------------------------------------------------------------------
+
 
 def plan(team: str, incidents: list[dict]) -> dict:
     team = "officer" if team == "officer" else "crew"
@@ -191,8 +202,12 @@ def plan(team: str, incidents: list[dict]) -> dict:
     incs.sort(key=lambda i: i["id"])
     urgent = [i for i in incs if level[i["id"]] == "urgent"]
     rest = [i for i in incs if level[i["id"]] != "urgent"]
-    key = (team, tuple((i["id"], round(i["lat"], 6), round(i["lon"], 6), level[i["id"]]) for i in incs),
-           round(depot["lat"], 6), round(depot["lon"], 6))
+    key = (
+        team,
+        tuple((i["id"], round(i["lat"], 6), round(i["lon"], 6), level[i["id"]]) for i in incs),
+        round(depot["lat"], 6),
+        round(depot["lon"], 6),
+    )
     with _lock:
         hit = _cache.get(key)
         if hit and time.time() - hit[0] < CACHE_S:
@@ -210,26 +225,39 @@ def plan(team: str, incidents: list[dict]) -> dict:
             method = METHOD_FALLBACK
 
     stops = []
-    for n, (inc, (dm, ds)) in enumerate(zip(ordered, legs), start=1):
+    for n, (inc, (dm, ds)) in enumerate(zip(ordered, legs, strict=False), start=1):
         t = inc.get("triage") or {}
         what = inc.get("public_summary") or t.get("waste_type") or "Fly-tipping"
-        stops.append({
-            "incident_id": inc["id"], "case_ref": case_ref(inc["id"]), "order": n,
-            "lat": inc["lat"], "lon": inc["lon"], "street": inc.get("street"), "ward": inc.get("ward"),
-            "label": f"{inc.get('street') or 'Unnamed street'}: {what}",
-            "decision": t.get("decision"), "priority_level": level[inc["id"]],
-            "drive_min_from_prev": round(ds / 60, 1), "drive_km_from_prev": round(dm / 1000, 2),
-        })
+        stops.append(
+            {
+                "incident_id": inc["id"],
+                "case_ref": case_ref(inc["id"]),
+                "order": n,
+                "lat": inc["lat"],
+                "lon": inc["lon"],
+                "street": inc.get("street"),
+                "ward": inc.get("ward"),
+                "label": f"{inc.get('street') or 'Unnamed street'}: {what}",
+                "decision": t.get("decision"),
+                "priority_level": level[inc["id"]],
+                "drive_min_from_prev": round(ds / 60, 1),
+                "drive_km_from_prev": round(dm / 1000, 2),
+            }
+        )
     back = legs[len(ordered)] if len(legs) > len(ordered) else (0.0, 0.0)
     total_s = sum(s for _, s in legs)
     total_m = sum(m for m, _ in legs)
     out = {
-        "team": team, "depot": depot, "stops": stops,
+        "team": team,
+        "depot": depot,
+        "stops": stops,
         "return_to_depot": {"drive_min": round(back[1] / 60, 1), "drive_km": round(back[0] / 1000, 2)},
-        "total_drive_min": int(round(total_s / 60)), "total_km": round(total_m / 1000, 1),
+        "total_drive_min": int(round(total_s / 60)),
+        "total_km": round(total_m / 1000, 1),
         "distance_km": round(total_m / 1000, 1),  # kept for older UI code; same as total_km
         "urgent_first": bool(urgent),
-        "order_method": method.replace(" (", URGENT_FIRST + " (", 1) if urgent and "(" in method
+        "order_method": method.replace(" (", URGENT_FIRST + " (", 1)
+        if urgent and "(" in method
         else method + (URGENT_FIRST if urgent else ""),
         "geometry": geom,
         "google_maps_urls": google_maps_urls(depot, stops),

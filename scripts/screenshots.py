@@ -8,6 +8,7 @@ the routes have stops, and photographs each part of the app. It rebrands to the 
 minute (content/brand.json) and always puts the original back. Uses the installed Google Chrome. Start from fresh
 data each time: the script changes it.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -27,8 +28,14 @@ KIT = APP / "seed" / "live_demo"
 STAFF = {"email": "john.smith@mersey-vale.example", "name": "John Smith", "at": "2026-01-01T09:00:00Z"}
 DESKTOP = {"viewport": {"width": 1280, "height": 860}}
 PHONE = {"viewport": {"width": 390, "height": 844}, "device_scale_factor": 2, "is_mobile": True, "has_touch": True}
-HUMPINGTON = {"council_name": "Humpington Council", "place": "Humpington", "case_prefix": "HC", "colour": "#D81B60",
-              "accent": "#FFC71F", "mark": "humpington-pirate.svg"}
+HUMPINGTON = {
+    "council_name": "Humpington Council",
+    "place": "Humpington",
+    "case_prefix": "HC",
+    "colour": "#D81B60",
+    "accent": "#FFC71F",
+    "mark": "humpington-pirate.svg",
+}
 
 
 def save(page, name: str, full: bool = False):
@@ -120,7 +127,10 @@ def main():
 
         print("the laptop reports photos 1 to 3")
         for f in ("1_black_bags_jubilee_drive.jpg", "2_fridge_lawrence_road.jpg", "3_paint_tins_oglet_lane.jpg"):
-            api.post(f"{base}/api/reports", multipart={"photo": {"name": f, "mimeType": "image/jpeg", "buffer": (KIT / f).read_bytes()}})
+            api.post(
+                f"{base}/api/reports",
+                multipart={"photo": {"name": f, "mimeType": "image/jpeg", "buffer": (KIT / f).read_bytes()}},
+            )
         time.sleep(5)
 
         print("council cards")
@@ -150,11 +160,20 @@ def main():
         print("routes, the return and hotspots")
         for street, act in (("Makin Street", "schedule"), ("Jubilee Drive", "hold"), ("Oglet Lane", "hold")):
             api.post(f"{base}/api/incidents/{find(street)['id']}/actions", data={"action": act})
-        crew = [i for i in incidents() if i["status"] == "triaged" and (i.get("triage") or {}).get("decision") == "clear_now"
-                and not i.get("forward_to")][:3]
+        crew = [
+            i
+            for i in incidents()
+            if i["status"] == "triaged"
+            and (i.get("triage") or {}).get("decision") == "clear_now"
+            and not i.get("forward_to")
+        ][:3]
         for i in crew:
             api.post(f"{base}/api/incidents/{i['id']}/actions", data={"action": "schedule"})
-        for tab, name, wait in (("routes", "council-routes", 6000), ("return", "council-return", 2000), ("reduce", "council-reduce", 2500)):
+        for tab, name, wait in (
+            ("routes", "council-routes", 6000),
+            ("return", "council-return", 2000),
+            ("reduce", "council-reduce", 2500),
+        ):
             cq.goto(f"{base}/council#{tab}", wait_until="domcontentloaded")
             settle(cq, wait)
             save(cq, name)
@@ -174,8 +193,11 @@ def main():
             pm.goto(base + "/", wait_until="domcontentloaded")
             settle(pm, 2500)
             save(pm, "rebrand-phone")
-            subprocess.run([sys.executable, str(APP / "scripts" / "brand_check.py"), "--base", base], check=False,
-                           stdout=subprocess.DEVNULL)
+            subprocess.run(
+                [sys.executable, str(APP / "scripts" / "brand_check.py"), "--base", base],
+                check=False,
+                stdout=subprocess.DEVNULL,
+            )
             cq.goto(f"{base}/dev/brand-check/", wait_until="load")
             settle(cq, 1500)
             save(cq, "rebrand-check")

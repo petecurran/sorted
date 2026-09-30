@@ -5,6 +5,7 @@ Precedence:
   day -> model says no or unsure (review: a person checks) -> hold waste types -> clear_now.
 Then, if someone else must clear it (whose_job), `forward_to` names them and the decision_why says pass it on.
 """
+
 from __future__ import annotations
 
 import re
@@ -33,7 +34,11 @@ def _hazard_hit(hazards: str, keywords: list[str]) -> str | None:
         return None
     for frag in re.split(r"[,;/]| and ", hazards.lower()):
         frag = frag.strip()
-        if not frag or frag in ("none", "n/a", "unknown", "none visible", "nothing") or re.match(r"^(no|none|not)\b", frag):
+        if (
+            not frag
+            or frag in ("none", "n/a", "unknown", "none visible", "nothing")
+            or re.match(r"^(no|none|not)\b", frag)
+        ):
             continue
         for kw in keywords:
             if re.search(rf"\b{re.escape(kw.lower())}", frag):
@@ -45,8 +50,13 @@ def public_summary(what_you_see: str, fallback: str = "Reported fly-tipping") ->
     s = (what_you_see or "").strip()
     if not s:
         return fallback
-    s = re.sub(r"^(the (photo|image|picture) shows|this (photo|image) shows|(i|we) (can )?see|there (is|are)|"
-               r"a photo of|an image of|image of|photo of)\s+", "", s, flags=re.I)
+    s = re.sub(
+        r"^(the (photo|image|picture) shows|this (photo|image) shows|(i|we) (can )?see|there (is|are)|"
+        r"a photo of|an image of|image of|photo of)\s+",
+        "",
+        s,
+        flags=re.I,
+    )
     s = re.split(r"(?<=[.!?])\s", s)[0].rstrip(" .!?")
     if len(s) > 100:
         cut = s[:100].rsplit(" ", 1)[0]
@@ -61,8 +71,7 @@ def _how_we_know(match: dict, land_type, rail_m) -> str:
         return "Map check: inside the National Highways boundary."
     if "land_type" in match:
         return f"Land type from the photo: {land_type or 'unknown'}."
-    return (f"Land type from the photo: {land_type or 'unknown'}. "
-            "No railway or National Highways land on the map.")
+    return f"Land type from the photo: {land_type or 'unknown'}. No railway or National Highways land on the map."
 
 
 def whose_job(lat, lon, land_type) -> dict:
@@ -82,16 +91,29 @@ def whose_job(lat, lon, land_type) -> dict:
             lt = m["land_type"] if isinstance(m["land_type"], list) else [m["land_type"]]
             ok = ok and land_type in lt
         if ok:
-            out = {"body": rule.get("body"), "law": rule.get("law"), "note": rule.get("note", ""),
-                   "clear_first_bill_later": bool(rule.get("clear_first_bill_later", False)), "rule": rule.get("id"),
-                   "how_we_know": _how_we_know(m, land_type, rail)}
+            out = {
+                "body": rule.get("body"),
+                "law": rule.get("law"),
+                "note": rule.get("note", ""),
+                "clear_first_bill_later": bool(rule.get("clear_first_bill_later", False)),
+                "rule": rule.get("id"),
+                "how_we_know": _how_we_know(m, land_type, rail),
+            }
             break
     if out is None:
-        d = wj.get("default") or {"body": COUNCIL_NAME,
-                                  "law": "Environmental Protection Act 1990 s.33 and s.89", "note": ""}
-        out = {"body": d.get("body"), "law": d.get("law"), "note": d.get("note", ""),
-               "clear_first_bill_later": bool(d.get("clear_first_bill_later", False)), "rule": "default",
-               "how_we_know": _how_we_know({}, land_type, rail)}
+        d = wj.get("default") or {
+            "body": COUNCIL_NAME,
+            "law": "Environmental Protection Act 1990 s.33 and s.89",
+            "note": "",
+        }
+        out = {
+            "body": d.get("body"),
+            "law": d.get("law"),
+            "note": d.get("note", ""),
+            "clear_first_bill_later": bool(d.get("clear_first_bill_later", False)),
+            "rule": "default",
+            "how_we_know": _how_we_know({}, land_type, rail),
+        }
     auth = geo.authority_for(lat, lon)
     out["authority"] = auth
     if auth != geo.CITY_AUTHORITY:
@@ -179,9 +201,17 @@ def forward_why(wj: dict) -> str:
     return f"{body} land. Forward to {body}."
 
 
-HAZARD_WORDS = {"asbestos": "asbestos", "sheeting": "asbestos sheeting", "corrugated": "asbestos sheeting",
-                "needle": "needles", "syringe": "needles", "chemical": "chemicals", "oil": "oil or fuel",
-                "drum": "chemical drums", "gas cylinder": "gas cylinder"}
+HAZARD_WORDS = {
+    "asbestos": "asbestos",
+    "sheeting": "asbestos sheeting",
+    "corrugated": "asbestos sheeting",
+    "needle": "needles",
+    "syringe": "needles",
+    "chemical": "chemicals",
+    "oil": "oil or fuel",
+    "drum": "chemical drums",
+    "gas cylinder": "gas cylinder",
+}
 WASTE_WORDS = {"Asbestos": "asbestos", "Clinical": "clinical waste", "Chemical drums, oil or fuel": "chemicals or fuel"}
 
 
@@ -196,8 +226,9 @@ def headline_alert(t: dict) -> str | None:
     keywords = rules.get("specialist_hazard_keywords", list(HAZARD_WORDS))
     if t.get("decision") == "specialist":
         waste = t.get("waste_type")
-        kw = _hazard_hit(t.get("hazards") or "", keywords) or \
-            _hazard_hit(f'{t.get("what_you_see") or ""}, {t.get("items") or ""}', _text_keywords(keywords))
+        kw = _hazard_hit(t.get("hazards") or "", keywords) or _hazard_hit(
+            f"{t.get('what_you_see') or ''}, {t.get('items') or ''}", _text_keywords(keywords)
+        )
         what = WASTE_WORDS.get(waste) or (HAZARD_WORDS.get(kw.lower(), kw.lower()) if kw else None)
         return f"Possible {what}: specialist removal" if what else "Specialist removal needed"
     if t.get("model_decision") == "specialist":
@@ -210,6 +241,7 @@ def headline_alert(t: dict) -> str | None:
 
 # ---- main ---------------------------------------------------------------------------------------
 
+
 def run(m: dict, *, lat, lon, ward, incident_id=None, created_at=None, incidents=None) -> dict:
     """Build the full triage block from a normalised model result `m` (see classifier.normalise)."""
     rules = content("triage_rules.json", {}) or {}
@@ -220,27 +252,42 @@ def run(m: dict, *, lat, lon, ward, incident_id=None, created_at=None, incidents
     decision = why = None
 
     spec_types = rules.get("specialist_waste_types", ["Asbestos", "Clinical", "Chemical drums, oil or fuel"])
-    keywords = rules.get("specialist_hazard_keywords", ["asbestos", "sheeting", "corrugated", "needle", "syringe",
-                                                        "chemical", "oil", "drum", "gas cylinder"])
+    keywords = rules.get(
+        "specialist_hazard_keywords",
+        ["asbestos", "sheeting", "corrugated", "needle", "syringe", "chemical", "oil", "drum", "gas cylinder"],
+    )
     # The model's description and item list are scanned too: it often lists "paint tins" without calling them a hazard.
-    seen = f'{m.get("what_you_see", "")}, {m.get("items", "")}'
-    kw = _hazard_hit(hazards, keywords) or (_hazard_hit(seen, _text_keywords(keywords))
-                                            if m.get("fly_tip") != "no" else None)
+    seen = f"{m.get('what_you_see', '')}, {m.get('items', '')}"
+    kw = _hazard_hit(hazards, keywords) or (
+        _hazard_hit(seen, _text_keywords(keywords)) if m.get("fly_tip") != "no" else None
+    )
 
     bulky_rule = rules.get("bulky_booking") or {}
     bulky = _bulky_hit(lat, lon, float(bulky_rule.get("radius_m", 30)))
     coll_rule = rules.get("collection_day") or {}
-    coll = bool(ward) and ward in (cfg.get("collection_day_wards") or []) and \
-        waste in (coll_rule.get("applies_to_waste") or ["Black bags - household"])
+    coll = (
+        bool(ward)
+        and ward in (cfg.get("collection_day_wards") or [])
+        and waste in (coll_rule.get("applies_to_waste") or ["Black bags - household"])
+    )
 
     if bulky:
-        flags.append({"kind": "bulky_booking",
-                      "text": bulky_rule.get("text") or "Bulky collection booked today",
-                      "address": bulky.get("address")})
+        flags.append(
+            {
+                "kind": "bulky_booking",
+                "text": bulky_rule.get("text") or "Bulky collection booked today",
+                "address": bulky.get("address"),
+            }
+        )
     if coll:
-        flags.append({"kind": "collection_day",
-                      "text": (coll_rule.get("text") or "Bin day in this ward. Bags are likely awaiting collection.")
-                      .replace("{ward}", ward or "")})
+        flags.append(
+            {
+                "kind": "collection_day",
+                "text": (coll_rule.get("text") or "Bin day in this ward. Bags are likely awaiting collection.").replace(
+                    "{ward}", ward or ""
+                ),
+            }
+        )
 
     if m.get("offline"):
         decision, why = "review", m.get("reason") or "Model offline. Check the photo."
@@ -254,18 +301,24 @@ def run(m: dict, *, lat, lon, ward, incident_id=None, created_at=None, incidents
             flags.append({"kind": "hazard_rule", "text": f"Possible hazard: {kw}. Specialist removal."})
     elif bulky:
         decision = bulky_rule.get("decision", "not_a_fly_tip")
-        why = bulky_rule.get("note") or (bulky_rule.get("text") or "Bulky collection booked today").rstrip(".") + ". Not fly-tipping."
+        why = (
+            bulky_rule.get("note")
+            or (bulky_rule.get("text") or "Bulky collection booked today").rstrip(".") + ". Not fly-tipping."
+        )
     elif coll:
         decision = coll_rule.get("decision", "review")
-        why = coll_rule.get("note") or (coll_rule.get("text") or "Bin day in this ward").rstrip(".") + \
-            ". Check before sending a crew."
+        why = (
+            coll_rule.get("note")
+            or (coll_rule.get("text") or "Bin day in this ward").rstrip(".") + ". Check before sending a crew."
+        )
     elif m.get("fly_tip") == "no":
         # The model alone never closes a resident's report: a person checks it.
         decision, why = "review", rules.get("model_no_note") or "AI reading: possibly not fly-tipping. Check the photo."
     elif m.get("fly_tip") == "unsure":
         decision, why = "review", rules.get("unsure_note") or "AI not confident. Check the photo."
-    elif waste in (rules.get("hold_waste_types") or ["Black bags - household", "Black bags - commercial",
-                                                        "Other commercial waste"]):
+    elif waste in (
+        rules.get("hold_waste_types") or ["Black bags - household", "Black bags - commercial", "Other commercial waste"]
+    ):
         decision = "hold_for_officer"
         why = rules.get("hold_note") or "Bags and trade waste may hold evidence. Officer to inspect before clearance."
     else:
@@ -283,7 +336,10 @@ def run(m: dict, *, lat, lon, ward, incident_id=None, created_at=None, incidents
         "confidence": m.get("confidence"),
         "what_you_see": m.get("what_you_see"),
         "reason": m.get("reason"),
-        "size": size, "waste_type": waste, "land_type": land, "hazards": hazards,
+        "size": size,
+        "waste_type": waste,
+        "land_type": land,
+        "hazards": hazards,
         "model_decision": m.get("decision") if m.get("decision") != "review" else None,
         "decision": decision,
         "decision_why": why,
