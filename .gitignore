@@ -8,3 +8,7 @@ seed/photos_web/
 seed/demo_incidents.json
 seed/history.json
 seed/model_cache.json
+
+# personal Claude Code settings and notes
+.claude/settings.local.json
+CLAUDE.local.md
