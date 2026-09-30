@@ -1,0 +1,155 @@
+{
+  "_about": "How to stop hotspots coming back. hotspot_rules describe the three states. Each action says when it applies (hotspot state, and optionally waste or land types), what to do, why, the evidence and how strong it is (strong, moderate or weak), and a rough cost. Each action names its evidence.",
+  "hotspot_rules": {
+    "new_site": "nothing within 100 m in 12 months",
+    "emerging": "second report within 100 m in 28 days",
+    "repeat": "3+ reports within 100 m in 90 days"
+  },
+  "actions": [
+    {
+      "id": "fast_first_clear",
+      "applies_to": [
+        "new_site"
+      ],
+      "action": "Clear within 48 hours, ideally 24.",
+      "why": "Early clearance reduces repeat dumping at the same site.",
+      "evidence": "People litter more into an already-littered place: 32% against 14% (Cialdini et al. 1990); existing litter predicted littering across 9,757 people at 130 sites (Schultz et al. 2013).",
+      "strength": "moderate",
+      "cost": "£51 for a single item (Defra unit cost, CPI-uplifted)",
+      "why_long": "Waste invites more waste; one chair left out tells the next person that dumping here is normal.",
+      "title": "Clear within 48 hours"
+    },
+    {
+      "id": "visible_clearance",
+      "applies_to": [
+        "emerging",
+        "repeat"
+      ],
+      "action": "Tape it off as under investigation, clear within 48 hours and leave a notice explaining the clearance.",
+      "why": "Visible clearance deters repeat dumping more than unannounced clearance.",
+      "evidence": "64–82% behaved well when someone was visibly cleaning up, against 40% in a merely clean setting (Keizer et al. 2013); Keep Britain Tidy reports up to 73% fewer incidents at pilot hotspots with no control group; a UK review of ten clean-ups found silent ones increased dumping (Brown & Evans 2012).",
+      "strength": "moderate",
+      "cost": "Crew visit plus tape and sign; no verified cost for tape or signs",
+      "why_long": "Seeing order being restored works better than a silent clean-up, which can teach dumpers that someone else will tidy up.",
+      "title": "Visible clearance with an investigation notice"
+    },
+    {
+      "id": "watching_eyes",
+      "applies_to": [
+        "emerging"
+      ],
+      "waste_types": [
+        "Black bags - household",
+        "Other household waste"
+      ],
+      "action": "Put up watching-eyes and 'people here don't dump' signs.",
+      "why": "Quick deterrent for small, early-stage dumping.",
+      "evidence": "35% less antisocial behaviour across 15 experiments (Dear et al. 2019 meta-analysis); Keep Britain Tidy's eyes signs cut dog fouling 46% across 17 councils with no control group. Untested on fly-tipping.",
+      "strength": "moderate",
+      "cost": "No verified cost",
+      "why_long": "Bags or single items are starting to appear on a clean street, and signs are cheap and quick.",
+      "title": "Put up deterrent signs"
+    },
+    {
+      "id": "design_out",
+      "applies_to": [
+        "repeat"
+      ],
+      "land_types": [
+        "Highway",
+        "Footpath/bridleway",
+        "Council land",
+        "Agricultural",
+        "Commercial/industrial",
+        "Other (unidentified)"
+      ],
+      "action": "Design out the site with fencing, planting, boulders or lighting. Re-check at 30 and 90 days.",
+      "why": "Makes the site harder to access and shows it is looked after.",
+      "evidence": "Ashfield (NSW): dumping stopped once the hotspot was made to look cared for; Hyndburn reported a 100% fall at fenced and gated hotspots over 3 months (Defra claim); remediating blighted lots cut dumping calls in New Orleans (Theall et al. 2022).",
+      "strength": "moderate",
+      "cost": "No verified unit cost; Hyndburn reported saving about £4,150 over 3 months",
+      "why_long": "A spot that keeps getting dumped on is easy to reach and looks uncared for; changing it removes both.",
+      "title": "Site improvements: fencing, barriers, planting or lighting"
+    },
+    {
+      "id": "alley_gating",
+      "applies_to": [
+        "repeat"
+      ],
+      "land_types": [
+        "Back alleyway"
+      ],
+      "action": "Gate the back alley, with residents' consent and a plan for bin access.",
+      "why": "Stops non-residents getting into rear alleys.",
+      "evidence": "Liverpool's alley gates cut burglary 37% against comparison areas and returned £1.86 per £1 (Bowers et al. 2004); residents report less littering, but rubbish can build up behind gates (Sidebottom et al. 2015). Strong for burglary, weak for fly-tipping.",
+      "strength": "weak",
+      "cost": "Median £726 per gate (range £158–£1,453)",
+      "why_long": "Repeat dumping in a terraced back alley stops when outsiders can't get in.",
+      "title": "Install alley gates (with residents' consent)"
+    },
+    {
+      "id": "bulky_amnesty",
+      "applies_to": [
+        "emerging",
+        "repeat"
+      ],
+      "waste_types": [
+        "Other household waste",
+        "White goods",
+        "Other electrical"
+      ],
+      "action": "Run a time-limited free bulky collection and send a tenant pack through letting agents.",
+      "why": "Meets demand for disposal of large household items.",
+      "evidence": "Ashfield (NSW): advertising easy disposal brought 25% more clean-up bookings and 13% fewer dumping incidents; evidence on disposal charges is mixed (WRAP 2021).",
+      "strength": "weak",
+      "cost": "Bulky collections average £37.70 minimum charge (range £5–£90.90) across UK councils (commercial survey, 2026)",
+      "why_long": "Mattresses and sofas cluster where renting is high and at tenancy turnover or student move-out.",
+      "title": "Free bulky waste collection for the area"
+    },
+    {
+      "id": "scrap_leaflets",
+      "applies_to": [
+        "emerging",
+        "repeat"
+      ],
+      "waste_types": [
+        "Other household waste",
+        "Construction/demolition/excavation",
+        "Green"
+      ],
+      "action": "Leaflet nearby streets with the SCRAP duty-of-care message.",
+      "why": "Reminds householders to use licensed waste carriers.",
+      "evidence": "Only 11% of people know they can be convicted if a carrier they paid dumps their waste, and 28% know of the waste-carrier register (NatCen 2022); SCRAP is used by 46+ councils but has no outcome evaluation.",
+      "strength": "weak",
+      "cost": "No verified cost",
+      "why_long": "A cluster of house-clearance, garden or DIY loads often looks like one unlicensed carrier's work.",
+      "title": "Duty-of-care leaflets for householders"
+    },
+    {
+      "id": "covert_camera",
+      "applies_to": [
+        "repeat"
+      ],
+      "waste_types": [
+        "Construction/demolition/excavation",
+        "Other commercial waste",
+        "Black bags - commercial",
+        "White goods",
+        "Tyres"
+      ],
+      "sizes": [
+        "Transit van load",
+        "Tipper lorry load",
+        "Significant/multiple loads"
+      ],
+      "action": "Deploy a covert or number-plate camera for prosecution and vehicle seizure, and run duty-of-care checks on local traders.",
+      "why": "Helps identify vehicles used for larger deposits.",
+      "evidence": "CCTV brings modest crime reductions, largest in car parks (Piza et al. 2019 meta-analysis); Durham reported 68.4% fewer incidents after cameras and signs over 3 months with no control group (Defra claim); a covert camera in Ryde (NSW) produced penalty notices.",
+      "strength": "moderate",
+      "cost": "No verified cost",
+      "why_long": "Van loads at remote spots are usually trade waste brought in by vehicle, so catching the vehicle is the lever. Check surveillance law first.",
+      "title": "Deploy an enforcement camera (subject to legal review)"
+    }
+  ],
+  "calendar": []
+}

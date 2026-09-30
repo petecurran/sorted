@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 64" role="img" aria-label="Mersey Vale City Council (fictional)">
+  <!-- Fictional council mark for the demo: a gull over two waves. Not a real authority's logo. -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 26 C 16 16, 24 16, 30 24 C 36 16, 44 16, 52 26" stroke="#4E2681" stroke-width="5"/>
+    <path d="M6 42 C 14 36, 22 36, 30 42 S 46 48, 54 42" stroke="#005DA7" stroke-width="4"/>
+    <path d="M6 53 C 14 47, 22 47, 30 53 S 46 59, 54 53" stroke="#005DA7" stroke-width="4" opacity=".55"/>
+  </g>
+  <text x="68" y="29" font-family="'Barlow Semi Condensed','Arial Narrow',sans-serif" font-weight="700" font-size="27" fill="#4E2681" letter-spacing=".3">Mersey Vale</text>
+  <text x="68" y="54" font-family="'IBM Plex Sans',system-ui,sans-serif" font-weight="500" font-size="19" fill="#202427">City Council</text>
+</svg>

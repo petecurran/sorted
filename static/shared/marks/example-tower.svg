@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Example crest for brand.json "mark": a tower over water. Draw in currentColor, inside a 64 x 64 box, so the
+       same file works in white on the header and in the brand colour elsewhere. -->
+  <g fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M18 44 V14 h6 v5 h6 v-5 h4 v5 h6 v-5 h6 v30"/>
+    <path d="M28 44 v-9 a4 4 0 0 1 8 0 v9"/>
+    <path d="M12 44 H52"/>
+    <path d="M8 54 C 16 49, 24 49, 32 54 S 48 59, 56 54"/>
+  </g>
+</svg>

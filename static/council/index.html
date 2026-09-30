@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Fly-tipping triage · Mersey Vale City Council (demo)</title>
+  <link rel="stylesheet" href="/static/shared/tokens.css?v=9">
+  <link rel="stylesheet" href="/static/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="/static/council/council.css?v=5">
+  <link rel="stylesheet" href="/static/council/views/views.css?v=9">
+  <script src="/api/brand.js"></script>
+  <script src="/static/shared/brand.js"></script>
+  <script>window.CH_MOCK_BASE = "/static/council/mock";</script>
+  <script src="/static/shared/api.js?v=9"></script>
+  <script src="/static/vendor/leaflet/leaflet.js"></script>
+  <script src="/static/council/views/routes.js?v=9"></script>
+  <script src="/static/council/views/return.js?v=8"></script>
+  <script src="/static/council/views/reduce.js?v=7"></script>
+</head>
+<body class="cc" data-auth="out">
+  <!-- Dummy staff sign-in (demo only) -->
+  <main class="si" id="signin" hidden>
+    <form class="si-card" id="si-form" autocomplete="on" method="post" action="javascript:void(0)" onsubmit="return false">
+      <div class="si-brand">
+        <img class="cc-logo" src="/static/shared/mvcc-logo-white.svg" alt="Mersey Vale City Council" width="199" height="51">
+        <div class="cc-word-sub">Street cleansing · Fly-tipping triage</div>
+      </div>
+      <div class="si-title"><h1>Staff sign in</h1><span class="ch-demo">Demo</span></div>
+      <label class="si-field"><span>Email</span><input type="email" id="si-email" name="email" value="john.smith@mersey-vale.example" autocomplete="username"></label>
+      <label class="si-field"><span>Password</span><input type="password" id="si-pass" name="password" value="demo-password" autocomplete="current-password"></label>
+      <button class="btn btn-primary btn-big" id="si-go" type="submit">Sign in</button>
+      <p class="si-err" id="si-err" role="alert" hidden></p>
+      <p class="si-note">Demonstration system. Any password is accepted.</p>
+      <a class="si-back" href="/">← Back to the public site</a>
+    </form>
+  </main>
+
+  <div class="cc-app" id="app" hidden>
+    <header class="ch-header cc-head">
+      <a class="cc-word" href="/council#queue" aria-label="Mersey Vale City Council">
+        <img class="cc-logo" src="/static/shared/mvcc-logo-white.svg" alt="Mersey Vale City Council" width="152" height="39">
+      </a>
+      <span class="ch-demo">Demo</span>
+      <details class="cc-user">
+        <summary aria-label="Account menu"><span class="cc-user-av" id="cc-user-av">JS</span><span class="cc-user-name" id="cc-user-name"></span></summary>
+        <div class="cc-user-pop">
+          <div class="cc-user-who">Signed in as<br><b id="cc-user-email"></b></div>
+          <a class="btn" id="cc-public" href="/">Public site</a>
+          <button type="button" class="btn" id="cc-signout">Sign out</button>
+        </div>
+      </details>
+    </header>
+
+    <div class="cc-main">
+      <nav class="cc-nav" aria-label="Console sections">
+        <div class="cc-tabs" role="tablist">
+          <button role="tab" id="tab-queue" aria-controls="view-queue" data-tab="queue">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+            <span>Queue</span><span class="cc-count" id="nav-count-queue"></span>
+          </button>
+          <button role="tab" id="tab-map" aria-controls="view-map" data-tab="map">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+            <span>Map</span>
+          </button>
+          <button role="tab" id="tab-routes" aria-controls="view-routes" data-tab="routes">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></svg>
+            <span>Routes</span>
+          </button>
+          <button role="tab" id="tab-return" aria-controls="view-return" data-tab="return">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg>
+            <span>Return</span>
+          </button>
+          <button role="tab" id="tab-reduce" aria-controls="view-reduce" data-tab="reduce">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
+            <span>Reduce</span>
+          </button>
+        </div>
+      </nav>
+
+      <main class="cc-views">
+        <section class="cc-view view-queue" id="view-queue" role="tabpanel" aria-labelledby="tab-queue">
+          <div class="q-list-pane">
+            <div class="q-head">
+              <div class="q-tabs" id="q-tabs" role="tablist" aria-label="Queue">
+                <button role="tab" data-qt="action" aria-selected="true">Needs action <b></b></button>
+                <button role="tab" data-qt="booked" aria-selected="false">Booked <b></b></button>
+                <button role="tab" data-qt="done" aria-selected="false">Closed <b></b></button>
+              </div>
+              <div class="q-tools">
+                <button type="button" class="btn btn-sm btn-ghost" id="q-filter-btn" aria-expanded="true" aria-controls="q-filters">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filters<span class="q-filter-n" id="q-filter-n"></span>
+                </button>
+                <button type="button" class="linkbtn" id="q-clear" hidden>Clear</button>
+                <span class="q-shown" id="q-shown"></span>
+                <div class="seg" id="q-sort" role="group" aria-label="Sort">
+                  <button type="button" data-sort="priority" aria-pressed="true">Priority</button>
+                  <button type="button" data-sort="newest" aria-pressed="false">Newest</button>
+                </div>
+              </div>
+              <div class="q-filters" id="q-filters"></div>
+            </div>
+            <ol class="q-list" id="q-list" aria-label="Incidents"></ol>
+          </div>
+          <div class="q-card-pane" id="q-card"></div>
+        </section>
+
+        <section class="cc-view view-map" id="view-map" role="tabpanel" aria-labelledby="tab-map" hidden>
+          <div class="map-fill" id="map-main" aria-label="Map of incidents"></div>
+          <div class="map-panel" id="map-panel"></div>
+        </section>
+
+        <section class="cc-view view-mod" id="view-routes" role="tabpanel" aria-labelledby="tab-routes" hidden><div class="cv-root" id="cv-routes"></div></section>
+        <section class="cc-view view-mod" id="view-return" role="tabpanel" aria-labelledby="tab-return" hidden><div class="cv-root" id="cv-return"></div></section>
+        <section class="cc-view view-mod" id="view-reduce" role="tabpanel" aria-labelledby="tab-reduce" hidden><div class="cv-root" id="cv-reduce"></div></section>
+      </main>
+    </div>
+  </div>
+
+  <div class="cc-toasts" id="cc-toasts" aria-live="polite"></div>
+  <div class="cc-modal" id="cc-modal" hidden></div>
+  <script src="/static/council/council.js?v=7"></script>
+  <script src="/static/shared/livereload.js"></script>
+</body>
+</html>

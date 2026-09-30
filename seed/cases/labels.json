@@ -1,0 +1,1035 @@
+{
+ "_about": "What each AI-generated photo in seed/photos shows, set by looking at it. scripts/build_seed.py turns these into each case's reading. Mattresses: a single item on their own (or with one bag), a small van load with bags beside them.",
+ "case_001": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A shopping trolley filled with household rubbish, left on the pavement."
+ },
+ "case_002": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Highway",
+  "hazards": "paint tins (possible chemicals)",
+  "what_you_see": "Paint tins, broken tiles and bags of plaster on a grass verge."
+ },
+ "case_003": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A carpet roll, underlay and black bags on a grass verge."
+ },
+ "case_004": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Sawn logs and cut branches piled on a grass verge."
+ },
+ "case_005": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "An armchair and black bags dumped in a garage court."
+ },
+ "case_006": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard and a broken child's toy against a garden wall."
+ },
+ "case_007": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "An armchair and six black bags on a grass verge."
+ },
+ "case_008": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other commercial waste",
+  "land_type": "Footpath/bridleway",
+  "hazards": "none",
+  "what_you_see": "A pile of broken wooden pallets on a footpath."
+ },
+ "case_009": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "An armchair, black bags and cardboard on a grass verge."
+ },
+ "case_010": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Chemical drums, oil or fuel",
+  "land_type": "Highway",
+  "hazards": "fuel cans (possible fuel or oil)",
+  "what_you_see": "Fuel cans and plastic containers left on a grass verge."
+ },
+ "case_011": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A broken gazebo frame and tarpaulin on the pavement."
+ },
+ "case_012": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "A shopping trolley full of rubbish in a garage court."
+ },
+ "case_013": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden waste and black bags heaped on a grass verge."
+ },
+ "case_014": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard boxes and a broken chair on the pavement."
+ },
+ "case_015": {
+  "fly_tip": "no",
+  "size": null,
+  "waste_type": null,
+  "land_type": "Back alleyway",
+  "hazards": "none",
+  "what_you_see": "Three wheelie bins standing in a back lane. No dumped waste."
+ },
+ "case_016": {
+  "fly_tip": "yes",
+  "size": "Single item",
+  "waste_type": "White goods",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A fridge freezer left on the pavement."
+ },
+ "case_017": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and bags on a grass verge."
+ },
+ "case_018": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "An armchair and black bags on the pavement."
+ },
+ "case_019": {
+  "fly_tip": "yes",
+  "size": "Single item",
+  "waste_type": "White goods",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A fridge freezer lying on a grass verge."
+ },
+ "case_020": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Back alleyway",
+  "hazards": "none",
+  "what_you_see": "Broken tiles, plaster and rubble scattered in a garage lane."
+ },
+ "case_021": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and soil bags on a grass verge."
+ },
+ "case_022": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other electrical",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "An old television, a computer monitor and a metal cabinet on a grass verge."
+ },
+ "case_023": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard boxes and a broken chair against a wall."
+ },
+ "case_024": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Split black bags spilling household rubbish at a street corner."
+ },
+ "case_025": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard boxes and a broken chair on the pavement."
+ },
+ "case_026": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Highway",
+  "hazards": "paint tins (possible chemicals)",
+  "what_you_see": "Paint tins, a bag of plaster and broken tiles against a wall."
+ },
+ "case_027": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "A carpet roll and black bags in a garage court."
+ },
+ "case_028": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "An armchair, black bags and laminate flooring on a grass verge."
+ },
+ "case_029": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Broken plasterboard, bricks and timber against a front wall."
+ },
+ "case_030": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard and a broken chair in a garage court."
+ },
+ "case_031": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard and a broken toy against a wall."
+ },
+ "case_032": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "An armchair and black bags in a garage court."
+ },
+ "case_033": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "A mattress propped against a garage wall with bags beside it."
+ },
+ "case_034": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A carpet roll, underlay and black bags on a grass verge."
+ },
+ "case_035": {
+  "fly_tip": "yes",
+  "size": "Single item",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A worn sofa dumped beside wheelie bins on a grass verge."
+ },
+ "case_036": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Broken plasterboard, kitchen doors and timber on a grass verge."
+ },
+ "case_037": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A mattress propped against a wall with bags beside it."
+ },
+ "case_038": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and green bags in a garage court."
+ },
+ "case_040": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A double mattress and a broken bed frame on a grass verge."
+ },
+ "case_041": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A heap of sand and bags of building waste on the pavement."
+ },
+ "case_042": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A split mattress against a wall with bags beside it."
+ },
+ "case_043": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and black bags in a garage court."
+ },
+ "case_044": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard boxes and a broken drawer in a garage court."
+ },
+ "case_046": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Council land",
+  "hazards": "paint tins (possible chemicals)",
+  "what_you_see": "Paint tins, bags of plaster and broken tiles beside a garage."
+ },
+ "case_047": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Carpet rolls, underlay and black bags on a grass verge."
+ },
+ "case_048": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "A broken sofa frame, shelving and boards in a garage court."
+ },
+ "case_050": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "An armchair, black bags and cardboard in a garage court."
+ },
+ "case_051": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other electrical",
+  "land_type": "Highway",
+  "hazards": "e-scooter (possible lithium battery)",
+  "what_you_see": "A broken electric scooter, bricks and plastic sacks on a grass verge."
+ },
+ "case_052": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags and a broken child's toy at the foot of a wall."
+ },
+ "case_053": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, a cardboard box and a child's tricycle on a grass verge."
+ },
+ "case_054": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A double mattress and a broken bed frame on a grass verge."
+ },
+ "case_055": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Back alleyway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard and a broken chair in a back alley."
+ },
+ "case_056": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard and a broken chair beside a wheelie bin in a garage court."
+ },
+ "case_058": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and bags heaped beside garages."
+ },
+ "case_059": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "An armchair and several black bags on the pavement."
+ },
+ "case_060": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Back alleyway",
+  "hazards": "paint tins (possible chemicals)",
+  "what_you_see": "Paint tins, bags of plaster and tiles in a back alley."
+ },
+ "case_061": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Back alleyway",
+  "hazards": "none",
+  "what_you_see": "Black bags and a broken toy in a back alley."
+ },
+ "case_062": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Back alleyway",
+  "hazards": "paint tins (possible chemicals)",
+  "what_you_see": "Paint tins, plaster bags and broken tiles in a back alley."
+ },
+ "case_063": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Footpath/bridleway",
+  "hazards": "none",
+  "what_you_see": "A mattress and black bags on a riverside footpath."
+ },
+ "case_064": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard boxes and a broken chair on a grass verge."
+ },
+ "case_065": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags and a broken child's toy on a grass verge."
+ },
+ "case_066": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A carpet roll, underlay and black bags on the pavement."
+ },
+ "case_067": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A broken chest of drawers, a chair and a wardrobe door on a grass verge."
+ },
+ "case_069": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Highway",
+  "hazards": "paint tins (possible chemicals)",
+  "what_you_see": "Paint tins, bags of plaster and broken tiles against a wall."
+ },
+ "case_070": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Broken plasterboard, timber and kitchen doors in a garage court."
+ },
+ "case_071": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and bags of green waste against a front wall."
+ },
+ "case_072": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "An armchair and black bags on a grass verge."
+ },
+ "case_073": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and bags of green waste by an alley entrance."
+ },
+ "case_074": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "An armchair and black bags on the pavement."
+ },
+ "case_075": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags and a broken child's toy at a street corner."
+ },
+ "case_076": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Footpath/bridleway",
+  "hazards": "none",
+  "what_you_see": "A carpet roll, underlay and black bags on a footpath."
+ },
+ "case_077": {
+  "fly_tip": "yes",
+  "size": "Single item",
+  "waste_type": "White goods",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "A fridge freezer lying in a garage court."
+ },
+ "case_078": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Council land",
+  "hazards": "paint tins (possible chemicals)",
+  "what_you_see": "Paint tins and bags of plaster beside a garage."
+ },
+ "case_079": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Black bags and a broken toy against a garage door."
+ },
+ "case_081": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A mattress and black bags on a grass verge."
+ },
+ "case_082": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Footpath/bridleway",
+  "hazards": "none",
+  "what_you_see": "A carpet roll, underlay and black bags beside a footpath."
+ },
+ "case_083": {
+  "fly_tip": "yes",
+  "size": "Single item",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A footstool left on the pavement."
+ },
+ "case_084": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and bags of green waste on the pavement."
+ },
+ "case_085": {
+  "fly_tip": "yes",
+  "size": "Single item",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A mattress propped against a wall with a bag beside it."
+ },
+ "case_086": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Black bags and boxes around an overflowing wheelie bin."
+ },
+ "case_087": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "A mattress, black bags, a small cabinet and boxes against a wall by garages."
+ },
+ "case_088": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags and a child's toy on a grass verge."
+ },
+ "case_089": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other commercial waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Scrap metal, a steel sink unit and panels on the pavement."
+ },
+ "case_092": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and bags on a grass verge."
+ },
+ "case_093": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "A mattress propped against a wall in a garage court, with bags beside it."
+ },
+ "case_094": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Highway",
+  "hazards": "paint tins (possible chemicals)",
+  "what_you_see": "Paint tins, plaster bags and broken tiles on a grass verge."
+ },
+ "case_097": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Back alleyway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard and a broken chair in a back alley."
+ },
+ "case_098": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and bags in a garage court."
+ },
+ "case_099": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard boxes and a broken chair on a grass verge."
+ },
+ "case_100": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard boxes and a broken chair on the pavement."
+ },
+ "case_101": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Green",
+  "land_type": "Commercial/industrial",
+  "hazards": "none",
+  "what_you_see": "Garden waste and bags beside a wheelie bin by a fire station."
+ },
+ "case_102": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and bags in a garage court."
+ },
+ "case_103": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A carpet roll and a black bag on the pavement."
+ },
+ "case_104": {
+  "fly_tip": "yes",
+  "size": "Single item",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A broken wardrobe on the pavement."
+ },
+ "case_105": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and soil bags against a wall."
+ },
+ "case_106": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Two heaps of garden cuttings and bags in a garage court."
+ },
+ "case_107": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags and garden cuttings at a street corner."
+ },
+ "case_108": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and bags around a lamp post."
+ },
+ "case_109": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Footpath/bridleway",
+  "hazards": "none",
+  "what_you_see": "Black bags and a broken toy by railings on a park footpath."
+ },
+ "case_110": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Two mattresses and black bags against a front wall."
+ },
+ "case_111": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and black bags on a grass verge."
+ },
+ "case_112": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Footpath/bridleway",
+  "hazards": "none",
+  "what_you_see": "A split mattress and black bags by a park gate."
+ },
+ "case_113": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Highway",
+  "hazards": "paint tins (possible chemicals)",
+  "what_you_see": "Paint tins, a bag of plaster and broken tiles on a grass verge."
+ },
+ "case_114": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard and a broken chair at a street corner."
+ },
+ "case_115": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A carpet roll and black bags against a front wall."
+ },
+ "case_116": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Back alleyway",
+  "hazards": "none",
+  "what_you_see": "A mattress and a broken bed frame in a back alley."
+ },
+ "case_120": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Footpath/bridleway",
+  "hazards": "none",
+  "what_you_see": "A carpet roll, underlay and black bags by a park gate."
+ },
+ "case_121": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "An armchair and black bags on a grass verge."
+ },
+ "case_122": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and bags around a lamp post."
+ },
+ "case_123": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Construction/demolition/excavation",
+  "land_type": "Council land",
+  "hazards": "paint tins (possible chemicals)",
+  "what_you_see": "Paint tins and bags of plaster beside a garage."
+ },
+ "case_124": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Council land",
+  "hazards": "none",
+  "what_you_see": "Black bags and a broken toy in a garage court."
+ },
+ "case_125": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Dismantled wardrobe panels and boards on a grass verge."
+ },
+ "case_126": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A split mattress and black bags on a grass verge."
+ },
+ "case_127": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A carpet roll, underlay and black bags on a grass verge."
+ },
+ "case_128": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other commercial waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Bags and boxes piled around overflowing trade bins on the pavement."
+ },
+ "case_129": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and black bags on the pavement."
+ },
+ "case_130": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard boxes and a broken chair on a grass verge."
+ },
+ "case_131": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard boxes and a broken chair against a front wall."
+ },
+ "case_132": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A split mattress and black bags against a front wall."
+ },
+ "case_133": {
+  "fly_tip": "yes",
+  "size": "Single item",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A broken bed base with drawers on the pavement."
+ },
+ "case_134": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Back alleyway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard and a broken chair beside bins in a back alley."
+ },
+ "case_135": {
+  "fly_tip": "yes",
+  "size": "Single item",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A worn two-seater sofa on the pavement."
+ },
+ "case_136": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A mattress folded against a lamp post, with black bags."
+ },
+ "case_138": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Three black bags and a white bag at a street corner."
+ },
+ "case_139": {
+  "fly_tip": "yes",
+  "size": "Car boot or less",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Carpet rolls and black bags against a front wall."
+ },
+ "case_141": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Black bags - household",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Black bags, cardboard boxes and a broken chair against a front wall."
+ },
+ "case_142": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Green",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "Garden cuttings and bags of green waste on a grass verge."
+ },
+ "case_143": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Back alleyway",
+  "hazards": "none",
+  "what_you_see": "A split mattress and black bags in a back alley."
+ },
+ "case_144": {
+  "fly_tip": "yes",
+  "size": "Small van load",
+  "waste_type": "Other household waste",
+  "land_type": "Highway",
+  "hazards": "none",
+  "what_you_see": "A split mattress and black bags beside wheelie bins."
+ }
+}

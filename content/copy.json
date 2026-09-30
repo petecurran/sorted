@@ -1,0 +1,24 @@
+{
+  "_about": "Words the public sees. Keep them short and plain. {n} is replaced with a number.",
+  "app_name": "Sorted",
+  "tagline": "Report fly-tipping and track it until it is cleared.",
+  "report_cta": "Report fly-tipping",
+  "thanks_single": "Thank you. You are the first to report this. Check this page for updates.",
+  "thanks_multi": "{n} other people have reported this. Thank you.",
+  "privacy_note": "Your photo will be shown on the map, so try not to include faces or number plates. We remove hidden data from the photo before it is shown.",
+  "how_it_works": [
+    "Take a photo of the waste. We use the photo's location, or you can mark it on the map.",
+    "We check the photo and decide the next step.",
+    "Most waste is cleared by a crew. Some needs further inspection first.",
+    "Track the status here. When it is cleared, you will see a photo of the cleared site."
+  ],
+  "status_labels": {
+    "triaging": "Checking…",
+    "clear_now": "Crew today",
+    "hold_for_officer": "Officer to inspect",
+    "specialist": "Specialist removal",
+    "review": "Needs review",
+    "not_a_fly_tip": "Not fly-tipping",
+    "cleared": "Cleared"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "_about": "Rules applied on top of the AI's reading of the photo. Order: specialist (waste type or hazard word) > bulky booking > bin day > AI says not a fly-tip > hold types > clear now. If the AI is unsure, a person reviews it. Waste type names must match the Defra list exactly.",
+  "specialist_waste_types": [
+    "Asbestos",
+    "Clinical",
+    "Chemical drums, oil or fuel"
+  ],
+  "specialist_hazard_keywords": [
+    "asbestos",
+    "sheeting",
+    "corrugated",
+    "needle",
+    "syringe",
+    "chemical",
+    "oil",
+    "drum",
+    "gas cylinder",
+    "sheet",
+    "roof panel",
+    "cement",
+    "paint tin",
+    "paint can",
+    "fuel",
+    "petrol",
+    "jerry can",
+    "gas bottle"
+  ],
+  "specialist_note": "Possible hazardous waste. Send a licensed specialist team.",
+  "hold_waste_types": [
+    "Black bags - household",
+    "Black bags - commercial",
+    "Other commercial waste"
+  ],
+  "hold_note": "Bags and trade waste may hold evidence. Officer to inspect before clearance.",
+  "clear_note": "No evidence expected. Book a crew.",
+  "unsure_note": "AI not confident. Check the photo.",
+  "collection_day": {
+    "applies_to_waste": [
+      "Black bags - household"
+    ],
+    "decision": "review",
+    "text": "Bin day in this ward. Bags are likely awaiting collection."
+  },
+  "bulky_booking": {
+    "radius_m": 30,
+    "decision": "not_a_fly_tip",
+    "text": "Bulky collection booked today at this address."
+  }
+}

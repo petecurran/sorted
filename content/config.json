@@ -1,0 +1,22 @@
+{
+  "_about": "Demo settings. The demo follows the calendar; add \"today\": \"YYYY-MM-DD\" to fix a date. The WasteDataFlow quarter follows it too (add \"quarter\" to override). collection_day_wards are wards where it is bin day today, so bags there are probably awaiting collection. bulky_bookings are booked bulky-waste collections; a photo within 30 m of one on its date is treated as not fly-tipping. The depot is a placeholder, not a real council site.",
+  "city": "Liverpool",
+  "depot": {"lat": 53.4226, "lon": -2.9921, "name": "Depot (demo)"},
+  "quarter": {
+    "id": "2026-Q2",
+    "name": "Q2 2026/27",
+    "label": "July–September 2026",
+    "start": "2026-07-01",
+    "end": "2026-09-30",
+    "deadline": "2026-10-25"
+  },
+  "_audience": "Phones in the room (through the tunnel). audience_access: on or off (off sends every phone a thank-you and stops them polling; scripts/room.sh off). audience_uploads: on or off (off closes reporting from the room). audience_ai: on or paused (paused holds their photos for the model; yours still go straight through). audience_gap_seconds: rest between their photos so this laptop stays usable. Saved changes apply at once.",
+  "audience_access": "on",
+  "audience_uploads": "on",
+  "audience_ai": "on",
+  "audience_gap_seconds": 4,
+  "collection_day_wards": [],
+  "bulky_bookings": [
+    {"lat": 53.397012, "lon": -2.934881, "address": "Lawrence Road, Wavertree, Liverpool L15 (demo booking)", "date": "today", "items": "Fridge freezer, furniture"}
+  ]
+}

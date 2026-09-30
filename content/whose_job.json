@@ -1,0 +1,69 @@
+{
+  "_about": "Who must clear the waste, checked in order; the first rule that matches wins. near_railway_m uses seed/land_railway.geojson; in_national_highways uses seed/land_national_highways.geojson. Land type names must match the Defra list exactly.",
+  "rules": [
+    {
+      "id": "near_railway",
+      "match": {
+        "near_railway_m": 20
+      },
+      "body": "Network Rail",
+      "law": "EPA 1990 s.89(1)(e) statutory undertaker duty",
+      "note": "Within 20 m of railway land. Network Rail must clear it.",
+      "clear_first_bill_later": false
+    },
+    {
+      "id": "national_highways",
+      "match": {
+        "in_national_highways": true
+      },
+      "body": "National Highways",
+      "law": "EPA 1990 s.89(1)(ba)",
+      "note": "National Highways land. National Highways must clear it. The council can still prosecute.",
+      "clear_first_bill_later": false
+    },
+    {
+      "id": "railway_land_type",
+      "match": {
+        "land_type": [
+          "Railway"
+        ]
+      },
+      "body": "Network Rail",
+      "law": "EPA 1990 s.89(1)(e) statutory undertaker duty",
+      "note": "Railway land. Network Rail must clear it.",
+      "clear_first_bill_later": false
+    },
+    {
+      "id": "private_land",
+      "match": {
+        "land_type": [
+          "Private/residential",
+          "Commercial/industrial",
+          "Agricultural"
+        ]
+      },
+      "body": "Landowner (private land)",
+      "law": "EPA 1990 s.59 (notice to remove, 21 days)",
+      "note": "Private land. The council may clear it and bill the landowner under s.59(7), unless the occupier allowed the dumping.",
+      "clear_first_bill_later": true
+    },
+    {
+      "id": "back_alley",
+      "match": {
+        "land_type": [
+          "Back alleyway"
+        ]
+      },
+      "body": "Mersey Vale City Council",
+      "law": "EPA 1990 s.89(1)(a) duty to keep land and highways clear",
+      "note": "Back alley. The council clears dumping here, including on privately owned alleys.",
+      "clear_first_bill_later": false
+    }
+  ],
+  "default": {
+    "body": "Mersey Vale City Council",
+    "law": "EPA 1990 s.89(1)(a) duty to keep land and highways clear",
+    "note": "Public land or highway. The council must clear it.",
+    "clear_first_bill_later": false
+  }
+}

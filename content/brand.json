@@ -1,0 +1,9 @@
+{
+  "_about": "The council's name, colours, crest and case reference prefix. Save this file and both sites change on the next page load; screens opened with ?live=1 reload by themselves. place is the short name used in sentences such as 'Outside Mersey Vale'. colour is the header and button colour, so it must be dark enough for white text. accent is the highlight on the Demo badge and focus rings. Use hex codes. Do not reuse the words 'Mersey Vale' or 'MVCC' inside a new name. mark is optional: a crest drawn as an SVG file in static/shared/marks/ (viewBox 0 0 64 64, drawn in currentColor), placed to the left of the name. Leave it empty for the standard gull and waves. Check every page afterwards with scripts/brand_check.py.",
+  "council_name": "Mersey Vale City Council",
+  "place": "Mersey Vale",
+  "case_prefix": "MVCC",
+  "colour": "#4E2681",
+  "accent": "#FFC71F",
+  "mark": ""
+}

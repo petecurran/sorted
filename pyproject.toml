@@ -1,0 +1,21 @@
+[project]
+name = "sorted"
+version = "0.1.0"
+description = "Sorted: fly-tipping reporting and triage for councils, with a vision model that runs on the council's own machine"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "python-multipart>=0.0.9",
+    "pillow>=10.4",
+    "shapely>=2.0",
+    "requests>=2.32",
+    "qrcode[pil]>=8.2",
+]
+
+[project.optional-dependencies]
+# The local model runs on Apple silicon only (MLX). Without it the app uses cached readings for the demo photos.
+gemma = ["mlx-vlm>=0.3"]
+
+[tool.uv]
+package = false

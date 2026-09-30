@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Example crest for content/brand.json "mark" (the Humpington Council rebrand): a pirate ship. Drawn in currentColor. -->
+  <g fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 44 V6"/>
+    <path d="M32 6 H45 V14 H32" stroke-width="3"/>
+    <path d="M36 8 L41 12 M41 8 L36 12" stroke-width="2"/>
+    <path d="M18 17 H46 C 49 24, 49 31, 46 38 H18 C 21 31, 21 24, 18 17 Z"/>
+    <path d="M8 44 H56 L49 52 H15 Z" fill="currentColor"/>
+    <path d="M6 59 C 14 54, 22 54, 30 59 S 46 64, 58 59"/>
+  </g>
+  <circle cx="32" cy="25" r="4.5" fill="currentColor"/>
+  <path d="M26 33 L38 29 M26 29 L38 33" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
