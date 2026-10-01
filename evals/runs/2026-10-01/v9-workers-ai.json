@@ -1,0 +1,491 @@
+{
+ "model": "@cf/google/gemma-4-26b-a4b-it",
+ "prompt": "classifier.PROMPT",
+ "prompt_sha256": "c513003a0bc4eea1b9eb54d5b164653709e4f57d419ca14ead17c4f6dfe9b724",
+ "settings": {
+  "max_completion_tokens": 400,
+  "temperature": 0.0,
+  "chat_template_kwargs": {
+   "enable_thinking": false
+  },
+  "backend": "workers-ai"
+ },
+ "machine": "Cloudflare Workers AI",
+ "date": "2026-10-01",
+ "results": [
+  {
+   "photo": "case_001_before.jpg",
+   "photo_sha256": "5c4f08b5a88ff55fbf92124bd370e1574de6e496c0648937db3ce05f8350d05e",
+   "seconds": 3.6,
+   "raw_text": "{\"what_you_see\": \"A shopping trolley overflowing with rubbish is left on a residential pavement.\", \"items\": \"1 shopping trolley, 2 black bags, 2 cardboard boxes, 1 green pole\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_002_before.jpg",
+   "photo_sha256": "60a7fa7332b9225d04713625e64042116bc6c047ecba9e2802850d50e9c2d61e",
+   "seconds": 17.4,
+   "raw_text": "{\"what_you_see\": \"A pile of mixed waste including buckets, bags, and cardboard is dumped on a grass verge next to a pavement.\", \"items\": \"4 buckets, 1 large white bag, 1 black bag, several pieces of cardboard\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"paint tins\"}"
+  },
+  {
+   "photo": "case_003_before.jpg",
+   "photo_sha256": "f35f5a16e8782a82786143d1393126fdb2a180ed635a7966febb4082cd835ab8",
+   "seconds": 7.1,
+   "raw_text": "{\"what_you_see\": \"A pile of rubbish including a carpet roll, some fabric, and three black bags is left on a grass verge next to a tree.\", \"items\": \"1 carpet roll, 1 piece of patterned fabric, 3 black bags, 1 clear plastic bag\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_005_before.jpg",
+   "photo_sha256": "caf2f4931fa82cbbf38fdcecb76054ea6a0869bf00b258c1501917134e501b24",
+   "seconds": 14.7,
+   "raw_text": "{\"what_you_see\": \"An armchair and several black bags are dumped in a garage court.\", \"items\": \"1 armchair, 5 black bags, 1 piece of cardboard\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Council land\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_006_before.jpg",
+   "photo_sha256": "d22e77e848aa11e7cd30975c738cf9562b3cce8b3263fa699179341862e64576",
+   "seconds": 1.5,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, cardboard boxes, and a pink child's tricycle is left on a residential pavement.\", \"items\": \"6 black bags, 2 cardboard boxes, 1 pink tricycle\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_007_before.jpg",
+   "photo_sha256": "8352bad96cb3969754a8b917282eb2a25ff75daaf4aac2daf579eef17e22af13",
+   "seconds": 16.3,
+   "raw_text": "{\"what_you_see\": \"An armchair and several black bags are dumped on a grass verge next to a pavement.\", \"items\": \"1 armchair, 5 black bags, 1 cardboard box, 1 white bag, 2 small containers\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_009_before.jpg",
+   "photo_sha256": "e6b98bafc19b1a81204d27a304593df51c16c561a18bf68163e35232f497e484",
+   "seconds": 4.5,
+   "raw_text": "{\"what_you_see\": \"An armchair and several black bags are dumped on a grass verge next to a pavement.\", \"items\": \"1 armchair, 4 black bags, 1 cardboard box\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_010_before.jpg",
+   "photo_sha256": "055872efc65242cf133ebec65810ebb0de593160163830825e0308d6c369d315",
+   "seconds": 29.3,
+   "raw_text": "{\"what_you_see\": \"Four plastic jerry cans are left on a grass verge next to a tree.\", \"items\": \"2 red jerry cans, 2 white jerry cans\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Chemical drums, oil or fuel\", \"land_type\": \"Highway\", \"hazards\": \"fuel cans\"}"
+  },
+  {
+   "photo": "case_013_before.jpg",
+   "photo_sha256": "924d65cd30dd110a6316ae4a11a54b2bc1db356fd814d0fa1e82282d50bfc118",
+   "seconds": 8.3,
+   "raw_text": "{\"what_you_see\": \"A pile of garden waste and four black bags has been left on a grass verge next to a pavement.\", \"items\": \"4 black bags, 1 pile of garden waste\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Green\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_016_before.jpg",
+   "photo_sha256": "8d0b4ce9449be27a7f23259306430311f45694ad19548a0e0359d7d9bf8f54bb",
+   "seconds": 12.7,
+   "raw_text": "{\"what_you_see\": \"A large white freezer and several boxes and a black bag are left on a pavement next to a brick wall.\", \"items\": \"1 white freezer, 1 black bag, 3 boxes\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"White goods\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_019_before.jpg",
+   "photo_sha256": "1ba8ad8a0828c6857fec25c001fea0a6f9ee58e76361db9ff0f999b1c7e19ac7",
+   "seconds": 7.3,
+   "raw_text": "{\"what_you_see\": \"A white fridge freezer has been dumped on a grass verge next to a road.\", \"items\": \"1 fridge freezer\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Single item\", \"waste_type\": \"White goods\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_021_before.jpg",
+   "photo_sha256": "e3bc7b3f4ea110c7b173136c641e25e7e4f72b95027e62d607b35166b2820d37",
+   "seconds": 3.6,
+   "raw_text": "{\"what_you_see\": \"A pile of garden waste and several bags of rubbish is left on a grass verge next to a pavement.\", \"items\": \"1 large pile of garden cuttings, 1 green bag, 2 white bags, 1 grey bag\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Green\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_022_before.jpg",
+   "photo_sha256": "25e0694f66807a39ab14d79dc26e443a1e397e74927d9105af5c9520700193ba",
+   "seconds": 7.5,
+   "raw_text": "{\"what_you_see\": \"Two old televisions and a cardboard box are left on a grass verge next to a green utility box.\", \"items\": \"2 televisions, 1 cardboard box\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other electrical\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_023_before.jpg",
+   "photo_sha256": "81be2bcff1078d740e015673e5c9702a06da11d4cc547aa3260ebf85d809ea49",
+   "seconds": 3.0,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, cardboard boxes, and a broken armchair is dumped on a pavement next to a road.\", \"items\": \"5 black bags, 1 armchair, 3 boxes\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_025_before.jpg",
+   "photo_sha256": "dfa05ea296a73d1bef88ebb83bb4be93a6eeae8d57e76756b37b29342c56aa12",
+   "seconds": 3.9,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, cardboard boxes, and an armchair has been dumped on a pavement next to a brick wall.\", \"items\": \"4 black bags, 1 armchair, 4 boxes\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_026_before.jpg",
+   "photo_sha256": "cc3fe689ca382dc6ef1479b823a447eac72dc389cc00e629636428e49f6f309d",
+   "seconds": 3.2,
+   "raw_text": "{\"what_you_see\": \"A pile of construction waste, white bags, and paint tins is left on a pavement next to a brick wall.\", \"items\": \"1 large white bag, 3 white buckets/tins, and various pieces of rubble/plasterboard\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Construction/demolition/excavation\", \"land_type\": \"Highway\", \"hazards\": \"paint tins\"}"
+  },
+  {
+   "photo": "case_028_before.jpg",
+   "photo_sha256": "c85338230bf7da6f4ae229955d544a2d0f075fa5b4e197c4effdb7dcf5f2e33d",
+   "seconds": 3.9,
+   "raw_text": "{\"what_you_see\": \"A pile of dumped waste including an armchair, black bags, and wooden boards is left on a grass verge next to a road.\", \"items\": \"1 armchair, 6 black bags, 2 stacks of wooden boards\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_032_before.jpg",
+   "photo_sha256": "1e89efe51dcb4db23d1ff9bde1e015e74e6c2a62aabc967d2b4b82570e846287",
+   "seconds": 3.0,
+   "raw_text": "{\"what_you_see\": \"An armchair and several black bags are dumped on a garage court.\", \"items\": \"1 armchair, 4 black bags\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Other household waste\", \"land_type\": \"Council land\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_034_before.jpg",
+   "photo_sha256": "ff84828afb91bd863b5a1039be40b49ff69727a0142626be3914b852e375fc15",
+   "seconds": 4.9,
+   "raw_text": "{\"what_you_see\": \"A roll of carpet and two black bags are left on a grass verge next to a road.\", \"items\": \"1 carpet roll, 2 black bags\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_035_before.jpg",
+   "photo_sha256": "4a2616d46202ebff8ec0762e0f8de165f505be7b8a9fbaa067f50fb80d7c7edc",
+   "seconds": 2.8,
+   "raw_text": "{\"what_you_see\": \"A worn brown two-seater sofa has been left on a grass verge next to a pavement.\", \"items\": \"1 sofa\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Single item\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_036_before.jpg",
+   "photo_sha256": "b95a677680b884856b9bf628c6fade62232a6789c2ffcf21763c0babf55695d9",
+   "seconds": 4.5,
+   "raw_text": "{\"what_you_see\": \"A pile of construction waste and broken furniture is dumped on a grass verge next to a pavement.\", \"items\": \"multiple pieces of plasterboard, several wooden planks, 1 white door, 1 pile of bricks\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Construction/demolition/excavation\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_037_before.jpg",
+   "photo_sha256": "898b0a6bae966c2fbf486dba58d8c70c7fe07842f192dd6349ea18076392e7ec",
+   "seconds": 3.2,
+   "raw_text": "{\"what_you_see\": \"A mattress and several black and white bags are dumped on a grass verge next to a pavement.\", \"items\": \"1 mattress, 2 black bags, 1 white bag, 1 small white item\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_043_before.jpg",
+   "photo_sha256": "8c37c16aa402ab773253978bbf0190b4548a9062cc356aba15c422555960af45",
+   "seconds": 4.2,
+   "raw_text": "{\"what_you_see\": \"A pile of garden waste and several bags of rubbish is left on a driveway in front of a garage.\", \"items\": \"1 large pile of garden cuttings, 2 green bags, 2 white bags, 1 black bag, 1 pile of soil\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Green\", \"land_type\": \"Private/residential\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_046_before.jpg",
+   "photo_sha256": "0484a787046496025d884f9c9da010d3407114ec0bce7b1410648d392e6c8d02",
+   "seconds": 17.0,
+   "raw_text": "{\"what_you_see\": \"A pile of construction waste, paint tins, and black bags is dumped on the ground next to a garage.\", \"items\": \"3 paint tins, 1 large white bag, 1 black bag, various pieces of rubble and plasterboard\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Construction/demolition/excavation\", \"land_type\": \"Council land\", \"hazards\": \"paint tins\"}"
+  },
+  {
+   "photo": "case_051_before.jpg",
+   "photo_sha256": "de264d2050a6e630c49de8dcb6c7c181f81e0a4c318beb87d40ec00c4a366a3c",
+   "seconds": 6.9,
+   "raw_text": "{\"what_you_see\": \"A pile of dumped rubbish including broken electric scooters, bricks, and a white bag on a grass verge.\", \"items\": \"2 broken electric scooters, 1 large white bag, 1 black bin/container, several bricks\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"batteries\"}"
+  },
+  {
+   "photo": "case_054_before.jpg",
+   "photo_sha256": "29fdef6eec03a869ffeeda67b436e524e16bc7bb494123ecc961634a7d4aa4d2",
+   "seconds": 3.2,
+   "raw_text": "{\"what_you_see\": \"A mattress and weightlifting equipment have been dumped on a grass verge.\", \"items\": \"1 mattress, 1 weight bench, 1 barbell, 2 weight plates\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_055_before.jpg",
+   "photo_sha256": "dfdd8b0cd2a199532f45e7bd3126b28672158b2acbf490cdde4f924bdd0baf0b",
+   "seconds": 6.0,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, cardboard boxes, and a broken chair is dumped in a back alleyway.\", \"items\": \"4 black bags, 1 broken chair, 3 cardboard boxes\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Back alleyway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_056_before.jpg",
+   "photo_sha256": "cc4f1f85c909862d39b1c0b5f54e8dcb1f2b8c66aac3bd94c8239049ed07ed17",
+   "seconds": 6.5,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, cardboard boxes, and a broken armchair is dumped on a driveway next to a wheelie bin.\", \"items\": \"5 black bags, 3 cardboard boxes, 1 broken armchair\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Private/residential\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_058_before.jpg",
+   "photo_sha256": "550bf0e9310412b737e3f13c7801a6a13acb642948af2f89640dba2feb2de637",
+   "seconds": 17.8,
+   "raw_text": "{\"what_you_see\": \"A pile of garden waste and bags has been left on a pavement in front of a garage.\", \"items\": \"2 green bags, 1 white bag, 1 pile of garden cuttings, 1 pile of soil\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Green\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_059_before.jpg",
+   "photo_sha256": "cefc65b580873258ed459d2d01d032159fb69fdf5f015151f0f9939605b38a74",
+   "seconds": 10.3,
+   "raw_text": "{\"what_you_see\": \"A pile of household waste including an armchair, several black bags, and some boards is left on a residential pavement.\", \"items\": \"1 armchair, 9 black bags, 3 boards\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_004_before.jpg",
+   "photo_sha256": "6705c5c61e8ea9d0a11542d4114966184f5a61fdb3f6fff8cd2207c5e8d67bd1",
+   "seconds": 4.3,
+   "raw_text": "{\"what_you_see\": \"A large pile of garden waste, including logs and branches, is left on the grass verge next to a pavement.\", \"items\": \"several logs, a large pile of branches, 1 green bag\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Green\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_008_before.jpg",
+   "photo_sha256": "b89059eb0a8089ada46fe457ae07068e0a9460e5ca95d020d5b3781a497c6486",
+   "seconds": 2.3,
+   "raw_text": "{\"what_you_see\": \"A pile of wooden pallets has been left on the edge of a footpath next to a grassy area.\", \"items\": \"approximately 5 wooden pallets\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Construction/demolition/excavation\", \"land_type\": \"Footpath/bridleway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_012_before.jpg",
+   "photo_sha256": "c796e03e7329b27e57559c3c5b1d4a7ef244f4f15bacae072d8382d1be22d075",
+   "seconds": 42.4,
+   "raw_text": "{\"what_you_see\": \"A shopping trolley filled with various bags and cardboard boxes has been left in a garage court.\", \"items\": \"1 shopping trolley, 2 black bags, 2 white bags, 2 cardboard boxes\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Council land\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_014_before.jpg",
+   "photo_sha256": "47cf8f08bc6abe311e536f009137aecea3461a96d903e9604ee25c48868fd2ae",
+   "seconds": 14.7,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, cardboard boxes, a chair, and a carpet roll is dumped on a residential pavement.\", \"items\": \"5 black bags, 4 cardboard boxes, 1 chair, 1 carpet roll\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_015_before.jpg",
+   "photo_sha256": "0e7f786a4fe3738e0944d71b83d8e7cf8cea80464206043597ef46e36aa5f985",
+   "seconds": 4.6,
+   "raw_text": "{\"what_you_see\": \"Three purple wheelie bins are parked on a pavement next to a brick wall and a row of garages.\", \"items\": \"3 purple wheelie bins\", \"fly_tip\": \"no\", \"confidence\": 100, \"size\": \"n/a\", \"waste_type\": \"n/a\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_018_before.jpg",
+   "photo_sha256": "f1eaa0eb0407ece90195bcadab6d392621c1325003fda25906a88c3f80d0c6e8",
+   "seconds": 3.3,
+   "raw_text": "{\"what_you_see\": \"An armchair and several black bags are dumped on a pavement next to a brick wall.\", \"items\": \"1 armchair, 3 black bags, 1 cardboard box\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_020_before.jpg",
+   "photo_sha256": "a9c7bab2a369d0046881692d17bfa5b90d88ebb4ba63be55952dbcb65fcaa9ef",
+   "seconds": 3.0,
+   "raw_text": "{\"what_you_see\": \"A pile of construction waste, paint tins, and bags is dumped on a pavement next to a garage.\", \"items\": \"1 large white bag, 3 paint tins, various pieces of rubble and plasterboard, and loose litter\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Construction/demolition/excavation\", \"land_type\": \"Highway\", \"hazards\": \"paint tins\"}"
+  },
+  {
+   "photo": "case_029_before.jpg",
+   "photo_sha256": "b601dd08f9f85ee345e689d71a1b9015f8d9f5e906b474ff679892add08e0643",
+   "seconds": 39.4,
+   "raw_text": "{\"what_you_see\": \"A pile of construction waste and black bags is dumped on a residential pavement.\", \"items\": \"large pieces of plasterboard, several wooden planks, a pile of bricks and rubble, 4 black bags\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Construction/demolition/excavation\", \"land_type\": \"Highway\", \"hazards\": \"possible asbestos\"}"
+  },
+  {
+   "photo": "case_030_before.jpg",
+   "photo_sha256": "95b2e39ba2cc88298d8552d242fe6511ce20fa0ddcf883035d697f11ae879c8a",
+   "seconds": 3.9,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, cardboard boxes, and broken furniture is dumped on a pavement next to a garage.\", \"items\": \"5 black bags, 3 cardboard boxes, 1 broken chair\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_041_before.jpg",
+   "photo_sha256": "c1d74fbbfbc6089c79c7a515e09990e04f690df57e25d5150cded31807a5710f",
+   "seconds": 3.3,
+   "raw_text": "{\"what_you_see\": \"A large pile of sand and several white bags are dumped on a residential pavement.\", \"items\": \"1 large pile of sand, 4 white bags\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Construction/demolition/excavation\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_042_before.jpg",
+   "photo_sha256": "0fa26f9be6735e177fa3fa024f003b704bc9de57e31140ebeb327cece7f43c58",
+   "seconds": 1.6,
+   "raw_text": "{\"what_you_see\": \"A mattress, several black bags, a white bag, a cardboard box, and a carpet roll are dumped on a pavement next to a brick wall.\", \"items\": \"1 mattress, 3 black bags, 1 white bag, 1 cardboard box, 1 carpet roll\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_047_before.jpg",
+   "photo_sha256": "54234c511196689c088721d1606f91209b2fd36e80410f22444fc835472d1959",
+   "seconds": 3.0,
+   "raw_text": "{\"what_you_see\": \"Two carpet rolls and three black bags are dumped on a grass verge next to a pavement.\", \"items\": \"2 carpet rolls, 3 black bags\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_052_before.jpg",
+   "photo_sha256": "7eb1387fe77d8257ef8e898053f8e1323414dcd79f585689ea7b363b72194bef",
+   "seconds": 2.8,
+   "raw_text": "{\"what_you_see\": \"A pile of black and white rubbish bags and a pink child's scooter left on a pavement next to a brick wall.\", \"items\": \"2 black bags, 2 white bags, 1 cardboard box, 1 pink scooter\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_053_before.jpg",
+   "photo_sha256": "97db7e4c6d1dc4c2fdf00bffb887f3d8d4985b5b6da14baed6204ceb8c5f339d",
+   "seconds": 3.2,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, a white bag, a cardboard box, and a pink tricycle are dumped on a grass verge next to a pavement.\", \"items\": \"3 black bags, 1 white bag, 1 cardboard box, 1 pink tricycle\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_060_before.jpg",
+   "photo_sha256": "50350b3358a0777cde117820471a718a9926f0c51f762248726e16e30230b450",
+   "seconds": 12.4,
+   "raw_text": "{\"what_you_see\": \"A pile of construction waste, including plasterboard, rubble, and paint tins, is dumped in a back alleyway next to wheelie bins.\", \"items\": \"3 paint tins, 1 large white bag, several pieces of plasterboard, and a pile of rubble\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Construction/demolition/excavation\", \"land_type\": \"Back alleyway\", \"hazards\": \"paint tins\"}"
+  },
+  {
+   "photo": "case_061_before.jpg",
+   "photo_sha256": "a840a742016aad5df109514f7d648d7a1bb4c167f040a9583a02d444e1ae14df",
+   "seconds": 3.3,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags and a pink child's scooter has been left in a back alleyway.\", \"items\": \"5 black bags, 1 pink scooter\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Back alleyway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_064_before.jpg",
+   "photo_sha256": "a2631a74e96cf84a9cb3b8ca6ff99f92e415288e0f8a0a5bf2567a7759676b07",
+   "seconds": 3.3,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, cardboard boxes, and an armchair has been dumped on a grass verge next to a pavement.\", \"items\": \"4 black bags, 1 armchair, 4 cardboard boxes\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_065_before.jpg",
+   "photo_sha256": "b7d98fc088e90d931e733ee7bf502d3a40daff5543162f332f0991ad3400f8dc",
+   "seconds": 15.0,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, white bags, a cardboard box, and a pink child's tricycle has been left on a grass verge next to a road.\", \"items\": \"4 black bags, 2 white bags, 1 cardboard box, 1 pink tricycle\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_066_before.jpg",
+   "photo_sha256": "af40659b49b2101cbaff329422af3dcf3d2552510c98a7eb2cb727ddec67cc71",
+   "seconds": 2.7,
+   "raw_text": "{\"what_you_see\": \"Three black bags and a rolled-up carpet have been left on a residential pavement.\", \"items\": \"3 black bags, 1 carpet roll\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_071_before.jpg",
+   "photo_sha256": "ae8bb7ee749c5b15541cfd64c2787be170e8550f7ce66a45f6206b0a1883234d",
+   "seconds": 39.6,
+   "raw_text": "{\"what_you_see\": \"A pile of garden waste and several bags has been left on a residential pavement.\", \"items\": \"2 green bags, 2 white bags, 1 pile of garden cuttings\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Green\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_074_before.jpg",
+   "photo_sha256": "d25a8f8141f9c6a6e193023938d610942cbcbaedd183f33d2b63a290c77ccefa",
+   "seconds": 2.6,
+   "raw_text": "{\"what_you_see\": \"An armchair and several black bags are left on a residential pavement.\", \"items\": \"1 armchair, 5 black bags, 1 cardboard box\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_076_before.jpg",
+   "photo_sha256": "89a49675c922bc0bcb607076ceacfd01e3830482048c1c6de1525a3ab36fbbbd",
+   "seconds": 1.8,
+   "raw_text": "{\"what_you_see\": \"A carpet roll and two black bags are left on a paved walkway next to a brick wall.\", \"items\": \"1 carpet roll, 2 black bags\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_077_before.jpg",
+   "photo_sha256": "dd651fac872c2da65bb097bed8f1ac32c05d7b2a9f2359c5f26ea78974e91189",
+   "seconds": 5.1,
+   "raw_text": "{\"what_you_see\": \"A white fridge freezer has been dumped on the ground in front of a row of garages.\", \"items\": \"1 fridge freezer\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Single item\", \"waste_type\": \"White goods\", \"land_type\": \"Council land\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_078_before.jpg",
+   "photo_sha256": "91c9da3fb7e6c413ba9e612fd934db6850b4bef5858efacc6fb9645e6ba62f55",
+   "seconds": 16.0,
+   "raw_text": "{\"what_you_see\": \"A pile of construction waste and several buckets is dumped on the ground next to a garage.\", \"items\": \"4 buckets, 1 large white bag, various pieces of plasterboard and rubble\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Construction/demolition/excavation\", \"land_type\": \"Private/residential\", \"hazards\": \"possible asbestos\"}"
+  },
+  {
+   "photo": "case_082_before.jpg",
+   "photo_sha256": "ec79d004feaeb9234ca2a3209586df14fb1c0dc3d0754d7a921167fc1e9b94d4",
+   "seconds": 7.7,
+   "raw_text": "{\"what_you_see\": \"Two black bags and two rolled-up carpets are left on a grass verge next to a pavement.\", \"items\": \"2 black bags, 2 carpet rolls\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_087_before.jpg",
+   "photo_sha256": "5b34434defa5b93ebdbf9a4bb0368f19150c9fd5cc8c38dc01d18bdec9653307",
+   "seconds": 8.4,
+   "raw_text": "{\"what_you_see\": \"A large pile of household waste including a mattress, black bags, and various boxes is dumped in a garage court.\", \"items\": \"1 mattress, 6 black bags, 2 cardboard boxes, 1 white cabinet, 1 carpet roll, 1 white laundry basket, 1 black bucket\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Other household waste\", \"land_type\": \"Council land\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_097_before.jpg",
+   "photo_sha256": "322655b60ac195f8681d50d9093dcd92291bdeb4b9ec2254fec368a69fd54126",
+   "seconds": 18.0,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, cardboard boxes, and a broken chair is dumped in a back alleyway next to wheelie bins.\", \"items\": \"4 black bags, 2 cardboard boxes, 1 broken chair\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Back alleyway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_098_before.jpg",
+   "photo_sha256": "c9f2c2e974a0a7f30298b7b3eaafd7a003319f3743bce5321831dbb841d3e19b",
+   "seconds": 2.6,
+   "raw_text": "{\"what_you_see\": \"A pile of garden waste and three bags of rubbish is dumped on a road next to a garage court.\", \"items\": \"2 green bags, 1 white bag, 1 large pile of garden waste\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Green\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_100_before.jpg",
+   "photo_sha256": "8a8a995c6f34d476a093fb046ed5636cb2d6a3d8ea94ae50e46ddbde207ec8b1",
+   "seconds": 2.8,
+   "raw_text": "{\"what_you_see\": \"A pile of rubbish including black bags, cardboard boxes, and a broken chair is left on a residential pavement.\", \"items\": \"4 black bags, 2 cardboard boxes, 1 broken chair\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_101_before.jpg",
+   "photo_sha256": "0be9145f9c6044cee73fa6087f807e25fe61d8694001f439bcd730e1af8f46a2",
+   "seconds": 8.5,
+   "raw_text": "{\"what_you_see\": \"A pile of garden waste and several bags is left on the ground next to a wheelie bin in a commercial yard.\", \"items\": \"1 grey bag, 2 green bags, 1 pile of garden cuttings\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Green\", \"land_type\": \"Commercial/industrial\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_104_before.jpg",
+   "photo_sha256": "44e77758da35327dca6f38b3132f5df0c2e6e903d013dafbd9f746f78d9b6f61",
+   "seconds": 1.3,
+   "raw_text": "{\"what_you_see\": \"A broken wooden wardrobe has been left on a residential pavement.\", \"items\": \"1 broken wardrobe\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Single item\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_106_before.jpg",
+   "photo_sha256": "c0650d5d1944fe4520ff3baadfad4123fa40edeeb4dcdbe6922aee2631759a85",
+   "seconds": 3.3,
+   "raw_text": "{\"what_you_see\": \"Two piles of garden waste and bags are dumped in a garage court.\", \"items\": \"2 green bags, 3 white bags, 2 piles of garden waste\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Green\", \"land_type\": \"Council land\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_107_before.jpg",
+   "photo_sha256": "8b171f379e1e84dd856e1e2de2c8c4285bd51aa66f385d139782b72e71cef9d9",
+   "seconds": 33.4,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, white bags, a green bag, and garden cuttings is dumped on a pavement next to a brick wall.\", \"items\": \"4 black bags, 1 white bag, 1 green bag, 1 white box, garden cuttings\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Green\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_108_before.jpg",
+   "photo_sha256": "6d0637093fd4b60d3a1d862100f66f258c514d2e4d2bf8eb710e65dc782bc428",
+   "seconds": 9.6,
+   "raw_text": "{\"what_you_see\": \"A pile of garden waste and green bags has been left on a residential pavement.\", \"items\": \"3 green bags, 1 large pile of garden waste\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Green\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_109_before.jpg",
+   "photo_sha256": "4e9b0650f185c5fa30b81fbcc31e489ecec4de9fa43e1e05346a329016ac1c8a",
+   "seconds": 2.3,
+   "raw_text": "{\"what_you_see\": \"A pile of rubbish including black bags, white bags, cardboard, and a pink toy car is dumped on a pavement next to a metal fence.\", \"items\": \"3 black bags, 2 white bags, 1 cardboard box, 1 pink toy car\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_112_before.jpg",
+   "photo_sha256": "6a594e411260c7da5375637d91616c77aca92c31a866d26214ab119ffa80d750",
+   "seconds": 13.5,
+   "raw_text": "{\"what_you_see\": \"A mattress and two black bags have been left on a pavement next to a brick wall.\", \"items\": \"1 mattress, 2 black bags\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_116_before.jpg",
+   "photo_sha256": "7b661fcbfe687154b91a984262491e2515c995b20995a1ee192f4ae620515c79",
+   "seconds": 1.9,
+   "raw_text": "{\"what_you_see\": \"A mattress and a bed frame have been left in a back alleyway.\", \"items\": \"1 mattress, 1 bed frame\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Other household waste\", \"land_type\": \"Back alleyway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_120_before.jpg",
+   "photo_sha256": "4f68623696d78a4192283baf935f5124e7924ee0dc687a4ff1e617c25d200c46",
+   "seconds": 40.1,
+   "raw_text": "{\"what_you_see\": \"A pile of black bags, cardboard, and a carpet roll has been left on a pavement next to a metal fence.\", \"items\": \"2 black bags, 1 carpet roll, several pieces of cardboard\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_121_before.jpg",
+   "photo_sha256": "12dc395d2e918d83c5061bd64ab1ff83ca581faa88b001c3043295b9995250a6",
+   "seconds": 5.0,
+   "raw_text": "{\"what_you_see\": \"An armchair and several black bags are dumped on a grass verge next to a road.\", \"items\": \"1 armchair, 4 black bags, 1 cardboard box\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_122_before.jpg",
+   "photo_sha256": "cee4cd2e05276749bebc69e7480f0d9fb258f94ac68c565d1028a4e3e4d52227",
+   "seconds": 3.3,
+   "raw_text": "{\"what_you_see\": \"A pile of garden waste and several black bags has been left on a pavement next to a brick wall.\", \"items\": \"4 black bags, 1 pile of garden waste\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Green\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_124_before.jpg",
+   "photo_sha256": "3aa47f4e8b53f9ccdba9be184820a9497dc4fa68e4b9826523d516e531c1777c",
+   "seconds": 9.8,
+   "raw_text": "{\"what_you_see\": \"A pile of black and white rubbish bags and a pink toy scooter has been dumped on a paved area in front of a row of garages.\", \"items\": \"4 black bags, 2 white bags, 1 pink toy scooter, 1 piece of wood\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Council land\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_127_before.jpg",
+   "photo_sha256": "c5fcac7d28b07824d125c00e5cefe854f49066d4fb2c0e3737a60d1a0964ffd1",
+   "seconds": 4.8,
+   "raw_text": "{\"what_you_see\": \"Two black bags and two carpet rolls are left on a grass verge next to a road.\", \"items\": \"2 black bags, 2 carpet rolls\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_129_before.jpg",
+   "photo_sha256": "8854bd583a82c69863d8af41f4abc165fff6250223d7c7e3610ad20a31b1408d",
+   "seconds": 1.4,
+   "raw_text": "{\"what_you_see\": \"A pile of garden waste and three bags of rubbish is left on a residential pavement.\", \"items\": \"2 green bags, 1 white bag, 1 pile of garden waste\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Green\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_133_before.jpg",
+   "photo_sha256": "7d1ba3c4716552c2dba8715d96128796cdb9a895d18f8ee7d81c6df18b128b9f",
+   "seconds": 3.0,
+   "raw_text": "{\"what_you_see\": \"A bed base and two drawers have been left on a pavement next to a wooden fence.\", \"items\": \"1 bed base, 2 drawers\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_136_before.jpg",
+   "photo_sha256": "c7167c04c0c3bc70f4eb2f8a7f174e844dd241b24c17d33007e11ea983dd1f24",
+   "seconds": 2.6,
+   "raw_text": "{\"what_you_see\": \"A mattress and several black bags have been dumped on a pavement next to a brick wall.\", \"items\": \"1 mattress, 4 black bags\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_139_before.jpg",
+   "photo_sha256": "b10d302121c6c40137e48348966a417f21e378d0b01f970f264e2f7fbd8734c4",
+   "seconds": 53.3,
+   "raw_text": "{\"what_you_see\": \"Two carpet rolls and two black bags are left on a residential pavement.\", \"items\": \"2 carpet rolls, 2 black bags\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_141_before.jpg",
+   "photo_sha256": "8bb30fb42bc01a0b628896414b3b64e437f7d6f3c474d677b58abd1dca9598ac",
+   "seconds": 2.7,
+   "raw_text": "{\"what_you_see\": \"A pile of black rubbish bags, cardboard boxes, and a broken chair is dumped on a residential pavement.\", \"items\": \"6 black bags, 3 cardboard boxes, 1 broken chair\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Black bags - household\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_142_before.jpg",
+   "photo_sha256": "76ba40a4d0a53596aa3268c753c6b0d0b86a74e8401986afb6a2b4e29e91a982",
+   "seconds": 2.3,
+   "raw_text": "{\"what_you_see\": \"A pile of garden waste and three green bags has been left on a grass verge next to a pavement.\", \"items\": \"3 green bags, 1 large pile of garden waste\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Car boot or less\", \"waste_type\": \"Green\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  },
+  {
+   "photo": "case_144_before.jpg",
+   "photo_sha256": "55ac9768d37bde58c492799a8ecde1cb7211dfcb34c48ecec2ff7909c335c3d1",
+   "seconds": 3.2,
+   "raw_text": "{\"what_you_see\": \"A mattress, a cardboard box, a black bag, and a white bag are left on a pavement next to wheelie bins.\", \"items\": \"1 mattress, 1 cardboard box, 1 black bag, 1 white bag\", \"fly_tip\": \"yes\", \"confidence\": 100, \"size\": \"Small van load\", \"waste_type\": \"Other household waste\", \"land_type\": \"Highway\", \"hazards\": \"none\"}"
+  }
+ ]
+}

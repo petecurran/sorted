@@ -76,7 +76,25 @@ On the night the headline was 60% to 83% on held-out size, and 9 to 11 of 15 on 
 
 ## The hosted demo's model
 
-The hosted demo ([HOSTING.md](HOSTING.md)) reads photos with Gemma 4 26B on Cloudflare Workers AI, using the same v9 prompt. It hasn't been measured yet, so nothing on this page describes it. `evals/run.py --backend workers-ai` measures it through the app's own call, and its tables belong here once it has been.
+The hosted demo ([HOSTING.md](HOSTING.md)) reads photos with Gemma 4 26B (`@cf/google/gemma-4-26b-a4b-it`) on Cloudflare Workers AI. It uses the same v9 prompt, at temperature 0 with thinking off, through the same call the demo makes. It was run on the published photos on 1 October 2026 (`evals/runs/2026-10-01/v9-workers-ai.json`).
+
+Its decisions are as good as the laptop model's, one photo apart on each set, which is noise on sets this size. It caught every hazard, where the laptop model missed two of the four in the tuning photos. It's weaker on the exact size band, 73% against 83% on the held-out photos, but every size it got wrong was one band out, and the prompt was tuned on the 12B model. It's about four times faster. The real photos weren't run, since they aren't in the repository.
+
+**Tuning photos (generated)**, 30 in the set
+
+| Model, prompt v9 | Fly-tip or not | Size | Size, within a band | Waste type | Decision | Hazards caught | Sent to a person | Unreadable | Median s |
+|---|---|---|---|---|---|---|---|---|---|
+| Gemma 4 12B, laptop | 100% (30/30) | 87% (26/30) | 97% (29/30) | 80% (24/30) | 87% (26/30) | 50% (2/4) | 0% (0/30) | 0% (0/30) | 14.2 |
+| Gemma 4 26B, Workers AI | 100% (30/30) | 83% (25/30) | 97% (29/30) | 77% (23/30) | 83% (25/30) | 100% (4/4) | 0% (0/30) | 0% (0/30) | 5.5 |
+
+**Held-out photos (generated)**, 49 in the set
+
+| Model, prompt v9 | Fly-tip or not | Size | Size, within a band | Waste type | Decision | Hazards caught | Sent to a person | Unreadable | Median s |
+|---|---|---|---|---|---|---|---|---|---|
+| Gemma 4 12B, laptop | 100% (49/49) | 83% (40/48) | 96% (46/48) | 90% (43/48) | 90% (44/49) | 100% (2/2) | 2% (1/49) | 0% (0/49) | 13.8 |
+| Gemma 4 26B, Workers AI | 100% (49/49) | 73% (35/48) | 100% (48/48) | 92% (44/48) | 88% (43/49) | 100% (2/2) | 2% (1/49) | 0% (0/49) | 3.3 |
+
+From `uv run python evals/score.py evals/runs/2026-09-30/v9.json evals/runs/2026-10-01/v9-workers-ai.json`. The score script labels the hosted run "classifier", because it ran the prompt in `classifier.py`, which is v9.
 
 ## What real use would need
 
