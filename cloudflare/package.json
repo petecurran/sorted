@@ -1,0 +1,20 @@
+{
+  "name": "sorted-demo",
+  "private": true,
+  "description": "The hosted Sorted demo on Cloudflare: one private copy per visitor (docs/HOSTING.md)",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "node dev.mjs",
+    "deploy": "wrangler deploy",
+    "check": "wrangler types --env-file=/dev/null >/dev/null && tsc",
+    "tail": "wrangler tail"
+  },
+  "dependencies": {
+    "@cloudflare/containers": "^0.3.7"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "wrangler": "^4.145.0"
+  }
+}

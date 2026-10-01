@@ -1,0 +1,4 @@
+# Local development only (npm run dev): answer every photo with a fake reading, so no Cloudflare account is needed.
+FAKE_AI=1
+# The status page's key on this machine (http://localhost:8787/__demo/status, any user name).
+STATUS_KEY=local-status

@@ -57,7 +57,10 @@ def main():
     subprocess.run(
         [sys.executable, str(APP / "scripts/build_seed.py")], check=True, stdout=subprocess.DEVNULL
     )  # fresh data for today
-    env = {**os.environ, "FT_RESET": "1", "FT_CLASSIFIER": MODE, "FT_DATA_DIR": str(DATA_DIR)}
+    # FT_HOSTED=1 without the variable Cloudflare sets in its containers must change nothing, so every trust check
+    # below also checks that (decision 6).
+    env = {**os.environ, "FT_RESET": "1", "FT_CLASSIFIER": MODE, "FT_DATA_DIR": str(DATA_DIR), "FT_HOSTED": "1"}
+    env.pop("CLOUDFLARE_DURABLE_OBJECT_ID", None)
     log = open(DATA_DIR / "smoke_server.log", "w")
     proc = subprocess.Popen(
         [sys.executable, "-m", "uvicorn", "server:app", "--host", "127.0.0.1", "--port", str(PORT)],
@@ -196,6 +199,19 @@ def trust_checks():
         f"{r.status_code} {target['status']} -> {after['status']}",
     )
     check("trust: a phone still gets the public list", get("/api/incidents?view=public", headers=phone).ok)
+    check(
+        "trust: FT_HOSTED alone, outside a Cloudflare container, is ignored",
+        get("/api/config").json()["hosted"] is False,
+    )
+
+
+def kit_checks():
+    """The demo kit is served byte for byte, so its GPS and cached reading survive, and nothing else is."""
+    kit = sorted((APP / "seed" / "live_demo").glob("*.jpg"))
+    same = [p.name for p in kit if get(f"/media/kit/{p.name}").content == p.read_bytes()]
+    check("demo kit served byte for byte", kit and len(same) == len(kit), f"{len(same)}/{len(kit)}")
+    bad = [n for n in ("LIVE_DEMO.md", ".hidden.jpg", "nope.jpg") if get(f"/media/kit/{n}").status_code != 404]
+    check("demo kit serves nothing else", not bad, bad)
 
 
 def v2_checks(iid):
@@ -707,6 +723,7 @@ def run(proc, t0):
     csv_checks()
     no_cost_checks()
     trust_checks()
+    kit_checks()
     ret = get("/api/return").json()
     check(
         "return checks all pass",

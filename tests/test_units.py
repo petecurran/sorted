@@ -1,17 +1,22 @@
-"""Fast checks for the model-reply parser, the rules, the trust rule, the content files and the evals.
+"""Fast checks for the model-reply parser, the rules, the trust rule, the hosted copy, the content files and the evals.
 
 Run from the repo root: uv run python tests/test_units.py
 """
 
 import hashlib
 import json
+import os
+import subprocess
 import sys
+import threading
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from starlette.datastructures import Headers  # noqa: E402
 
+import classifier  # noqa: E402
 import triage  # noqa: E402
 from classifier import PROMPT, normalise, parse_json  # noqa: E402
 from common import APP, COUNCIL_NAME, LAND, SIZES, WASTE, case_ref  # noqa: E402
@@ -50,6 +55,74 @@ def trust_checks() -> list[tuple[bool, str]]:
         (is_remote(client, Headers(headers)) is remote, f"trust: {who} is {'remote' if remote else 'trusted'}")
         for who, client, headers, remote in TRUST
     ]
+
+
+def hosted_checks() -> list[tuple[bool, str]]:
+    """A hosted copy trusts its one visitor, so hosted mode must need both FT_HOSTED and the variable Cloudflare sets in
+    its containers (decision 6). Its model call goes through the same parser, and the Worker's cap is honoured."""
+
+    def hosted(**env) -> str:
+        clean = {k: v for k, v in os.environ.items() if k not in ("FT_HOSTED", "CLOUDFLARE_DURABLE_OBJECT_ID")}
+        cmd = [sys.executable, "-c", "import common; print(common.HOSTED)"]
+        return subprocess.run(cmd, cwd=APP, env={**clean, **env}, capture_output=True, text=True).stdout.strip()
+
+    out = [
+        (hosted() == "False", "hosted: off by default"),
+        (hosted(FT_HOSTED="1") == "False", "hosted: FT_HOSTED alone, on a laptop, changes nothing"),
+        (hosted(FT_HOSTED="1", CLOUDFLARE_DURABLE_OBJECT_ID="abc") == "True", "hosted: on in a Cloudflare container"),
+    ]
+
+    reply = '{"fly_tip": "yes", "confidence": 90, "size": "Single item", "waste_type": "White goods"}'
+    answers = {
+        "/worker": (200, {"choices": [{"message": {"role": "assistant", "content": reply}}]}),
+        "/rest": (200, {"result": {"choices": [{"message": {"content": reply}}]}, "success": True}),
+        "/capped": (429, {"error": "photo_limit"}),
+    }
+    seen = []
+
+    class Fake(BaseHTTPRequestHandler):
+        def do_POST(self):
+            seen.append(json.loads(self.rfile.read(int(self.headers["Content-Length"]))))
+            status, body = answers[self.path]
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(body).encode())
+
+        def log_message(self, *args):
+            pass
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), Fake)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    base, url = f"http://127.0.0.1:{server.server_port}", classifier.AI_URL
+    try:
+        for path in ("/worker", "/rest"):
+            classifier.AI_URL = base + path
+            text = classifier.workers_ai_reply(b"\xff\xd8 not really a photo")
+            out.append(
+                (normalise(parse_json(text))["waste_type"] == "White goods", f"workers-ai: reads a {path[1:]} reply")
+            )
+        sent = seen[0]
+        parts = sent["messages"][0]["content"]
+        out.append(
+            (
+                parts[0]["image_url"]["url"].startswith("data:image/jpeg;base64,")
+                and parts[1]["text"] == PROMPT
+                and sent["chat_template_kwargs"] == {"enable_thinking": False},
+                "workers-ai: sends the photo, the shipped prompt and thinking off",
+            )
+        )
+        classifier.AI_URL = base + "/capped"
+        try:
+            classifier.workers_ai_reply(b"x")
+            refused = False
+        except classifier.AIRefused:
+            refused = True
+        out.append((refused, "workers-ai: the Worker's cap becomes AIRefused"))
+    finally:
+        classifier.AI_URL = url
+        server.shutdown()
+    return out
 
 
 def content_name_checks() -> list[tuple[bool, str]]:
@@ -181,7 +254,7 @@ def main():
         (t_asb["headline_alert"] == "Possible asbestos: specialist removal", "headline_alert for asbestos"),
         (run()["headline_alert"] is None, "no alert for a plain sofa"),
     ]
-    checks += trust_checks() + content_name_checks() + eval_checks()
+    checks += trust_checks() + hosted_checks() + content_name_checks() + eval_checks()
     for ok, name in checks:
         fails += not ok
         print("PASS" if ok else "FAIL", name)

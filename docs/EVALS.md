@@ -74,6 +74,10 @@ On the night the headline was 60% to 83% on held-out size, and 9 to 11 of 15 on 
 - Generated photos are cleaner, better lit and better framed than real ones, and most of the real photos are rural lanes, not city streets.
 - Each figure is one run at temperature 0. There's no comparison with any other model.
 
+## The hosted demo's model
+
+The hosted demo ([HOSTING.md](HOSTING.md)) reads photos with Gemma 4 26B on Cloudflare Workers AI, using the same v9 prompt. It hasn't been measured yet, so nothing on this page describes it. `evals/run.py --backend workers-ai` measures it through the app's own call, and its tables belong here once it has been.
+
 ## What real use would need
 
 - A few hundred of the council's own photos, labelled by two officers with disagreements settled, and plenty of bags and hazards among them.
@@ -88,6 +92,8 @@ uv run python evals/score.py evals/runs/2026-09-30/*.json                       
 uv run python evals/score.py evals/runs/2026-09-30/v9.json --set holdout --misses  # the photos it got wrong
 uv run --extra gemma python evals/run.py evals/runs/$(date +%F)/v9.json \
   --prompt evals/prompts/v9.txt --sets dev holdout                               # Apple silicon: run the model again
+uv run python evals/run.py evals/runs/$(date +%F)/v9-workers-ai.json \
+  --backend workers-ai --sets dev holdout                                        # the hosted demo's model (HOSTING.md)
 ```
 
 For the real photos, download them from the links in `evals/labels_real.json` into a folder, named by their keys, and add `--sets real --real-dir <folder>`. In Claude Code, `/eval` walks through a new prompt, and `evals/CLAUDE.md` has the rules for tuning without fooling yourself.

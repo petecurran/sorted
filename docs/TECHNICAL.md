@@ -14,13 +14,15 @@ FT_RESET=1 scripts/run.sh
 
 The public site is at http://localhost:8800 and the council console at http://localhost:8800/council. On the machine running it, any password signs in.
 
+To put Sorted on the web for people to try, each with their own copy, see [HOSTING.md](HOSTING.md).
+
 `FT_RESET=1` wipes the database and rebuilds the demo data for today, so the newest reports are always from the last few hours. Leave it off to carry on where you left off. `scripts/start_server.sh` does the same in the background and logs to `data/server.log`.
 
 ### The model
 
 On an Apple silicon Mac, the app downloads and runs Gemma 4 12B (the 4-bit MLX build `mlx-community/gemma-4-12B-it-4bit`, about 7 GB) the first time it starts. It needs 16 GB of memory and takes about 14 seconds a photo on an M2 Pro.
 
-Anywhere else, or with `FT_CLASSIFIER=cache`, it runs without a model. The demo's own photos still work, because their readings are cached by the photo's fingerprint in `seed/model_cache.json`. A photo it hasn't seen is marked "Model offline. Check the photo." and goes to a person. To read new photos on other machines, `classifier.py` would need another backend, such as Ollama or a hosted vision API.
+Anywhere else, or with `FT_CLASSIFIER=cache`, it runs without a model. The demo's own photos still work, because their readings are cached by the photo's fingerprint in `seed/model_cache.json`. A photo it hasn't seen is marked "Model offline. Check the photo." and goes to a person. With `FT_CLASSIFIER=workers-ai`, new photos go to Gemma 4 26B on Cloudflare Workers AI instead, which is what the hosted demo uses ([HOSTING.md](HOSTING.md)).
 
 ## How the pieces fit
 
@@ -59,15 +61,17 @@ The start scripts run it on `FT_RESET=1` or when those files don't exist yet. Th
 |---|---|
 | `FT_PORT` | The port for `scripts/run.sh` and `start_server.sh`. Default 8800. |
 | `FT_RESET=1` | Wipe the data and rebuild it for today. |
-| `FT_CLASSIFIER` | `gemma` (the default on Apple silicon), `cache` (cached readings only) or `off`. |
+| `FT_CLASSIFIER` | `gemma` (the default on Apple silicon), `workers-ai` (Gemma 4 26B on Cloudflare), `cache` (cached readings only) or `off`. |
 | `FT_MODEL` | Another model id for MLX. |
 | `FT_TODAY` | Fix the date, as `YYYY-MM-DD`. The DEFRA quarter follows it. |
 | `FT_OSRM_URL` | An OSRM server for the Routes tab. The default is the public demo server, which allows light use only. |
 | `FT_DATA_DIR` | Where the database and uploads go. Default `data/`. |
+| `FT_AI_URL`, `FT_AI_LIMIT`, `FT_AI_MODEL` | For `workers-ai`: where to send photos (the hosted copy's Worker), how many this copy may send, and another model id. Without `FT_AI_URL`, it uses Cloudflare's API with `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`. |
+| `FT_HOSTED` | `1` makes this a hosted copy for one visitor ([decision 6](decisions/0006-hosted-copy.md)). It only takes effect inside a Cloudflare container, and the Worker in `cloudflare/` sets it. |
 
 ## Phones and the room
 
-The machine running Sorted is trusted: any password opens the council console there. Everyone else is remote, whether that's a phone through a tunnel, a visitor to a hosted copy, or a page from another website open in the laptop's browser. `trust.py` holds the rule, and [decision 4](decisions/0004-laptop-trust-rule.md) explains it. Remote users get the public site, and the console asks for a password, which is made the first time someone signs in and stored in `data/council_password.txt`. `scripts/room.sh` has the switches used at the demo. `seed/live_demo/LIVE_DEMO.md` explains them and gives a running order.
+The machine running Sorted is trusted: any password opens the council console there. Everyone else is remote, whether that's a phone through a tunnel or a page from another website open in the laptop's browser. `trust.py` holds the rule, and [decision 4](decisions/0004-laptop-trust-rule.md) explains it. Remote users get the public site, and the console asks for a password, which is made the first time someone signs in and stored in `data/council_password.txt`. A hosted copy is the one exception: it belongs to one visitor, who is the council there ([decision 6](decisions/0006-hosted-copy.md)). `scripts/room.sh` has the switches used at the demo. `seed/live_demo/LIVE_DEMO.md` explains them and gives a running order.
 
 ## Tests
 
@@ -76,11 +80,11 @@ uv run python tests/test_units.py
 FT_CLASSIFIER=cache uv run python tests/smoke.py
 ```
 
-The unit tests take seconds and need no server: the model-reply parser, the rules, the trust rule, every category and ward name in `content/`, and whether the shipped prompt has been measured on the published photos. The smoke test rebuilds the demo data, starts its own server on port 8810 with a throwaway database, and checks every endpoint, including that phones and other websites can't reach the council side.
+The unit tests take seconds and need no server: the model-reply parser, the rules, the trust rule and when hosted mode switches on, the Workers AI call against a fake server, every category and ward name in `content/`, and whether the shipped prompt has been measured on the published photos. The smoke test rebuilds the demo data, starts its own server on port 8810 with a throwaway database, and checks every endpoint, including that phones and other websites can't reach the council side. The hosted demo has its own checks: `cd cloudflare && npm run check` type-checks the Worker, and `npm run dev` runs the whole thing locally ([HOSTING.md](HOSTING.md)).
 
 ## Before real use
 
 - Real staff sign-in and roles, and a record of who changed what.
 - Data protection: photos can show people and number plates, and reports carry locations and contact details. That means a data protection impact assessment, a privacy notice and retention rules.
-- Production services: a paid map tile provider instead of OpenStreetMap's servers, your own OSRM routing server, and proper hosting instead of a Cloudflare Quick Tunnel. The fonts could be hosted locally instead of loading from Google.
+- Production services: a paid map tile provider instead of OpenStreetMap's servers, your own OSRM routing server, and proper hosting instead of a Cloudflare Quick Tunnel or the hosted demo's one-visitor copies. The fonts could be hosted locally instead of loading from Google.
 - Testing the model on the council's own photos, with a person checking its decisions.

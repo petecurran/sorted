@@ -21,7 +21,10 @@ The simulated reports in `seed/history.json` and `seed/demo_incidents.json` are 
 |---|---|
 | [Leaflet](https://leafletjs.com) 1.9.4, in `static/vendor/leaflet` | BSD 2-Clause, © 2010-2023 Vladimir Agafonkin, © 2010-2011 CloudMade (`static/vendor/leaflet/LICENSE`) |
 | [Gemma 4 12B](https://huggingface.co/google/gemma-4-12b-it), run as the 4-bit MLX conversion [`mlx-community/gemma-4-12B-it-4bit`](https://huggingface.co/mlx-community/gemma-4-12B-it-4bit) | Apache 2.0. Downloaded at run time; not included here. |
+| [Gemma 4 26B](https://developers.cloudflare.com/workers-ai/models/gemma-4-26b-a4b-it/) (`@cf/google/gemma-4-26b-a4b-it`), run by Cloudflare Workers AI for the hosted demo | Apache 2.0. Hosted by Cloudflare; not included here. |
 | Python packages (FastAPI, Uvicorn, Pillow, Shapely, Requests, qrcode, python-multipart, and optionally mlx-vlm), installed by `uv` | Each under its own permissive licence (MIT, BSD or Apache 2.0) |
+| The hosted demo's image (`Dockerfile`): the `python:3.13-slim` base image and [uv](https://github.com/astral-sh/uv) | Python under the PSF Licence, Debian's packages under their own licences, uv under MIT or Apache 2.0 |
+| The hosted demo's Worker (`cloudflare/`): Wrangler and `@cloudflare/containers`, installed by `npm` | MIT or Apache 2.0 |
 | Fonts: Barlow Semi Condensed, IBM Plex Sans and IBM Plex Mono, loaded from Google Fonts | SIL Open Font Licence 1.1 |
 
 ## Services the app calls
@@ -31,6 +34,7 @@ The simulated reports in `seed/history.json` and `seed/demo_incidents.json` are 
 | OpenStreetMap map tiles (`tile.openstreetmap.org`) | Map data © OpenStreetMap contributors (shown on every map). The tile servers are for light use only under the [tile usage policy](https://operations.osmfoundation.org/policies/tiles/); use a tile provider for anything more. |
 | OSRM demo routing server (`router.project-osrm.org`), for the Routes tab | [Reasonable, non-commercial use only](https://github.com/Project-OSRM/osrm-backend/wiki/Demo-server), at most one request a second. Set `FT_OSRM_URL` to use your own OSRM server. |
 | Cloudflare Quick Tunnels (`scripts/tunnel.sh`, `scripts/room.sh tunnel`), optional | For testing and demos only. |
+| Cloudflare Workers, Containers and Workers AI, for the hosted demo (`docs/HOSTING.md`), optional | Under the account holder's Cloudflare terms. Workers AI [doesn't store prompts or use them for training](https://developers.cloudflare.com/workers-ai/platform/privacy/). |
 
 ## Names
 

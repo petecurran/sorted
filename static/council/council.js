@@ -1159,6 +1159,12 @@
     if (!onLaptop) {
       $("#si-pass").value = "";
       $(".si-note").textContent = "Demonstration system. Ask the team for the password.";
+      // A hosted copy belongs to its one visitor (decision 6), so any password works there too.
+      CH.get("/api/config").then((c) => {
+        if (!c || !c.hosted) return;
+        $("#si-pass").value = "demo-password";
+        $(".si-note").textContent = "Demonstration system. Any password is accepted.";
+      }).catch(() => {});
     }
     if (!signinBound) {
       signinBound = true;

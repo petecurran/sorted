@@ -14,6 +14,7 @@ Run everything from the repo root. Several of these start or stop servers, or re
 | `screenshots.py` | Takes the README's screenshots | a throwaway app with fresh data on another port, Chrome, Playwright | That app's data, `content/brand.json` for a minute (it always puts it back), `docs/screenshots/` |
 | `room.sh` | The live demo's switches: status, pause, close, off, tunnel, password | a running app on 8800 | `content/config.json`, `data/council_password.txt` |
 | `tunnel.sh` | Shares the app through a Cloudflare Quick Tunnel | `cloudflared` (installs it with Homebrew) | Nothing, but it puts the app on the internet |
+| `hosted_start.sh` | The hosted demo's start command, inside its container (`Dockerfile`, `docs/HOSTING.md`) | the container | The container's own seed data and database |
 
 - **The model needs the laptop to itself.** Two copies of the 12B model don't fit in 16 GB. Before running `evals/run.py`, stop the app or restart it with `FT_CLASSIFIER=cache`.
 - **`FT_RESET=1` wipes the database and uploads.** Don't use it on a running demo you want to keep.

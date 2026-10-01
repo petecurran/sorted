@@ -10,6 +10,8 @@ Env vars:
   FT_WARMUP=0                     skip the one-off warm-up generation after the model loads.
   FT_TODAY=YYYY-MM-DD             fix the demo date, if content/config.json has no "today" (default: the real date).
   FT_OSRM_URL=<url>               OSRM server for the Routes tab (default: the public demo server, light use only).
+  FT_HOSTED=1                     a hosted copy for one visitor, behind the Worker in cloudflare/ (decision 6). Only
+                                  takes effect inside a Cloudflare container. FT_AI_URL and FT_AI_LIMIT: classifier.py.
 """
 
 from __future__ import annotations
@@ -29,6 +31,7 @@ from common import (  # noqa: E402
     APP,
     COUNCIL_NAME,
     DB_PATH,
+    HOSTED,
     SEED,
     STATIC,
     UPLOADS,
@@ -53,6 +56,8 @@ def _reset():
 
 if os.environ.get("FT_RESET") == "1":
     _reset()
+if os.environ.get("FT_HOSTED") == "1" and not HOSTED:
+    log.warning("FT_HOSTED=1 is ignored outside a Cloudflare container: remote callers still need the password")
 UPLOADS.mkdir(parents=True, exist_ok=True)
 
 from fastapi import FastAPI, File, Form, Request, UploadFile  # noqa: E402
@@ -87,13 +92,20 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Sorted", lifespan=lifespan)
-app.add_middleware(GZipMiddleware, minimum_size=2000)
+if not HOSTED:  # a hosted copy leaves compression to Cloudflare, so the Worker can add its demo bar to each page
+    app.add_middleware(GZipMiddleware, minimum_size=2000)
 
 
 def _remote(request: Request) -> bool:
     """False only for the presenter's laptop (trust.py). Everyone else gets the public site, and the council console
     needs its password."""
     return is_remote(request.client.host if request.client else "", request.headers)
+
+
+def _trusted(request: Request) -> bool:
+    """The presenter's laptop, or anyone in a hosted copy. A hosted container has no address of its own: every request
+    has come through the Worker, which sends a visitor only to their own copy (decision 6)."""
+    return HOSTED or not _remote(request)
 
 
 # Through the tunnel, phones get the public site. The council console needs its password there (the sign-in on this
@@ -127,8 +139,8 @@ def _council_token() -> str:
 
 
 def _council_ok(request: Request) -> bool:
-    """This laptop, or a phone that has signed in with the password."""
-    if not _remote(request):
+    """This laptop (or a hosted copy's visitor), or a phone that has signed in with the password."""
+    if _trusted(request):
         return True
     import hmac
 
@@ -163,7 +175,7 @@ _room: dict = {"seen": {}, "hits": []}  # phones by address, and request times, 
 
 @app.middleware("http")
 async def public_only_through_tunnel(request: Request, call_next):
-    if _remote(request):
+    if not _trusted(request):
         now = time.monotonic()
         _room["seen"][request.headers.get("cf-connecting-ip", "?")] = now
         _room["hits"].append(now)
@@ -188,8 +200,10 @@ async def no_store_api(request: Request, call_next):
     if path.startswith("/api"):
         resp.headers["Cache-Control"] = "no-store"
     elif path.startswith("/media/") or path.startswith("/static/vendor/"):
-        # Photos (fixed names) and the map library: fetched once per phone, and cacheable by Cloudflare.
-        resp.headers["Cache-Control"] = "public, max-age=3600"
+        # Photos (fixed names) and the map library: fetched once per phone, and cacheable by Cloudflare. A hosted
+        # visitor's own photos stay in their browser.
+        own = HOSTED and path.startswith("/media/") and not path.startswith(("/media/seed/", "/media/kit/"))
+        resp.headers["Cache-Control"] = "private, max-age=3600" if own else "public, max-age=3600"
     elif path.startswith("/static"):
         resp.headers["Cache-Control"] = "no-cache"  # always revalidate, so edits show on the next reload
     return resp
@@ -246,6 +260,9 @@ def api_config():
         },
         "depot": c["depot"],
         "model": classifier.info(),
+        "hosted": HOSTED,
+        # A hosted copy offers the demo kit to visitors with no photo of their own (public.js).
+        "kit": sorted(p.name for p in (SEED / "live_demo").glob("*.jpg")) if HOSTED else [],
         "context": {
             "collection_day_wards": c.get("collection_day_wards", []),
             "bulky_bookings": c.get("bulky_bookings", []),
@@ -265,7 +282,7 @@ async def api_council_login(request: Request):
         body = await request.json()
     except Exception:
         body = {}
-    if _remote(request):
+    if not _trusted(request):
         import hmac
 
         if not hmac.compare_digest(str(body.get("password") or "").strip(), council_password()):
@@ -589,6 +606,16 @@ def seed_photo(name: str, request: Request):
     small = SEED / "photos_web" / name
     p = small if _remote(request) and small.is_file() else SEED / "photos" / name
     if not p.is_file():
+        return err("not_found", 404)
+    return FileResponse(p)
+
+
+@app.get("/media/kit/{name}", include_in_schema=False)
+def kit_photo(name: str):
+    """The demo kit (seed/live_demo), byte for byte, so its GPS and its cached reading survive. A hosted copy offers it
+    to visitors who have no photo of their own."""
+    p = SEED / "live_demo" / name
+    if "/" in name or name.startswith(".") or p.suffix != ".jpg" or not p.is_file():
         return err("not_found", 404)
     return FileResponse(p)
 

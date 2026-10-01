@@ -1,0 +1,15 @@
+# What the hosted copy's image leaves out (Dockerfile). The demo data is rebuilt inside it.
+.git
+.venv
+.ruff_cache
+**/__pycache__
+.claude
+cloudflare
+data
+docs
+evals
+tests
+seed/photos_web
+seed/demo_incidents.json
+seed/history.json
+seed/model_cache.json

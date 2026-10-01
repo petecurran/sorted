@@ -1,0 +1,44 @@
+// The hosted demo: each visitor gets their own copy of Sorted in a Cloudflare container, for a limited time and within
+// daily caps. docs/HOSTING.md explains it, what it can cost, and how to publish and close it.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sorted-demo",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": true,
+  "observability": { "enabled": true },
+
+  // One container per visitor. "basic" is 1/4 vCPU, 1 GiB of memory and 4 GB of disk; the disk is wiped whenever a
+  // container stops. max_instances is a backstop above MAX_ACTIVE_SESSIONS, for copies still shutting down.
+  "containers": [
+    {
+      "class_name": "SortedApp",
+      "image": "../Dockerfile",
+      "image_build_context": "..",
+      "instance_type": "basic",
+      "max_instances": 25
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "APP", "class_name": "SortedApp" },
+      { "name": "GATE", "class_name": "Gate" }
+    ]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SortedApp", "Gate"] }],
+  "ai": { "binding": "AI" },
+
+  // The caps. Change one and run `npm run deploy` again. A "visitor" is an internet connection, so everyone in one
+  // office shares MAX_SESSIONS_PER_VISITOR_PER_DAY; MAX_SESSIONS_PER_DAY is what bounds the cost. DEMO_OPEN "no"
+  // closes the demo to new visitors. The status page at /__demo/status shows today's use against each cap, once a
+  // STATUS_KEY secret is set (docs/HOSTING.md).
+  "vars": {
+    "DEMO_OPEN": "yes",
+    "SESSION_MINUTES": "30",
+    "MAX_ACTIVE_SESSIONS": "20",
+    "MAX_SESSIONS_PER_DAY": "100",
+    "MAX_SESSIONS_PER_VISITOR_PER_DAY": "20",
+    "MAX_PHOTOS_PER_SESSION": "8",
+    "MAX_PHOTOS_PER_DAY": "300"
+  }
+}

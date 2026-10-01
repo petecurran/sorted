@@ -8,7 +8,7 @@ How well the model reads photos, measured through the app's own parser and rules
 | `splits/dev.txt`, `holdout.txt`, `real.txt` | Which photos are in each set |
 | `labels_real.json` | Labels for the 20 real photos, with a link to each one's source. The photos aren't in the repository |
 | `runs/<date>/vN.json` | What the model replied to each photo, with the prompt's hash and each photo's fingerprint |
-| `run.py` | Runs the model (Apple silicon only). `/eval` wraps it |
+| `run.py` | Runs the model: the local one (Apple silicon only), or with `--backend workers-ai` the hosted demo's Gemma 4 26B. `/eval` wraps it |
 | `score.py` | Scores runs with no model, so any machine can re-score them |
 
 ## Rules

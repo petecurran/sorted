@@ -1215,12 +1215,46 @@
     window.addEventListener("resize", setHdr);
   }
 
+  // ---------------------------------------------------------------- hosted copy
+  // A hosted copy (decision 6) belongs to one visitor, who may have no photo of fly-tipping to hand, so it offers the
+  // demo kit (seed/live_demo, by its numbers). Each kit photo is under 700 KB, so it is sent byte for byte: its GPS
+  // drops the pin and its reading comes from the cache.
+  const KIT_LABELS = { 1: "Black bags", 2: "A fridge", 3: "Paint tins", 4: "A mattress", 5: "Near an earlier report" };
+  async function loadHosted() {
+    if (MOCK) return;
+    let c;
+    try { c = await CH.get("/api/config"); } catch (e) { return; }
+    if (!c || !c.hosted) return;
+    COPY.privacy_note = "This copy of the demo is yours alone. Your photo is seen only by you, has its hidden data removed, and is read by an AI model on Cloudflare. It is deleted when your session ends.";
+    loadCopy();
+    if (!(c.kit || []).length) return;
+    const box = document.createElement("div");
+    box.className = "kit";
+    box.innerHTML = `<p class="kit-h">No photo to hand? Try one of ours.</p><div class="kit-row">${c.kit.map((n) =>
+      `<button type="button" class="kit-pick" data-kit="${esc(n)}"><img src="/media/kit/${encodeURIComponent(n)}" alt="" loading="lazy"><span>${esc(KIT_LABELS[parseInt(n, 10)] || "")}</span></button>`).join("")}</div>`;
+    $("#rf-shoot").appendChild(box);
+    box.addEventListener("click", async (e) => {
+      const b = e.target.closest("[data-kit]");
+      if (!b) return;
+      try {
+        const r = await fetch(`/media/kit/${encodeURIComponent(b.dataset.kit)}`);
+        if (!r.ok) throw new Error(`${r.status}`);
+        onFile({ files: [new File([await r.blob()], b.dataset.kit, { type: "image/jpeg" })] });
+      } catch (err) {
+        const el = $("#rf-photo-error");
+        el.textContent = "Could not load that photo. Try again.";
+        el.hidden = false;
+      }
+    });
+  }
+
   function start() {
     if (!window.L || !window.CH) { console.error("Leaflet or CH missing"); return; }
     wire();
     setPhotoWording();
     initMap();
     loadCopy();
+    loadHosted();
     loadWards();
     loadStats();
     refresh();

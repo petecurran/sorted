@@ -1,8 +1,9 @@
-"""Photo classifier: seed cache first, then Gemma 4 12B via mlx-vlm on one background worker thread.
+"""Photo classifier: seed cache first, then the model, one photo at a time on one background worker thread.
 
-FT_CLASSIFIER=gemma (default) loads the model at startup; =cache or =off never loads it, and anything not in
-seed/model_cache.json gets decision "review" with "Model offline. Check the photo."
-The model is loaded and run on the same thread (MLX streams are per-thread), fed by a single queue.
+FT_CLASSIFIER=gemma (default) loads Gemma 4 12B via mlx-vlm at startup, and runs it on the same thread (MLX streams are
+per-thread). =workers-ai sends each photo to Gemma 4 26B on Cloudflare Workers AI instead (the hosted copy, decision 6).
+=cache or =off never call a model, and anything not in seed/model_cache.json gets decision "review" with
+"Model offline. Check the photo."
 """
 
 from __future__ import annotations
@@ -14,6 +15,7 @@ import queue
 import re
 import threading
 import time
+from pathlib import Path
 
 from common import LAND, MODEL_NAME, SIZES, WASTE, config, log, match_category, seed
 
@@ -21,6 +23,14 @@ MODEL_ID = os.environ.get("FT_MODEL", "mlx-community/gemma-4-12B-it-4bit")
 MODE = os.environ.get("FT_CLASSIFIER", "gemma").strip().lower()
 CACHE_DELAY = float(os.environ.get("FT_CACHE_DELAY", "0") or 0)
 WARMUP = os.environ.get("FT_WARMUP", "1") != "0"
+
+# Workers AI. A hosted copy posts to FT_AI_URL (http://ai.sorted/run), which the Worker in cloudflare/ answers with its
+# AI binding and its daily cap. Anywhere else, set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN to use Cloudflare's API.
+AI_MODEL = os.environ.get("FT_AI_MODEL", "@cf/google/gemma-4-26b-a4b-it")
+AI_URL = os.environ.get("FT_AI_URL", "")
+AI_LIMIT = int(os.environ.get("FT_AI_LIMIT", "0") or 0)  # photos this copy may send to the model; 0 means no limit
+# Thinking off, so the reply is the JSON alone and costs a few hundred tokens.
+AI_SETTINGS = {"max_completion_tokens": 400, "temperature": 0.0, "chat_template_kwargs": {"enable_thinking": False}}
 
 # Version 9 of evals/prompts/, measured against photos labelled by eye: docs/EVALS.md has the results, and
 # tests/test_units.py fails if this text changes without a new run. It lists the items before sizing them. The decision
@@ -46,6 +56,47 @@ Land type: pavements, verges and roads are "Highway"; "Footpath/bridleway" is on
 DECISIONS = ("clear_now", "hold_for_officer", "specialist", "not_a_fly_tip")
 OFFLINE_REASON = "Model offline. Check the photo."
 UNREADABLE_REASON = "Model reply unreadable. Check the photo."
+LIMIT_REASON = "The demo has read all the photos it can for now. Check the photo."
+
+
+class AIRefused(RuntimeError):
+    """The Worker in front of a hosted copy refused the photo: its daily cap is reached."""
+
+
+def workers_ai_reply(image: bytes, prompt: str = PROMPT, model: str = AI_MODEL, timeout: float = 90) -> str:
+    """Send one JPEG to Gemma 4 on Workers AI and return the reply's text. evals/run.py measures this same call."""
+    import base64
+
+    import requests
+
+    url, headers = AI_URL, {}
+    if not url:
+        account, token = os.environ.get("CLOUDFLARE_ACCOUNT_ID"), os.environ.get("CLOUDFLARE_API_TOKEN")
+        if not (account and token):
+            raise RuntimeError("set FT_AI_URL, or CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN")
+        # The same model and inputs the hosted copy's Worker runs through its AI binding.
+        url = f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/run/{model}"
+        headers["Authorization"] = f"Bearer {token}"
+    photo = "data:image/jpeg;base64," + base64.b64encode(image).decode()
+    body = {
+        "model": model,
+        "messages": [
+            {
+                "role": "user",
+                "content": [{"type": "image_url", "image_url": {"url": photo}}, {"type": "text", "text": prompt}],
+            }
+        ],
+        **AI_SETTINGS,
+    }
+    r = requests.post(url, json=body, headers=headers, timeout=timeout)
+    if r.status_code == 429:
+        raise AIRefused(r.text[:200])
+    r.raise_for_status()
+    data = r.json()
+    data = data.get("result", data)  # Cloudflare's /ai/run wraps the reply in {"result": ...}
+    if isinstance(data.get("response"), str):
+        return data["response"]
+    return data["choices"][0]["message"].get("content") or ""
 
 
 # ---- parsing ------------------------------------------------------------------------------------
@@ -207,8 +258,9 @@ def cache_lookup(sha: str) -> dict | None:
 
 class Classifier:
     def __init__(self):
-        self.mode = MODE if MODE in ("gemma", "cache", "off") else "gemma"
-        self.status = "loading" if self.mode == "gemma" else "off"
+        self.mode = MODE if MODE in ("gemma", "workers-ai", "cache", "off") else "gemma"
+        self.status = {"gemma": "loading", "workers-ai": "ready"}.get(self.mode, "off")
+        self.sent = 0  # photos sent to Workers AI, for FT_AI_LIMIT
         # (priority, sequence, ...): priority 0 is the presenter's own photo, 1 is the audience's. One model, one photo
         # at a time; the presenter's photo always goes next.
         self.q: queue.PriorityQueue = queue.PriorityQueue()
@@ -230,8 +282,8 @@ class Classifier:
         on, gap = self._audience_settings()
         return {
             "name": MODEL_NAME,
-            "id": MODEL_ID,
-            "local": True,
+            "id": AI_MODEL if self.mode == "workers-ai" else MODEL_ID,
+            "local": self.mode != "workers-ai",
             "status": self.status,
             "queue": self.q.qsize() + (1 if self.status == "busy" else 0),
             "queue_audience": audience,
@@ -270,11 +322,17 @@ class Classifier:
             else:
                 callback(hit)
             return "cache"
-        if self.mode != "gemma" or self.status == "off":
+        if self.mode not in ("gemma", "workers-ai") or self.status == "off":
             callback(offline_result())
             return "offline"
         with self._lock:
-            self.pending.add(incident_id)
+            over = self.mode == "workers-ai" and AI_LIMIT and self.sent >= AI_LIMIT
+            if not over:
+                self.sent += self.mode == "workers-ai"
+                self.pending.add(incident_id)
+        if over:
+            callback(offline_result(LIMIT_REASON))
+            return "offline"
         self.q.put((0 if stage else 1, next(self._seq), incident_id, image_path, callback))
         log.info(
             "incident %s queued for the model (%s); %s waiting",
@@ -335,13 +393,20 @@ class Classifier:
             log.exception("warm-up failed (not fatal)")
 
     def _generate(self, image_path: str) -> dict:
-        from mlx_vlm import generate
-
         t = time.time()
-        out = generate(
-            self.model, self.processor, self.formatted, [image_path], max_tokens=400, temperature=0.0, verbose=False
-        )
-        text = getattr(out, "text", out)
+        if self.mode == "workers-ai":
+            try:
+                text = workers_ai_reply(Path(image_path).read_bytes())
+            except AIRefused as e:
+                log.info("Workers AI refused the photo: %s", e)
+                return offline_result(LIMIT_REASON)
+        else:
+            from mlx_vlm import generate
+
+            out = generate(
+                self.model, self.processor, self.formatted, [image_path], max_tokens=400, temperature=0.0, verbose=False
+            )
+            text = getattr(out, "text", out)
         secs = round(time.time() - t, 1)
         parsed = parse_json(text)
         if not parsed:
@@ -369,7 +434,7 @@ class Classifier:
                 time.sleep(1)
                 continue
             try:
-                if self.status in ("ready", "busy") and self.model is not None:
+                if self.status in ("ready", "busy") and (self.model is not None or self.mode == "workers-ai"):
                     self.status = "busy"
                     try:
                         result = self._generate(image_path)
@@ -383,7 +448,7 @@ class Classifier:
                 self._finish(incident_id, callback, result)
             finally:
                 self.q.task_done()
-            if prio:
+            if prio and self.mode == "gemma":
                 # Breathing room after an audience photo so the laptop stays usable on stage; a presenter's photo
                 # waiting ends the pause at once.
                 end = time.time() + self._audience_settings()[1]

@@ -9,3 +9,4 @@ Short records of the calls that shaped Sorted, each with what we decided, why, a
 | [3](0003-simulated-data.md) | Every report is simulated, and the council is made up |
 | [4](0004-laptop-trust-rule.md) | The laptop is the only caller trusted without a password |
 | [5](0005-cached-readings.md) | Demo photos are answered from a cache, and the evaluation never uses it |
+| [6](0006-hosted-copy.md) | A hosted copy belongs to one visitor |

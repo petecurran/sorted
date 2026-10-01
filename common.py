@@ -61,7 +61,16 @@ LAND = [
     "Other (unidentified)",
 ]
 
-MODEL_NAME = "Gemma 4 12B (on this laptop)"
+MODEL_NAME = (
+    "Gemma 4 26B (Cloudflare Workers AI)"
+    if os.environ.get("FT_CLASSIFIER", "").strip().lower() == "workers-ai"
+    else "Gemma 4 12B (on this laptop)"
+)
+
+# A hosted copy is one visitor's own copy of the demo, in a Cloudflare container behind the Worker in cloudflare/
+# (decision 6). It needs FT_HOSTED=1 and the variable Cloudflare sets in every container, so FT_HOSTED alone on a laptop
+# changes nothing.
+HOSTED = os.environ.get("FT_HOSTED") == "1" and bool(os.environ.get("CLOUDFLARE_DURABLE_OBJECT_ID"))
 
 # The demo council: a made-up authority (the ONS boundary for Liverpool is relabelled to it in seed/lads_lcr.geojson).
 # Every backend string that names "our" council comes from here.

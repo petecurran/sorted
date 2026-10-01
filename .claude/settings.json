@@ -12,7 +12,11 @@
       "Bash(scripts/tunnel.sh)",
       "Bash(scripts/tunnel.sh *)",
       "Bash(scripts/room.sh tunnel)",
-      "Bash(cloudflared *)"
+      "Bash(cloudflared *)",
+      "Bash(npm run deploy*)",
+      "Bash(npx wrangler deploy*)",
+      "Bash(npx wrangler delete*)",
+      "Bash(npx wrangler containers delete*)"
     ]
   },
   "hooks": {
