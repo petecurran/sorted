@@ -91,7 +91,8 @@ def workers_ai_reply(image: bytes, prompt: str = PROMPT, model: str = AI_MODEL, 
     r = requests.post(url, json=body, headers=headers, timeout=timeout)
     if r.status_code == 429:
         raise AIRefused(r.text[:200])
-    r.raise_for_status()
+    if not r.ok:  # Cloudflare explains a refusal in the body, such as "Authentication error" for a bad token
+        raise RuntimeError(f"Workers AI answered {r.status_code}: {r.text[:300]}")
     data = r.json()
     data = data.get("result", data)  # Cloudflare's /ai/run wraps the reply in {"result": ...}
     if isinstance(data.get("response"), str):
